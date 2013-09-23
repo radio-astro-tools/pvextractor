@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import sys
-if 'build_sphinx' in sys.argv:
+
+if 'develop' in sys.argv or 'build_sphinx' in sys.argv:
     from setuptools import setup, Command
 else:
     from distutils.core import setup, Command
