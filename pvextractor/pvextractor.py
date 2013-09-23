@@ -55,13 +55,14 @@ def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3):
         pvd = np.empty([nvel,npts])
         xinds = np.linspace(startx,endx,npts)
         yinds = np.linspace(starty,endy,npts)
-        for ii,(x,y) in enumerate(zip(xinds,yinds)):
-            if interpolation == 'nearest':
-                pvd[:,ii] = cube[:,y,x]
-            elif interpolation == 'spline':
-                pvd[:,ii] = map_coordinates(cube,
-                                            [velinds, [y]*nvel, [x]*nvel],
-                                            order=order)
+        if interpolation == 'nearest':
+            for ii,(x,y) in enumerate(zip(xinds,yinds)):
+                    pvd[:,ii] = cube[:,y,x]
+        elif interpolation == 'spline':
+            vi = np.outer(velinds, np.ones(npts))
+            xi = np.outer(np.ones(nvel), xinds)
+            yi = np.outer(np.ones(nvel), yinds)
+            pvd = map_coordinates(cube, [vi,yi,xi], order=order)
         return pvd
 
     pvs = []
