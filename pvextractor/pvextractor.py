@@ -8,6 +8,9 @@ def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3):
 
     All units are in *pixels*
 
+    .. note:: If there are NaNs in the cube, they will be treated as zeros when
+              using spline interpolation.
+
     Parameters
     ----------
     endpoints: list or tuple
@@ -62,7 +65,7 @@ def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3):
             vi = np.outer(velinds, np.ones(npts))
             xi = np.outer(np.ones(nvel), xinds)
             yi = np.outer(np.ones(nvel), yinds)
-            pvd = map_coordinates(cube, [vi,yi,xi], order=order)
+            pvd = map_coordinates(np.nan_to_num(cube), [vi,yi,xi], order=order)
         return pvd
 
     pvs = []
