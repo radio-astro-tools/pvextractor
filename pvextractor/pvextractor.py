@@ -6,6 +6,8 @@ def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3):
     Given a datacube with dimensions [z,y,x], accepts a 2xN tuple with N [x,y]
     endpoints.
 
+    All units are in *pixels*
+
     Parameters
     ----------
     endpoints: list or tuple
@@ -32,6 +34,12 @@ def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3):
     --------
     >>> data = np.arange(500).reshape(5,10,10)
     >>> pvdiagram(data, endpoints=[(1,2),(3.5,6.5),(8.2,7.1)])
+    (array([[  10.,   22.,   34.,   46.,   57.,   57.,   61.,   65.,   68.],
+           [ 110.,  122.,  134.,  146.,  157.,  157.,  161.,  165.,  168.],
+           [ 210.,  222.,  234.,  246.,  257.,  257.,  261.,  265.,  268.],
+           [ 310.,  322.,  334.,  346.,  357.,  357.,  361.,  365.,  368.],
+           [ 410.,  422.,  434.,  446.,  457.,  457.,  461.,  465.,  468.]]),
+     [5.1478150704935, 4.738143096192853])
 
     """
 
