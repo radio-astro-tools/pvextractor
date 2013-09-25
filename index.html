@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pvextractor by keflavich</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/keflavich/pvextractor">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/keflavich/pvextractor/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/keflavich/pvextractor/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Pvextractor</h1>
+          <p>Position-Velocity diagram extract (but it can slice out other things too)</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/keflavich">keflavich</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="position-velocity-diagram-extractor" class="anchor" href="#position-velocity-diagram-extractor"><span class="octicon octicon-link"></span></a>Position-Velocity Diagram Extractor</h1>
+
+<p>Tool to slice through data cubes and extract position-velocity (or other)
+slices.</p>
+
+<p>There are a few <code>utilities &lt;pvextractor/utils&gt;</code>_ related to header trimming &amp;
+parsing.  Otherwise, there's one main function,
+<code>pvdiagram &lt;pvextractor/pvextractor.py&gt;</code>_, that takes a data cube and a series of
+points and returns a PV array.  It is based on scipy's map_coordinates.</p>
+
+<p>For an example use case, see <code>this notebook
+&lt;http://nbviewer.ipython.org/urls/raw.github.com/keflavich/pvextractor/master/examples/IRAS%252005358%2520Slicing.ipynb&gt;</code>_.</p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-37306139-3");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
