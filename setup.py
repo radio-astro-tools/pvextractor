@@ -35,6 +35,6 @@ setup(name='pvextractor',
       author='Adam Ginsburg',
       author_email='adam.g.ginsburg@gmail.com',
       url='https://github.com/keflavich/pvextractor',
-      packages=['pvextractor'],
+      packages=['pvextractor','pvextractor/utils'],
       cmdclass={'test': PyTest},
       )
