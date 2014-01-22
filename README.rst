@@ -14,3 +14,9 @@ For an example use case, see `this notebook
 (for a permanent, compiled version, look `here <examples/IRAS05358Slicing.html>`_)
 
 
+
+
+.. image:: https://d2weczhvl823v0.cloudfront.net/keflavich/pvextractor/trend.png
+   :alt: Bitdeli badge
+   :target: https://bitdeli.com/free
+
