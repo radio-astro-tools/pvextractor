@@ -11,6 +11,6 @@ points and returns a PV array.  It is based on scipy's map_coordinates.
 
 For an example use case, see `this notebook
 <http://nbviewer.ipython.org/urls/raw.github.com/keflavich/pvextractor/master/examples/IRAS05358Slicing.ipynb>`_
-(also `here <examples/IRAS05358Slicing.html>`_)
+(for a permanent, compiled version, look `here <examples/IRAS05358Slicing.html>`_)
 
 
