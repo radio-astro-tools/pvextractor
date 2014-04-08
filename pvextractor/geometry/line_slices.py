@@ -3,7 +3,7 @@ import numpy as np
 from scipy.ndimage import map_coordinates
 
 
-def extract_line_slice(cube, x, y, interpolation='spline', order=3, respect_nan=False):
+def extract_line_slice(cube, x, y, interpolation='spline', order=3, respect_nan=True):
     """
     Given an array with shape (z, y, x), extract a (z, n) slice by
     interpolating at n (x, y) points.
@@ -44,10 +44,10 @@ def extract_line_slice(cube, x, y, interpolation='spline', order=3, respect_nan=
         xi = np.outer(np.ones(nz), x)
         yi = np.outer(np.ones(nz), y)
 
-        slice = map_coordinates(np.nan_to_num(cube), [zi,yi,xi-0.5], order=order)
+        slice = map_coordinates(np.nan_to_num(cube), [zi,yi,xi-0.5], order=order, cval=np.nan)
 
         if respect_nan:
-            slice_bad = map_coordinates(np.nan_to_num(np.isnan(cube)),
+            slice_bad = map_coordinates(np.nan_to_num(np.isnan(cube).astype(int)),
                                         [zi,yi-0.5,xi-0.5], order=order)
             slice[np.nonzero(slice_bad)] = np.nan
 
