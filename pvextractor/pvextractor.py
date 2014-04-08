@@ -5,8 +5,7 @@ from astropy import units as u
 from wcs_util import assert_independent_3rd_axis, wcs_spacing
 from .geometry import sample_curve, extract_line_slice, extract_thick_slice
 
-def vector_pvdiagram(hdu, startpoint, posang, distance=None, spacing=None,
-                     **kwargs):
+def vector_pvdiagram(hdu, startx, starty, posang, distance=None, **kwargs):
     """
     Create a pv diagram of some finite distance starting at a world coordinate
     position at some position angle
@@ -21,14 +20,10 @@ def vector_pvdiagram(hdu, startpoint, posang, distance=None, spacing=None,
     dx,dy = (np.cos((90-posang)/180*np.pi)*distance,
              np.sin((90-posang)/180*np.pi)*distance,)
 
-    endpoint = startpoint[0]+dx, startpoint[1]+dy
+    return wcs_pvdiagram(hdu.data, [startx,startx+dx], [starty,starty+dy],
+                         **kwargs)
 
-    return pvdiagram(hdu.data, [startpoint,endpoint],
-                     spacing=wcs_spacing(wcs, spacing),
-                     **kwargs)
-
-
-def wcs_pvdiagram(hdu, endpoints, spacing=None, **kwargs):
+def wcs_pvdiagram(hdu, x, y, spacing=None, **kwargs):
     """
     Create a PV diagram starting from a set of WCS coordinates
 
@@ -49,10 +44,10 @@ def wcs_pvdiagram(hdu, endpoints, spacing=None, **kwargs):
 
     # convert the endpoints from WCS to pixels by assuming that the 3rd axis is
     # independent
-    pixendpoints = wcs.wcs_world2pix([[x,y,wcs.wcs.crval[2]]
-                                      for x,y in endpoints], 0)[:,:2]
+    px,py = wcs.wcs_world2pix([[a,b,wcs.wcs.crval[2]]
+                               for a,b in zip(x,y)], 0)[:,:2]
 
-    return pvdiagram(hdu.data, endpoints=pixendpoints,
+    return pvdiagram(hdu.data, px, py,
                      spacing=wcs_spacing(wcs, spacing)
                      **kwargs)
 
