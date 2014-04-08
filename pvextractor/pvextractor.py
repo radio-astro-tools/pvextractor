@@ -19,7 +19,7 @@ def vector_pvdiagram(hdu, startpoint, posang, distance=None, spacing=None,
         raise NotImplementedError("Just use a large number okay?")
 
     dx,dy = (np.cos((90-posang)/180*np.pi)*distance,
-             np.sin((90-posang)/180*np.pi))
+             np.sin((90-posang)/180*np.pi)*distance,)
 
     endpoint = startpoint[0]+dx, startpoint[1]+dy
 

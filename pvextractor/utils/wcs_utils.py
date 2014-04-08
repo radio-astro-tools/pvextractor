@@ -20,9 +20,9 @@ def assert_independent_3rd_axis(wcs):
     if (pc[:,2].sum() != pc[2,2] or pc[2,:].sum() != pc[2,2]):
         raise ValueError("Non-independent 3rd axis.")
     axtypes = wcs.get_axis_types()
-    if (axtypes[0]['coordinate_type'] != 'celestial' or
-        axtypes[1]['coordinate_type'] != 'celestial' or
-        axtypes[2]['coordinate_type'] != 'spectral'):
+    if ((axtypes[0]['coordinate_type'] != 'celestial' or
+         axtypes[1]['coordinate_type'] != 'celestial' or
+         axtypes[2]['coordinate_type'] != 'spectral')):
         raise ValueError("Cube axes not in expected orientation: PPV")
 
 def wcs_spacing(wcs, spacing):
