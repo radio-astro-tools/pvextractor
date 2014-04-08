@@ -2,7 +2,7 @@ import numpy as np
 from scipy.ndimage import map_coordinates
 from astropy.wcs import WCS
 from astropy import units as u
-from wcs_util import assert_independent_3rd_axis, wcs_spacing
+from .utils.wcs_utils import assert_independent_3rd_axis, wcs_spacing
 from .geometry import sample_curve, extract_line_slice, extract_thick_slice
 
 def vector_pvdiagram(hdu, startx, starty, posang, distance=None, **kwargs):
