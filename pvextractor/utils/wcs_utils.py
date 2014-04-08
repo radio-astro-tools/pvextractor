@@ -1,4 +1,5 @@
 import numpy as np
+from astropy import units as u
 
 def get_pixel_scales(wcs, assert_square=True):
     # borrowed from aplpy
@@ -23,3 +24,17 @@ def assert_independent_3rd_axis(wcs):
         axtypes[1]['coordinate_type'] != 'celestial' or
         axtypes[2]['coordinate_type'] != 'spectral'):
         raise ValueError("Cube axes not in expected orientation: PPV")
+
+def wcs_spacing(wcs, spacing):
+
+    if spacing is not None:
+        if hasattr(spacing,'unit'):
+            if not spacing.unit.is_equivalent(u.arcsec):
+                raise TypeError("Spacing is not in angular units.")
+            else:
+                platescale = get_pixel_scales(wcs)
+                newspacing = spacing.to(u.deg).value / platescale
+    else:
+        newspacing = spacing
+
+    return newspacing

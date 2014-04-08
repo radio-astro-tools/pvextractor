@@ -2,8 +2,31 @@ import numpy as np
 from scipy.ndimage import map_coordinates
 from astropy.wcs import WCS
 from astropy import units as u
-from wcs_util import get_pixel_scales, assert_independent_3rd_axis
+from wcs_util import assert_independent_3rd_axis, wcs_spacing
 from .geometry import sample_curve, extract_line_slice, extract_thick_slice
+
+def vector_pvdiagram(hdu, startpoint, posang, distance=None, spacing=None,
+                     **kwargs):
+    """
+    Create a pv diagram of some finite distance starting at a world coordinate
+    position at some position angle
+    """
+
+    wcs = WCS(hdu.header)
+    assert_independent_3rd_axis(wcs)
+
+    if distance is None:
+        raise NotImplementedError("Just use a large number okay?")
+
+    dx,dy = (np.cos((90-posang)/180*np.pi)*distance,
+             np.sin((90-posang)/180*np.pi))
+
+    endpoint = startpoint[0]+dx, startpoint[1]+dy
+
+    return pvdiagram(hdu.data, [startpoint,endpoint],
+                     spacing=wcs_spacing(wcs, spacing),
+                     **kwargs)
+
 
 def wcs_pvdiagram(hdu, endpoints, spacing=None, **kwargs):
     """
@@ -29,17 +52,8 @@ def wcs_pvdiagram(hdu, endpoints, spacing=None, **kwargs):
     pixendpoints = wcs.wcs_world2pix([[x,y,wcs.wcs.crval[2]]
                                       for x,y in endpoints], 0)[:,:2]
 
-    if spacing is not None:
-        if hasattr(spacing,'unit'):
-            if not spacing.unit.is_equivalent(u.arcsec):
-                raise TypeError("Spacing is not in angular units.")
-            else:
-                platescale = get_pixel_scales(wcs)
-                newspacing = spacing.to(u.deg).value / platescale
-    else:
-        newspacing = spacing
-    
-    return pvdiagram(hdu.data, endpoints=pixendpoints, spacing=newspacing,
+    return pvdiagram(hdu.data, endpoints=pixendpoints,
+                     spacing=wcs_spacing(wcs, spacing)
                      **kwargs)
 
 def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
