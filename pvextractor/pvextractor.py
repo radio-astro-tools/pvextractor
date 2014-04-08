@@ -1,7 +1,8 @@
 import numpy as np
 from scipy.ndimage import map_coordinates
 
-def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3):
+def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3,
+              respect_nan=False):
     """
     Given a datacube with dimensions [z,y,x], accepts a 2xN tuple with N [x,y]
     endpoints.
@@ -66,6 +67,10 @@ def pvdiagram(cube, endpoints=(), spacing=1.0, interpolation='spline', order=3):
             xi = np.outer(np.ones(nvel), xinds)
             yi = np.outer(np.ones(nvel), yinds)
             pvd = map_coordinates(np.nan_to_num(cube), [vi,yi,xi], order=order)
+            if respect_nan:
+                pvbad = map_coordinates(np.nan_to_num(np.isnan(cube)),
+                                        [vi,yi,xi], order=order)
+                pvd[pvbad > 0] = np.nan
         return pvd
 
     pvs = []
