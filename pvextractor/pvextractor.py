@@ -51,7 +51,7 @@ def wcs_pvdiagram(hdu, x, y, spacing=None, **kwargs):
                      spacing=wcs_spacing(wcs, spacing)
                      **kwargs)
 
-def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=False, width=None):
+def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None):
     """
     Given a position-position-velocity cube with dimensions (nv, ny, nx), and
     a path, extract a position-velocity slice.
@@ -80,6 +80,6 @@ def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=False, width=
         The position-velocity slice
     """
 
-    pv_slice = extract_slice(cube, path, order=order, respect_nan=False)
+    pv_slice = extract_slice(cube, path, order=order, respect_nan=respect_nan)
 
     return pv_slice

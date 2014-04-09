@@ -2,7 +2,7 @@ from .line_slices import extract_line_slice
 from .poly_slices import extract_poly_slice
 
 
-def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=False, width=None):
+def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None):
     """
     Given an array with shape (z, y, x), extract a (z, n) slice from a path
     with ``n`` segments.
