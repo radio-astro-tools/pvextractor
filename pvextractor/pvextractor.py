@@ -72,7 +72,9 @@ def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=N
         effect for polygon paths.
     respect_nan : bool, optional
         If set to `False`, NaN values are changed to zero before computing
-        the slices.
+        the slices. If set to `True`, in the case of line paths a second
+        computation is performed to ignore the NaN value while interpolating,
+        and set the output values of NaNs to NaN.
 
     Returns
     -------
