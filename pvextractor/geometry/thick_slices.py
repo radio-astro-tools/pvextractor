@@ -2,50 +2,28 @@ import numpy as np
 from astropy.io import fits
 
 
-
-def extract_thick_slice(cube, x, y, width=1.0):
+def extract_thick_slice(cube, polygons, width=1.0):
 
     from shapely.geometry import Polygon
 
-    # Pad with same values at ends, to find slope of perpendicular end lines.
-    xp = np.pad(x, 1, mode='edge')
-    yp = np.pad(y, 1, mode='edge')
-
-    # Find slope connecting alternating points
-    m = -(xp[2:] - xp[:-2]) / (yp[2:] - yp[:-2])
-    b = y - m * x
-
-    # Find angle of the intersecting lines
-    alpha = np.arctan2(xp[2:] - xp[:-2], yp[:-2] - yp[2:])
-
-    dx = np.cos(alpha)
-    dy = np.sin(alpha)
-
-    # Find points offset from main curve, on bisecting lines
-    x1 = x - dx * width * 0.5
-    x2 = x + dx * width * 0.5
-    y1 = y - dy * width * 0.5
-    y2 = y + dy * width * 0.5
-
-    # Now loop over all the polygons for the slice
-
-    nx = len(x)
+    nx = len(polygons)
     nz = cube.shape[0]
 
-    slice = np.zeros((nz, nx-1))
+    print nx, nz, len(polygons)
 
-    for i in range(len(x)-1):
+    slice = np.zeros((nz, nx))
+
+    for i, polygon in enumerate(polygons):
 
         # Define polygon for curve chunk
-        xp = [x1[i], x1[i+1], x2[i+1], x2[i]]
-        yp = [y1[i], y1[i+1], y2[i+1], y2[i]]
-        p_chunk = Polygon(zip(xp, yp))
+        p_chunk = Polygon(zip(polygon.x, polygon.y))
 
         # Find bounding box
-        bbxmin = int(round(np.min(xp))-1)
-        bbxmax = int(round(np.max(xp))+1)
-        bbymin = int(round(np.min(yp))-1)
-        bbymax = int(round(np.max(yp))+1)
+        bbxmin, bbymin, bbxmax, bbymax = p_chunk.bounds
+        bbxmin = int(round(bbxmin)-1)
+        bbxmax = int(round(bbxmax)+2)
+        bbymin = int(round(bbymin)-1)
+        bbymax = int(round(bbymax)+2)
 
         # Loop through pixels that might overlap
         for xmin in np.arange(bbxmin, bbxmax):

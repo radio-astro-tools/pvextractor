@@ -51,12 +51,11 @@ def wcs_pvdiagram(hdu, x, y, spacing=None, **kwargs):
                      spacing=wcs_spacing(wcs, spacing)
                      **kwargs)
 
-def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
+def pv_slice(cube, path, spacing=1.0, interpolation='spline', order=3,
              respect_nan=False, width=None):
     """
     Given a position-position-velocity cube with dimensions (nv, ny, nx), and
-    a broken curved defined by ``x``, and ``y``, extract a position-velocity
-    slice.
+    a path, extract a position-velocity slice.
 
     All units are in *pixels*
 
@@ -70,8 +69,8 @@ def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
 
     Parameters
     ----------
-    x, y : `numpy.ndarray`
-        The pixel coordinates determining the broken curve
+    path : `Path`
+        The path along which to define the position-velocity slice
     spacing : float
         The position resolution in the final position-velocity slice.
     interpolation : 'nearest' or 'spline', optional
@@ -86,24 +85,11 @@ def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
         The position-velocity slice
     """
 
-    if len(x) != len(y):
-        raise ValueError("Length of ``x`` and ``y`` should match")
-
-    if len(x) < 2:
-        raise ValueError("``x`` and ``y`` must have length >= 2")
-
-    # Generate sampled curve
-    d, x, y = sample_curve(x, y, spacing=spacing)
-
-    if width is None:
-
-        x_mid = (x[1:] + x[:-1]) * 0.5
-        y_mid = (y[1:] + y[:-1]) * 0.5
-
-        pv_slice = extract_line_slice(cube, x_mid, y_mid, interpolation=interpolation, order=order)
-
+    if path.width is None:
+        x, y = path.sample_points(spacing=spacing)
+        pv_slice = extract_line_slice(cube, x, y, interpolation=interpolation, order=order)
     else:
-
-        pv_slice = extract_thick_slice(cube, x, y, width=width)
+        polygons = path.sample_polygons(spacing=spacing)
+        pv_slice = extract_thick_slice(cube, polygons, width=width)
 
     return pv_slice
