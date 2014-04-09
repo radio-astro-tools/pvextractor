@@ -9,8 +9,6 @@ def extract_poly_slice(cube, polygons, width=1.0):
     nx = len(polygons)
     nz = cube.shape[0]
 
-    print nx, nz, len(polygons)
-
     slice = np.zeros((nz, nx))
 
     for i, polygon in enumerate(polygons):
