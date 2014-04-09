@@ -1,7 +1,5 @@
 import numpy as np
 
-# TODO: implement variable width
-
 
 class Polygon(object):
     def __init__(self, x, y):

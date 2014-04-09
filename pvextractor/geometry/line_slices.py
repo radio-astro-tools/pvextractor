@@ -3,7 +3,7 @@ import numpy as np
 from scipy.ndimage import map_coordinates
 
 
-def extract_line_slice(cube, x, y, interpolation='spline', order=3, respect_nan=True):
+def extract_line_slice(cube, x, y, order=3, respect_nan=True):
     """
     Given an array with shape (z, y, x), extract a (z, n) slice by
     interpolating at n (x, y) points.
@@ -19,11 +19,9 @@ def extract_line_slice(cube, x, y, interpolation='spline', order=3, respect_nan=
         The data cube to extract the slice from
     curve : list or tuple
         A list or tuple of (x, y) pairs, with minimum length 2
-    interpolation : 'nearest' or 'spline', optional
-        Either use naive nearest-neighbor estimate or scipy's map_coordinates,
-        which defaults to a 3rd order spline.
     order : int, optional
-        Spline interpolation order if spline interpolation is used.
+        Spline interpolation order. Set to ``0`` for nearest-neighbor
+        interpolation.
 
     Returns
     -------
@@ -31,11 +29,11 @@ def extract_line_slice(cube, x, y, interpolation='spline', order=3, respect_nan=
         The (z, d) slice
     """
 
-    if interpolation == 'nearest':
+    if order == 0:
 
         slice = cube[:, np.round(y).astype(int), np.round(x).astype(int)]
 
-    elif interpolation == 'spline':
+    else:
 
         nx = len(x)
         nz = cube.shape[0]
