@@ -9,7 +9,8 @@ class Polygon(object):
 
 class Path(object):
     """
-    A path that may have a width.
+    A curved path that may have a non-zero width and is used to extract
+    slices from cubes.
 
     Parameters
     ----------
