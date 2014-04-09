@@ -33,7 +33,7 @@ def extract_line_slice(cube, x, y, order=3, respect_nan=True):
 
         slice = cube[:, np.round(y).astype(int), np.round(x).astype(int)]
 
-    else:
+    elif order > 0 and order == int(order):
 
         nx = len(x)
         nz = cube.shape[0]
@@ -49,5 +49,8 @@ def extract_line_slice(cube, x, y, order=3, respect_nan=True):
                                         [zi,yi,xi], order=order)
             slice[np.nonzero(slice_bad)] = np.nan
 
-    return slice
+    else:
 
+        raise TypeError("order should be a positive integer")
+
+    return slice
