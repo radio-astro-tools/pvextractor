@@ -1,6 +1,55 @@
 import numpy as np
 from scipy.ndimage import map_coordinates
+from astropy.wcs import WCS
+from astropy import units as u
+from .utils.wcs_utils import assert_independent_3rd_axis, wcs_spacing
 from .geometry import sample_curve, extract_line_slice, extract_thick_slice
+
+def vector_pvdiagram(hdu, startx, starty, posang, distance=None, **kwargs):
+    """
+    Create a pv diagram of some finite distance starting at a world coordinate
+    position at some position angle
+    """
+
+    wcs = WCS(hdu.header)
+    assert_independent_3rd_axis(wcs)
+
+    if distance is None:
+        raise NotImplementedError("Just use a large number okay?")
+
+    dx,dy = (np.cos((90-posang)/180*np.pi)*distance,
+             np.sin((90-posang)/180*np.pi)*distance,)
+
+    return wcs_pvdiagram(hdu.data, [startx,startx+dx], [starty,starty+dy],
+                         **kwargs)
+
+def wcs_pvdiagram(hdu, x, y, spacing=None, **kwargs):
+    """
+    Create a PV diagram starting from a set of WCS coordinates
+
+    Parameters
+    ----------
+    hdu: astropy.io.fits.PrimaryHDU object
+        The cube HDU
+    endpoints: tuple of float pairs
+        The endpoints along which to sample specified in the world coordinates
+        of the FITS header
+    spacing: float or astropy quantity
+        The spacing between samples in the output PV diagram.  Assumed to be
+        pixels unless valid units are given
+    """
+
+    wcs = WCS(hdu.header)
+    assert_independent_3rd_axis(wcs)
+
+    # convert the endpoints from WCS to pixels by assuming that the 3rd axis is
+    # independent
+    px,py = wcs.wcs_world2pix([[a,b,wcs.wcs.crval[2]]
+                               for a,b in zip(x,y)], 0)[:,:2]
+
+    return pvdiagram(hdu.data, px, py,
+                     spacing=wcs_spacing(wcs, spacing)
+                     **kwargs)
 
 def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
              respect_nan=False, width=None):
@@ -13,6 +62,11 @@ def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
 
     .. note:: If there are NaNs in the cube, they will be treated as zeros when
               using spline interpolation.
+
+    Alternative implementations:
+        gipsy::sliceview
+        karma::kpvslice
+        casaviewer::slice
 
     Parameters
     ----------
