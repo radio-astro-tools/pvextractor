@@ -2,7 +2,7 @@ import numpy as np
 from astropy.io import fits
 
 
-def extract_thick_slice(cube, polygons, width=1.0):
+def extract_poly_slice(cube, polygons, width=1.0):
 
     from shapely.geometry import Polygon
 

@@ -1,5 +1,5 @@
 from .line_slices import extract_line_slice
-from .thick_slices import extract_thick_slice
+from .poly_slices import extract_poly_slice
 
 
 def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=False, width=None):
@@ -36,6 +36,6 @@ def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=False, width=Non
         slice = extract_line_slice(cube, x, y, order=order)
     else:
         polygons = path.sample_polygons(spacing=spacing)
-        slice = extract_thick_slice(cube, polygons, width=width)
+        slice = extract_poly_slice(cube, polygons, width=width)
 
     return slice
