@@ -3,7 +3,7 @@ from scipy.ndimage import map_coordinates
 from astropy.wcs import WCS
 from astropy import units as u
 from .utils.wcs_utils import assert_independent_3rd_axis, wcs_spacing
-from .geometry import sample_curve, extract_line_slice, extract_thick_slice
+from .geometry import extract_slice
 
 def vector_pvdiagram(hdu, startx, starty, posang, distance=None, **kwargs):
     """
@@ -51,17 +51,10 @@ def wcs_pvdiagram(hdu, x, y, spacing=None, **kwargs):
                      spacing=wcs_spacing(wcs, spacing)
                      **kwargs)
 
-def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
-             respect_nan=False, width=None):
+def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None):
     """
     Given a position-position-velocity cube with dimensions (nv, ny, nx), and
-    a broken curved defined by ``x``, and ``y``, extract a position-velocity
-    slice.
-
-    All units are in *pixels*
-
-    .. note:: If there are NaNs in the cube, they will be treated as zeros when
-              using spline interpolation.
+    a path, extract a position-velocity slice.
 
     Alternative implementations:
         gipsy::sliceview
@@ -70,15 +63,18 @@ def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
 
     Parameters
     ----------
-    x, y : `numpy.ndarray`
-        The pixel coordinates determining the broken curve
+    path : `Path`
+        The path along which to define the position-velocity slice
     spacing : float
         The position resolution in the final position-velocity slice.
-    interpolation : 'nearest' or 'spline', optional
-        Either use naive nearest-neighbor estimate or scipy's map_coordinates,
-        which defaults to a 3rd order spline
     order : int, optional
-        Spline interpolation order
+        Spline interpolation order when using line paths. Does not have any
+        effect for polygon paths.
+    respect_nan : bool, optional
+        If set to `False`, NaN values are changed to zero before computing
+        the slices. If set to `True`, in the case of line paths a second
+        computation is performed to ignore the NaN value while interpolating,
+        and set the output values of NaNs to NaN.
 
     Returns
     -------
@@ -86,24 +82,6 @@ def pv_slice(cube, x, y, spacing=1.0, interpolation='spline', order=3,
         The position-velocity slice
     """
 
-    if len(x) != len(y):
-        raise ValueError("Length of ``x`` and ``y`` should match")
-
-    if len(x) < 2:
-        raise ValueError("``x`` and ``y`` must have length >= 2")
-
-    # Generate sampled curve
-    d, x, y = sample_curve(x, y, spacing=spacing)
-
-    if width is None:
-
-        x_mid = (x[1:] + x[:-1]) * 0.5
-        y_mid = (y[1:] + y[:-1]) * 0.5
-
-        pv_slice = extract_line_slice(cube, x_mid, y_mid, interpolation=interpolation, order=order)
-
-    else:
-
-        pv_slice = extract_thick_slice(cube, x, y, width=width)
+    pv_slice = extract_slice(cube, path, order=order, respect_nan=respect_nan)
 
     return pv_slice
