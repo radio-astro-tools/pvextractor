@@ -14,29 +14,35 @@ class Path(object):
 
     Parameters
     ----------
-    x, y : `numpy.ndarray`
-        The points defining the path
+    xy : `numpy.ndarray`
+        The points defining the path, as a list of (x, y) tuples.
     width : None or float
         The width of the path.
     """
 
-    def __init__(self, x=[], y=[], width=None):
+    def __init__(self, xy=None, width=None):
 
-        self.x = x
-        self.y = y
+        self.xy = [] if xy is None else xy
         self.width = width
 
+    def add_point(self, xy):
+        """
+        Add a point to the path
 
-    def add_point(self, x, y):
-
-        self.x.append(x)
-        self.y.append(y)
+        Parameters
+        ----------
+        xy : tuple
+            A tuple (x, y) containing the coordinates of the point to add
+        """
+        self.xy.append(xy)
 
     def sample_points(self, spacing):
 
+        x, y = zip(*self.xy)
+
         # Find the distance interval between all pairs of points
-        dx = np.diff(self.x)
-        dy = np.diff(self.y)
+        dx = np.diff(x)
+        dy = np.diff(y)
         dd = np.hypot(dx, dy)
 
         # Find the total displacement along the broken curve
@@ -51,8 +57,8 @@ class Path(object):
 
         d_sampled = np.linspace(0., n_points * spacing, n_points + 1)
 
-        x_sampled = np.interp(d_sampled, d, self.x)
-        y_sampled = np.interp(d_sampled, d, self.y)
+        x_sampled = np.interp(d_sampled, d, x)
+        y_sampled = np.interp(d_sampled, d, y)
 
         x_sampled = 0.5 * (x_sampled[:-1] + x_sampled[1:])
         y_sampled = 0.5 * (y_sampled[:-1] + y_sampled[1:])
