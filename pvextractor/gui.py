@@ -47,6 +47,9 @@ class MovableSliceBox(object):
 
     def on_press(self, event):
 
+        if self.box.figure.canvas.toolbar.mode != '':
+            return
+
         if self.mode == 1:
             self.callback(self.box)
             self.mode += 1
@@ -95,12 +98,19 @@ class MovableSliceBox(object):
         canvas.blit(axes.bbox)
 
     def key_press(self, event):
+
+        if self.box.figure.canvas.toolbar.mode != '':
+            return
+
         if event.key == 'enter' and self.mode == 0:
             self.mode += 1
             self.box.x = self.box.x[:-1]
             self.box.y = self.box.y[:-1]
 
     def on_motion(self, event):
+
+        if self.box.figure.canvas.toolbar.mode != '':
+            return
 
         if self.point_counter == 0:
             return
