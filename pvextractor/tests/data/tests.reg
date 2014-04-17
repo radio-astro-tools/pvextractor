@@ -1,0 +1,12 @@
+# Region file format: DS9 version 4.1
+global color=green dashlist=8 3 width=1 font="helvetica 10 normal roman" select=1 highlite=1 dash=0 fixed=0 edit=1 move=1 delete=1 include=1 source=1
+galactic
+# segment(49.506329,-0.1652525,49.488441,-0.3179075,49.367701,-0.33149222,49.321696,-0.42449278)
+line(49.048054,-0.36365278,49.185208,-0.29674361) # line=0 0
+# vector(48.944348,-0.36432694,485.647",124.082) vector=1
+panda(49.225356,-0.35293833,327.834,380.483,1,120.384",240.769",1)
+# composite(48.841754,-0.26420167,1.82386e-10) || composite=1
+point(48.894165,-0.28070194) || # point=x
+point(48.848667,-0.25728806) || # point=x
+point(48.78243,-0.25461444) # point=x
+# projection(49.048054,-0.36365278,49.185208,-0.29674361,1")
