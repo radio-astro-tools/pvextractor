@@ -20,6 +20,11 @@ def extract_poly_slice(cube, polygons, width=1.0):
         # Define polygon for curve chunk
         p_chunk = Polygon(zip(polygon.x, polygon.y))
 
+        # TODO: at the moment polygons may be overlapping
+
+        if not p_chunk.is_valid:
+            p_chunk = p_chunk.convex_hull
+
         # Find bounding box
         bbxmin, bbymin, bbxmax, bbymax = p_chunk.bounds
         bbxmin = int(round(bbxmin)-1)

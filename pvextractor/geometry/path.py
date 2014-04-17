@@ -8,6 +8,24 @@ class Polygon(object):
         self.y = y
 
 
+def segment_angles(x, y):
+
+    dx = np.diff(x)
+    dy = np.diff(y)
+
+    d = np.hypot(dx, dy)
+
+    cos_theta = (-dx[:-1] * dx[1:] - dy[:-1] * dy[1:]) / (d[:-1] * d[1:])
+    cos_theta = np.clip(cos_theta, -1., 1.)
+
+    theta = np.arccos(cos_theta)
+
+    theta[0] = np.pi
+    theta[-1] = np.pi
+
+    return theta
+
+
 def get_endpoints(x, y, width):
 
     # Pad with same values at ends, to find slope of perpendicular end
@@ -15,17 +33,24 @@ def get_endpoints(x, y, width):
     xp = np.pad(x, 1, mode='edge')
     yp = np.pad(y, 1, mode='edge')
 
-    # Find angle of the intersecting lines
-    alpha = np.arctan2(xp[2:] - xp[:-2], yp[:-2] - yp[2:])
+    dx = np.diff(xp)
+    dy = np.diff(yp)
 
-    dx = np.cos(alpha)
-    dy = np.sin(alpha)
+    alpha = segment_angles(xp, yp) / 2.
+    beta = np.arctan2(dy, dx)[:-1]
+    beta[0] = beta[1]
+    gamma = -(np.pi - alpha - beta)
+
+    dx = np.cos(gamma)
+    dy = np.sin(gamma)
+
+    angles = segment_angles(xp, yp) / 2.
 
     # Find points offset from main curve, on bisecting lines
-    x1 = x - dx * width * 0.5
-    x2 = x + dx * width * 0.5
-    y1 = y - dy * width * 0.5
-    y2 = y + dy * width * 0.5
+    x1 = x - dx * width * 0.5 / np.sin(angles)
+    x2 = x + dx * width * 0.5 / np.sin(angles)
+    y1 = y - dy * width * 0.5 / np.sin(angles)
+    y2 = y + dy * width * 0.5 / np.sin(angles)
 
     return x1, y1, x2, y2
 
