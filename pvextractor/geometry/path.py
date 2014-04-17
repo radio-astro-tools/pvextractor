@@ -153,6 +153,6 @@ class WCSPath(Path):
     @property
     def xy(self):
         if self.wcs is not None:
-            return self._coords_to_wcs(self.coords)
+            return zip(*self._coords_to_wcs(self.coords))
         else:
             raise ValueError("Must set a WCS to get xy coordinates")
