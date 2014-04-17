@@ -8,7 +8,7 @@ csystems = {'galactic':coordinates.Galactic,
             'fk4':coordinates.FK4,
             'icrs':coordinates.ICRS}
 
-def pv_from_regfile(regfile):
+def paths_from_regfile(regfile, wcs=None):
     """
     Given a ds9 region file, extract pv diagrams for each:
         group of points [NOT IMPLEMENTED]
@@ -18,9 +18,11 @@ def pv_from_regfile(regfile):
         group of lines [NOT IMPLEMENTED]
     """
     import pyregion
-    return pyregion.open(regfile)
+    regions = pyregion.open(regfile)
+    paths = [paths_from_region(r, wcs=wcs) for r in regions]
+    return paths
 
-def pv_from_region(region):
+def paths_from_region(region, wcs=None):
     """
     Given a pyregion shape object, extract a pv diagram
     """
@@ -50,6 +52,8 @@ def pv_from_region(region):
     lbarr = np.array(endpoints)
     C = csystems[region.coord_format](lbarr[:,0]*u.deg, lbarr[:,1]*u.deg)
 
-    p = path.WCSPath(C)
+    # TODO: add widths for projection
+
+    p = path.WCSPath(C, wcs=wcs)
 
     return p
