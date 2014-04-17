@@ -114,10 +114,11 @@ class WCSPath(Path):
         Takes an astropy Coordinates array
         """
 
-        self.coords = coords
-        self.xy = self._coords_to_wcs(self.coords).tolist()
-        self.width = width
         self.set_wcs(wcs)
+        self.coords = coords
+        if self.wcs is not None:
+            self.xy = self._coords_to_wcs(self.coords).tolist()
+        self.width = width
 
     def _coords_to_wcs(self, coords):
 
@@ -135,6 +136,8 @@ class WCSPath(Path):
         if wcs is not None:
             self.wcs = self.wcs.sub([wcs.WCSSUB_CELESTIAL])
             self.celsys = get_wcs_system_name(self.wcs)
+        else:
+            self.wcs = None
 
     def add_point(self, coord):
         """

@@ -8,6 +8,8 @@ csystems = {'galactic':coordinates.Galactic,
             'fk4':coordinates.FK4,
             'icrs':coordinates.ICRS}
 
+valid_regions = ['line','segment']
+
 def paths_from_regfile(regfile, wcs=None):
     """
     Given a ds9 region file, extract pv diagrams for each:
@@ -19,7 +21,9 @@ def paths_from_regfile(regfile, wcs=None):
     """
     import pyregion
     regions = pyregion.open(regfile)
-    paths = [paths_from_region(r, wcs=wcs) for r in regions]
+    paths = [paths_from_region(r, wcs=wcs)
+             for r in regions
+             if r.name in valid_regions]
     return paths
 
 def paths_from_region(region, wcs=None):
@@ -33,16 +37,15 @@ def paths_from_region(region, wcs=None):
     otherpars = []
 
     for x in region.params:
-        if 'HMS' in str(type(x)):
+        if 'HMS' in str(type(x)) or 'Number' in str(type(x)) and l is None:
             if region.coord_format == 'celestial':
                 l = x.degree
             else:
                 l = x.v
-            continue
-        elif 'DMS' in str(type(x)):
+        elif 'DMS' in str(type(x)) or 'Number' in str(type(x)):
             b = x.v
             if l is not None and b is not None:
-                endpoints.append[(l,b)]
+                endpoints.append((l,b))
                 l,b = None,None
             else:
                 raise ValueError("unmatched l,b")
