@@ -1,6 +1,6 @@
 import numpy as np
 from astropy.io import fits
-
+from astropy.utils.console import ProgressBar
 
 def extract_poly_slice(cube, polygons, width=1.0):
 
@@ -11,7 +11,11 @@ def extract_poly_slice(cube, polygons, width=1.0):
 
     slice = np.zeros((nz, nx))
 
+    p = ProgressBar(len(polygons))
+
     for i, polygon in enumerate(polygons):
+
+        p.update()
 
         # Define polygon for curve chunk
         p_chunk = Polygon(zip(polygon.x, polygon.y))
@@ -34,5 +38,7 @@ def extract_poly_slice(cube, polygons, width=1.0):
 
                 if p_int.area > 0:
                     slice[:, i] += cube[:, ymin, xmin] * p_int.area
+
+    print ""
 
     return slice

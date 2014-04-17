@@ -8,6 +8,28 @@ class Polygon(object):
         self.y = y
 
 
+def get_endpoints(x, y, width):
+
+    # Pad with same values at ends, to find slope of perpendicular end
+    # lines.
+    xp = np.pad(x, 1, mode='edge')
+    yp = np.pad(y, 1, mode='edge')
+
+    # Find angle of the intersecting lines
+    alpha = np.arctan2(xp[2:] - xp[:-2], yp[:-2] - yp[2:])
+
+    dx = np.cos(alpha)
+    dy = np.sin(alpha)
+
+    # Find points offset from main curve, on bisecting lines
+    x1 = x - dx * width * 0.5
+    x2 = x + dx * width * 0.5
+    y1 = y - dy * width * 0.5
+    y2 = y + dy * width * 0.5
+
+    return x1, y1, x2, y2
+
+
 class Path(object):
     """
     A curved path that may have a non-zero width and is used to extract
@@ -69,27 +91,8 @@ class Path(object):
     def sample_polygons(self, spacing):
 
         x, y = self.sample_points(spacing)
-        
-        # Pad with same values at ends, to find slope of perpendicular end
-        # lines.
-        xp = np.pad(x, 1, mode='edge')
-        yp = np.pad(y, 1, mode='edge')
 
-        # Find slope connecting alternating points
-        # not used m = -(xp[2:] - xp[:-2]) / (yp[2:] - yp[:-2])
-        # not used b = y - m * x
-
-        # Find angle of the intersecting lines
-        alpha = np.arctan2(xp[2:] - xp[:-2], yp[:-2] - yp[2:])
-
-        dx = np.cos(alpha)
-        dy = np.sin(alpha)
-
-        # Find points offset from main curve, on bisecting lines
-        x1 = x - dx * self.width * 0.5
-        x2 = x + dx * self.width * 0.5
-        y1 = x - dy * self.width * 0.5
-        y2 = x + dy * self.width * 0.5
+        x1, y1, x2, y2 = get_endpoints(x, y, self.width)
 
         # Now loop over all the polygons for the slice
         polygons = [Polygon([x1[i], x1[i+1], x2[i+1], x2[i]],

@@ -38,12 +38,25 @@ class MovableSliceBox(object):
         self.background = None
         self.point_counter = 0
         self.callback = callback
+        self.mode = 0
 
     def connect(self):
+        self.cidpress = self.box.figure.canvas.mpl_connect('key_press_event', self.key_press)
         self.cidpress = self.box.figure.canvas.mpl_connect('button_press_event', self.on_press)
         self.cidmotion = self.box.figure.canvas.mpl_connect('motion_notify_event', self.on_motion)
 
     def on_press(self, event):
+
+        if self.mode == 1:
+            self.callback(self.box)
+            self.mode += 1
+            return
+
+        if self.mode == 2:
+            self.box.x = []
+            self.box.y = []
+            self.mode = 0
+            self.point_counter = 0
 
         if event.inaxes != self.box.axes:
             return
@@ -57,10 +70,10 @@ class MovableSliceBox(object):
 
         if self.point_counter == 1:  # first point
 
-            self.box.x0 = event.xdata
-            self.box.y0 = event.ydata
-            self.box.x1 = event.xdata
-            self.box.y1 = event.ydata
+            self.box.x.append(event.xdata)
+            self.box.x.append(event.xdata)
+            self.box.y.append(event.ydata)
+            self.box.y.append(event.ydata)
 
             self.box.width = 0.
 
@@ -68,36 +81,46 @@ class MovableSliceBox(object):
             canvas.draw()
             self.background = canvas.copy_from_bbox(self.box.axes.bbox)
 
+        elif self.mode == 0:
+
+            self.box.x.append(event.xdata)
+            self.box.y.append(event.ydata)
+
+
         self.box._update_segments()
 
         # now redraw just the lineangle
         axes.draw_artist(self.box)
 
-        if self.point_counter == 3:
-            self.point_counter = 0
-            self.callback(self.box)
-        else:
-            canvas.blit(axes.bbox)
+        canvas.blit(axes.bbox)
+
+    def key_press(self, event):
+        if event.key == 'enter' and self.mode == 0:
+            self.mode += 1
+            self.box.x = self.box.x[:-1]
+            self.box.y = self.box.y[:-1]
 
     def on_motion(self, event):
 
         if self.point_counter == 0:
             return
 
-        if event.inaxes != self.box.axes:
-            return
-
-        if self.point_counter == 1:
-            self.box.x1 = event.xdata
-            self.box.y1 = event.ydata
-        elif self.point_counter == 2:
-            self.box.width = distance(self.box.x0, self.box.y0, self.box.x1, self.box.y1, event.xdata, event.ydata) * 2
-        elif self.point_counter == 3:
-            return
-
         canvas = self.box.figure.canvas
         axes = self.box.axes
         canvas.restore_region(self.background)
+
+        if self.mode == 2:
+            axes.draw_artist(self.box)
+            return
+
+        if event.inaxes != self.box.axes:
+            return
+
+        if self.mode == 0:
+            self.box.x[-1] = event.xdata
+            self.box.y[-1] = event.ydata
+        elif self.mode == 1:
+            self.box.width = distance(self.box.x[-2], self.box.y[-2], self.box.x[-1], self.box.y[-1], event.xdata, event.ydata) * 2
 
         self.box._update_segments()
 
@@ -151,14 +174,46 @@ class SliceBox(LineCollection):
         self.set_linewidths((2, 1))
 
 
+class SliceCurve(LineCollection):
+
+    def __init__(self, x=[], y=[], width=None, **kwargs):
+
+        super(SliceCurve, self).__init__([], **kwargs)
+
+        self.x = x
+        self.y = y
+        self.width = width
+
+        self._update_segments()
+
+    def _update_segments(self):
+
+        if not self.x:
+            return
+
+        from .geometry.path import get_endpoints
+        x1, y1, x2, y2 = get_endpoints(self.x, self.y, self.width)
+
+        # Find central line
+        line = zip(self.x, self.y)
+
+        # Find bounding rectangle
+        rect = zip(np.hstack([x1,x2[::-1], x1[0]]),
+                   np.hstack([y1,y2[::-1], y1[0]]))
+
+        self.set_segments((line, rect))
+        self.set_linestyles(('solid', 'dashed'))
+        self.set_linewidths((2, 1))
+
+
 class PVSlicer(object):
 
-    def __init__(self, filename, backend="Qt4Agg"):
+    def __init__(self, filename, backend="Qt4Agg", clim=None):
 
         try:
             from spectral_cube import read
             cube = read(filename, format='fits')
-            self.array = cube.get_filled_data()
+            self.array = cube._data
         except:
             warnings.warn("spectral_cube package is not available - using astropy.io.fits directly")
             from astropy.io import fits
@@ -174,8 +229,19 @@ class PVSlicer(object):
 
         self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7])
 
-        self._clim = (np.min(self.array[~np.isnan(self.array) & ~np.isinf(self.array)]),
-                      np.max(self.array[~np.isnan(self.array) & ~np.isinf(self.array)]))
+        if clim is None:
+            warnings.warn("clim not defined and will be determined from the data")
+            # To work with large arrays, sub-sample the data
+            n1 = self.array.shape[0] / 10
+            n2 = self.array.shape[1] / 10
+            n3 = self.array.shape[2] / 10
+            sub_array = self.array[::n1,::n2,::n3]
+            cmin = np.min(sub_array[~np.isnan(sub_array) & ~np.isinf(sub_array)])
+            cmax = np.max(sub_array[~np.isnan(sub_array) & ~np.isinf(sub_array)])
+            crange = cmax - cmin
+            self._clim = (cmin - crange, cmax + crange)
+        else:
+            self._clim = clim
 
         self.slice = int(round(self.array.shape[0] / 2.))
 
@@ -211,7 +277,7 @@ class PVSlicer(object):
         self.ax2 = self.fig.add_axes([0.55, 0.1, 0.4, 0.7])
 
         # Add slicing box
-        self.box = SliceBox(colors=(0.8, 0.0, 0.0))
+        self.box = SliceCurve(colors=(0.8, 0.0, 0.0))
         self.ax1.add_collection(self.box)
         self.movable = MovableSliceBox(self.box, callback=self.update_pv_slice)
         self.movable.connect()
@@ -223,6 +289,16 @@ class PVSlicer(object):
         self.save_button.on_clicked(self.save_fits)
 
         self.pv_slice = None
+
+        self.cidpress = self.fig.canvas.mpl_connect('button_press_event', self.click)
+
+
+    def click(self, event):
+
+        if event.inaxes != self.ax2:
+            return
+
+        self.slice_slider.set_val(event.ydata)
 
     def save_fits(self, *args, **kwargs):
         if self.pv_slice is None:
@@ -236,10 +312,11 @@ class PVSlicer(object):
         from .geometry.path import Path
         from . import extract_pv_slice
 
-        path = Path([(box.x0, box.y0), (box.x1, box.y1)])
+        path = Path(zip(box.x, box.y))
+        path.width = box.width
         self.pv_slice = extract_pv_slice(self.array, path)
 
-        self.ax2.imshow(self.pv_slice, origin='lower', aspect='auto')
+        self.ax2.imshow(self.pv_slice, origin='lower', aspect='auto', interpolation='nearest')
 
         self.fig.canvas.draw()
         self.ax1.draw_artist(self.box)
