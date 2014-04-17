@@ -4,7 +4,6 @@ import warnings
 import numpy as np
 
 from matplotlib.collections import LineCollection
-from matplotlib.widgets import Slider
 
 
 def distance(x1, y1, x2, y2, x3, y3):
@@ -178,8 +177,9 @@ class PVSlicer(object):
         self._clim = (np.min(self.array[~np.isnan(self.array) & ~np.isinf(self.array)]),
                       np.max(self.array[~np.isnan(self.array) & ~np.isinf(self.array)]))
 
-
         self.slice = int(round(self.array.shape[0] / 2.))
+
+        from matplotlib.widgets import Slider
 
         self.slice_slider_ax = self.fig.add_axes([0.1, 0.95, 0.4, 0.03])
         self.slice_slider_ax.set_xticklabels("")
@@ -211,10 +211,25 @@ class PVSlicer(object):
         self.ax2 = self.fig.add_axes([0.55, 0.1, 0.4, 0.7])
 
         # Add slicing box
-        self.box = SliceBox(colors='white')
+        self.box = SliceBox(colors=(0.8, 0.0, 0.0))
         self.ax1.add_collection(self.box)
         self.movable = MovableSliceBox(self.box, callback=self.update_pv_slice)
         self.movable.connect()
+
+        # Add save button
+        from matplotlib.widgets import Button
+        self.save_button_ax = self.fig.add_axes([0.65, 0.90, 0.20, 0.05])
+        self.save_button = Button(self.save_button_ax, 'Save slice to FITS')
+        self.save_button.on_clicked(self.save_fits)
+
+        self.pv_slice = None
+
+    def save_fits(self, *args, **kwargs):
+        if self.pv_slice is None:
+            return
+        from astropy.io import fits
+        # TODO: customize slice name
+        fits.writeto('slice.fits', self.pv_slice, clobber=True)
 
     def update_pv_slice(self, box):
 
@@ -222,9 +237,9 @@ class PVSlicer(object):
         from . import extract_pv_slice
 
         path = Path([(box.x0, box.y0), (box.x1, box.y1)])
-        pv_slice = extract_pv_slice(self.array, path)
+        self.pv_slice = extract_pv_slice(self.array, path)
 
-        self.ax2.imshow(pv_slice, origin='lower', aspect='auto')
+        self.ax2.imshow(self.pv_slice, origin='lower', aspect='auto')
 
         self.fig.canvas.draw()
         self.ax1.draw_artist(self.box)
