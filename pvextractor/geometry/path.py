@@ -1,5 +1,5 @@
 import numpy as np
-from astropy import wcs
+from astropy import wcs as astropywcs
 
 
 class Polygon(object):
@@ -99,7 +99,7 @@ class Path(object):
 
 def get_wcs_system_name(wcs):
     """TODO: move to astropy.wcs.utils"""
-    ct = wcs.sub([wcs.WCSSUB_CELESTIAL]).wcs.ctype
+    ct = wcs.sub([astropywcs.WCSSUB_CELESTIAL]).wcs.ctype
     if 'GLON' in ct[0]:
         return 'galactic'
     elif 'RA' in ct[0]:
@@ -116,8 +116,6 @@ class WCSPath(Path):
 
         self.set_wcs(wcs)
         self.coords = coords
-        if self.wcs is not None:
-            self.xy = self._coords_to_wcs(self.coords).tolist()
         self.width = width
 
     def _coords_to_wcs(self, coords):
@@ -134,7 +132,7 @@ class WCSPath(Path):
 
     def set_wcs(self, wcs):
         if wcs is not None:
-            self.wcs = self.wcs.sub([wcs.WCSSUB_CELESTIAL])
+            self.wcs = wcs.sub([astropywcs.WCSSUB_CELESTIAL])
             self.celsys = get_wcs_system_name(self.wcs)
         else:
             self.wcs = None
@@ -150,3 +148,11 @@ class WCSPath(Path):
         """
         if hasattr(coord,'fk5'): # it is a coordinate
             self.xy += self._coords_to_wcs(coord).tolist()
+
+
+    @property
+    def xy(self):
+        if self.wcs is not None:
+            return self._coords_to_wcs(self.coords)
+        else:
+            raise ValueError("Must set a WCS to get xy coordinates")
