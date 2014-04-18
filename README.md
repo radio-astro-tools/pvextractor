@@ -34,6 +34,4 @@ Build and coverage status
 
 [![Coverage Status](https://coveralls.io/repos/radio-tools/pvextractor/badge.png?branch=master)](https://coveralls.io/r/radio-tools/pvextractor?branch=master)
 
-.. image:: https://d2weczhvl823v0.cloudfront.net/keflavich/pvextractor/trend.png
-   :alt: Bitdeli badge
-   :target: https://bitdeli.com/free
+[![Bitdeli badge](https://d2weczhvl823v0.cloudfront.net/keflavich/pvextractor/trend.png)](https://bitdeli.com/free)
