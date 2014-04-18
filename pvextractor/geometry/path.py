@@ -1,4 +1,5 @@
 import numpy as np
+from astropy import wcs as astropywcs
 
 
 class Polygon(object):
@@ -75,8 +76,8 @@ class Path(object):
         yp = np.pad(y, 1, mode='edge')
 
         # Find slope connecting alternating points
-        m = -(xp[2:] - xp[:-2]) / (yp[2:] - yp[:-2])
-        b = y - m * x
+        # not used m = -(xp[2:] - xp[:-2]) / (yp[2:] - yp[:-2])
+        # not used b = y - m * x
 
         # Find angle of the intersecting lines
         alpha = np.arctan2(xp[2:] - xp[:-2], yp[:-2] - yp[2:])
@@ -95,3 +96,63 @@ class Path(object):
                             [y1[i], y1[i+1], y2[i+1], y2[i]]) for i in range(len(x) - 1)]
 
         return polygons
+
+def get_wcs_system_name(wcs):
+    """TODO: move to astropy.wcs.utils"""
+    ct = wcs.sub([astropywcs.WCSSUB_CELESTIAL]).wcs.ctype
+    if 'GLON' in ct[0]:
+        return 'galactic'
+    elif 'RA' in ct[0]:
+        return 'icrs'
+    else:
+        raise ValueError("Unrecognized coordinate system")
+
+class WCSPath(Path):
+
+    def __init__(self, coords=None, width=None, wcs=None):
+        """
+        Takes an astropy Coordinates array
+        """
+
+        self.set_wcs(wcs)
+        self.coords = coords
+        self.width = width
+
+    def _coords_to_wcs(self, coords):
+
+        if self.wcs is None:
+            raise ValueError("Must set a WCS first")
+
+        xynative = getattr(coords,self.celsys)
+        
+        x,y = xynative.lonangle.degree, xynative.latangle.degree
+
+        xy = self.wcs.wcs_world2pix(x,y, 0)
+        return xy
+
+    def set_wcs(self, wcs):
+        if wcs is not None:
+            self.wcs = wcs.sub([astropywcs.WCSSUB_CELESTIAL])
+            self.celsys = get_wcs_system_name(self.wcs)
+        else:
+            self.wcs = None
+
+    def add_point(self, coord):
+        """
+        Add a point to the path
+
+        Parameters
+        ----------
+        xy : tuple
+            A tuple (x, y) containing the coordinates of the point to add
+        """
+        if hasattr(coord,'fk5'): # it is a coordinate
+            self.xy += self._coords_to_wcs(coord).tolist()
+
+
+    @property
+    def xy(self):
+        if self.wcs is not None:
+            return zip(*self._coords_to_wcs(self.coords))
+        else:
+            raise ValueError("Must set a WCS to get xy coordinates")

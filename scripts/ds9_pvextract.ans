@@ -1,0 +1,15 @@
+# PV Extractor
+PV Extractor
+*
+menu
+ds9_pvextract.py $xpa_method
+
+PV Extractor
+*
+bind x
+ds9_pvextract.py $xpa_method
+
+show xpa
+*
+menu
+echo $xpa_method | $text

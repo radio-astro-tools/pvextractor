@@ -37,4 +37,5 @@ setup(name='pvextractor',
       url='https://github.com/keflavich/pvextractor',
       packages=['pvextractor','pvextractor/utils'],
       cmdclass={'test': PyTest},
+      scripts=['scripts/ds9_pvextract.py'],
       )
