@@ -1,3 +1,4 @@
+import os
 import math
 import warnings
 
@@ -250,6 +251,8 @@ class PVSlicer(object):
 
     def __init__(self, filename, backend="Qt4Agg", clim=None):
 
+        self.filename = filename
+
         try:
             from spectral_cube import read
             cube = read(filename, format='fits')
@@ -261,8 +264,10 @@ class PVSlicer(object):
             if self.array.ndim != 3:
                 raise ValueError("dataset does not have 3 dimensions (install the spectral_cube package to avoid this error)")
 
+        self.backend = backend
+
         import matplotlib as mpl
-        mpl.use(backend)
+        mpl.use(self.backend)
         import matplotlib.pyplot as plt
 
         self.fig = plt.figure(figsize=(14, 8))
@@ -332,7 +337,6 @@ class PVSlicer(object):
 
         self.cidpress = self.fig.canvas.mpl_connect('button_press_event', self.click)
 
-
     def click(self, event):
 
         if event.inaxes != self.ax2:
@@ -341,11 +345,22 @@ class PVSlicer(object):
         self.slice_slider.set_val(event.ydata)
 
     def save_fits(self, *args, **kwargs):
+
+        if self.backend == 'Qt4Agg':
+            from matplotlib.backends.backend_qt4 import _getSaveFileName
+            plot_name = _getSaveFileName(self.fig.canvas.manager.window, "Choose filename",
+                                         os.path.dirname(os.path.abspath(self.filename)), "", None)
+            plot_name = str(plot_name)
+        else:
+            print "Enter filename: ",
+            plot_name = raw_input()
+
         if self.pv_slice is None:
             return
+
         from astropy.io import fits
-        # TODO: customize slice name
-        fits.writeto('slice.fits', self.pv_slice, clobber=True)
+        fits.writeto(plot_name, self.pv_slice, clobber=True)
+        print "Saved file to: ", plot_name
 
     def update_pv_slice(self, box):
 
