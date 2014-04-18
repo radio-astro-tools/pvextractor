@@ -1,42 +1,42 @@
 from numpy.testing import assert_allclose
 
-from ..line_sampling import sample_curve
+from ..path import Path
 
 
 def test_line_sampling():
 
-    d, x, y = sample_curve([0., 0.], [0., 3.4], spacing=1.0)
+    d, x, y = Path(zip([0., 0.], [0., 3.4])).sample_points_edges(spacing=1.0)
 
-    assert_allclose(d, [0., 1., 2., 3., 4.])
-    assert_allclose(x, [0., 0., 0., 0., 0.])
-    assert_allclose(y, [-0.3, 0.7, 1.7, 2.7, 3.7])
+    assert_allclose(d, [0., 1., 2., 3.])
+    assert_allclose(x, [0., 0., 0., 0.])
+    assert_allclose(y, [0., 1., 2., 3.])
 
-    d, x, y = sample_curve([0., 0., 0.], [0., 2.0, 3.4], spacing=1.0)
+    d, x, y = Path(zip([0., 0., 0.], [0., 2.0, 3.4])).sample_points_edges(spacing=1.0)
 
-    assert_allclose(d, [0., 1., 2., 3., 4.])
-    assert_allclose(x, [0., 0., 0., 0., 0.])
-    assert_allclose(y, [-0.3, 0.7, 1.7, 2.7, 3.7])
+    assert_allclose(d, [0., 1., 2., 3.])
+    assert_allclose(x, [0., 0., 0., 0.])
+    assert_allclose(y, [0., 1., 2., 3.])
 
-    d, x, y = sample_curve([0., 0., 0.], [0., 2.0, 3.4], spacing=2.0)
+    d, x, y = Path(zip([0., 0., 0.], [0., 2.0, 3.4])).sample_points_edges(spacing=2.0)
 
-    assert_allclose(d, [0., 2., 4.])
-    assert_allclose(x, [0., 0., 0.])
-    assert_allclose(y, [-0.3, 1.7, 3.7])
+    assert_allclose(d, [0., 2.])
+    assert_allclose(x, [0., 0.])
+    assert_allclose(y, [0., 2.])
 
-    d, x, y = sample_curve([0., 3.4], [0., 0.], spacing=1.0)
+    d, x, y = Path(zip([0., 3.4], [0., 0.])).sample_points_edges(spacing=1.0)
 
-    assert_allclose(d, [0., 1., 2., 3., 4.])
-    assert_allclose(x, [-0.3, 0.7, 1.7, 2.7, 3.7])
-    assert_allclose(y, [0., 0., 0., 0., 0.])
+    assert_allclose(d, [0., 1., 2., 3.])
+    assert_allclose(x, [0., 1., 2., 3.])
+    assert_allclose(y, [0., 0., 0., 0.])
 
-    d, x, y = sample_curve([0., 2.0, 3.4], [0., 0., 0.], spacing=1.0)
+    d, x, y = Path(zip([0., 2.0, 3.4], [0., 0., 0.])).sample_points_edges(spacing=1.0)
 
-    assert_allclose(d, [0., 1., 2., 3., 4.])
-    assert_allclose(x, [-0.3, 0.7, 1.7, 2.7, 3.7])
-    assert_allclose(y, [0., 0., 0., 0., 0.])
+    assert_allclose(d, [0., 1., 2., 3.])
+    assert_allclose(x, [0., 1., 2., 3.])
+    assert_allclose(y, [0., 0., 0., 0.])
 
-    d, x, y = sample_curve([0., 2.0, 3.4], [0., 0., 0.], spacing=2.0)
+    d, x, y = Path(zip([0., 2.0, 3.4], [0., 0., 0.])).sample_points_edges(spacing=2.0)
 
-    assert_allclose(d, [0., 2., 4.])
-    assert_allclose(x, [-0.3, 1.7, 3.7])
-    assert_allclose(y, [0., 0., 0.])
+    assert_allclose(d, [0., 2.])
+    assert_allclose(x, [0., 2.])
+    assert_allclose(y, [0., 0.])

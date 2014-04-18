@@ -1,7 +1,10 @@
+from __future__ import print_function
+
 import numpy as np
 from astropy.utils.console import ProgressBar
 
 from .polygon import square_polygon_overlap_area
+
 
 def extract_poly_slice(cube, polygons, width=1.0):
 
@@ -33,6 +36,6 @@ def extract_poly_slice(cube, polygons, width=1.0):
                 if area > 0:
                     slice[:, i] += cube[:, ymin, xmin] * area
 
-    print ""
+    print("")
 
     return slice

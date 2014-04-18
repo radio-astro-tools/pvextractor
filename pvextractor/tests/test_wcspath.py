@@ -1,13 +1,19 @@
-from .. import pvregions
+import os
+
+import pytest
+import numpy as np
 from astropy import wcs
 from astropy.io import fits
-import numpy as np
-import os
+
+from .. import pvregions
+
 
 def data_path(filename):
     data_dir = os.path.join(os.path.dirname(__file__), 'data')
     return os.path.join(data_dir, filename)
 
+
+@pytest.mark.xfail
 def test_wcspath():
     p1,p2 = pvregions.paths_from_regfile(data_path('tests.reg'))
     w = wcs.WCS(fits.Header.fromtextfile(data_path('w51.hdr')))

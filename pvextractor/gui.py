@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import math
 import warnings
@@ -352,7 +354,7 @@ class PVSlicer(object):
                                          os.path.dirname(os.path.abspath(self.filename)), "", None)
             plot_name = str(plot_name)
         else:
-            print "Enter filename: ",
+            print("Enter filename: ", end='')
             plot_name = raw_input()
 
         if self.pv_slice is None:
@@ -360,7 +362,7 @@ class PVSlicer(object):
 
         from astropy.io import fits
         fits.writeto(plot_name, self.pv_slice, clobber=True)
-        print "Saved file to: ", plot_name
+        print("Saved file to: ", plot_name)
 
     def update_pv_slice(self, box):
 
