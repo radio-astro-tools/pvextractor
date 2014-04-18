@@ -13,6 +13,14 @@ For an example use case, see [this notebook]
 (http://nbviewer.ipython.org/urls/raw.github.com/keflavich/pvextractor/master/examples/IRAS05358Slicing.ipynb)
 (for a permanent, compiled version, look [here](examples/IRAS05358Slicing.html))
 
+Minimal Install Instructions
+----------------------------
+
+```
+pip install https://github.com/radio-tools/spectral-cube/archive/master.zip
+pip install https://github.com/radio-tools/pvextractor/archive/master.zip
+```
+
 Using pvextractor in ds9
 ------------------------
 
