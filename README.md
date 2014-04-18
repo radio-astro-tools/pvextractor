@@ -17,6 +17,7 @@ Minimal Install Instructions
 ----------------------------
 
 ```
+pip install http://ds9.si.edu/download/pyds9/pyds9-1.7.tar.gz
 pip install https://github.com/radio-tools/spectral-cube/archive/master.zip
 pip install https://github.com/radio-tools/pvextractor/archive/master.zip
 ```
