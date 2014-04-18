@@ -14,6 +14,8 @@ import tempfile
 xpa = sys.argv[1]
 dd = ds9.ds9(xpa)
 pf = dd.get_pyfits()
+# Have to get the raw header; ds9 processes it to drop length-1 axes
+header = fits.Header.fromstring(dd.get('fits header'),sep="\n")
 
 if len(sys.argv) > 2:
     regionid = int(sys.argv[2])
@@ -22,6 +24,17 @@ else:
 
 mywcs = wcs.WCS(pf[0].header)
 #rp = pyregion.RegionParser()
+
+# have to check for ds9 dropping degenerate axes
+if pf[0].data.ndim != mywcs.wcs.naxis:
+    naxes = ['NAXIS%i' % ii for ii in range(1,mywcs.wcs.naxis+1)]
+    # WCS is 1-indexed
+    axes_to_keep = [ii+1
+                    for ii,nax in enumerate(naxes)
+                    if header[nax] > 1]
+    mywcs = mywcs.sub(axes_to_keep)
+    pf[0].header = mywcs.to_header()
+
 
 rstringlist = dd.get('regions -system wcs').split("\n")
 regions = load_regions_stringlist(rstringlist)
