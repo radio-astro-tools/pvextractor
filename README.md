@@ -29,6 +29,8 @@ ds9 -analysis load /path/to/pvextractor/scripts/ds9_pvextract.ans  &
 Then load any cube in ds9, draw a line, and press 'x' or press "PV Extractor"
 in the menu.
 
+[![Example DS9 use](images/pvextractor_ds9_example.png)]
+
 Build and coverage status
 =========================
 
