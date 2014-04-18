@@ -37,8 +37,10 @@ def sanitize_wcs(mywcs):
             else:
                 raise ValueError("Could not determine type of 3rd axis.")
         elif ctype3 != '':
-            if 'VELO' in ctype3 or 'FELO' in ctype3:
+            if 'VELO' in ctype3:
                 mywcs.wcs.ctype[2] = 'VELO'
+            elif 'FELO' in ctype3:
+                mywcs.wcs.ctype[2] = 'FELO'
             elif 'FREQ' in ctype3:
                 mywcs.wcs.ctype[2] = 'FREQ'
             elif 'WAVE' in ctype3:
