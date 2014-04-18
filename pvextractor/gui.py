@@ -55,6 +55,9 @@ class MovableSliceBox(object):
 
     def draw_slicer(self, event):
 
+        axes = self.box.axes
+        canvas = self.box.figure.canvas
+
         self.box.axes.draw_artist(self.box)
 
         if self.show_poly:
@@ -73,6 +76,9 @@ class MovableSliceBox(object):
         if self.box.figure.canvas.toolbar.mode != '':
             return
 
+        if event.inaxes != self.box.axes:
+            return
+
         if self.mode == 1:
             self.callback(self.box)
             self.mode += 1
@@ -83,9 +89,6 @@ class MovableSliceBox(object):
             self.box.y = []
             self.mode = 0
             self.point_counter = 0
-
-        if event.inaxes != self.box.axes:
-            return
 
         self.press = event.xdata, event.ydata
 
@@ -112,7 +115,6 @@ class MovableSliceBox(object):
             self.box.x.append(event.xdata)
             self.box.y.append(event.ydata)
 
-
         self.box._update_segments()
 
         # now redraw just the lineangle
@@ -132,6 +134,7 @@ class MovableSliceBox(object):
 
         if event.key == 'y' and self.mode == 2:
             self.show_poly = not self.show_poly
+            self.draw_slicer(event)
             self.box.figure.canvas.draw()
 
     def on_motion(self, event):
@@ -142,13 +145,12 @@ class MovableSliceBox(object):
         if self.point_counter == 0:
             return
 
+        if self.mode == 2:
+            return
+
         canvas = self.box.figure.canvas
         axes = self.box.axes
         canvas.restore_region(self.background)
-
-        if self.mode == 2:
-            axes.draw_artist(self.box)
-            return
 
         if event.inaxes != self.box.axes:
             return
