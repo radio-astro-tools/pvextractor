@@ -20,10 +20,6 @@ def pvwcs_from_header(header, cdelt=None):
     # from the start
     w3 = wcs.WCS(header).sub([wcs.WCSSUB_CELESTIAL,wcs.WCSSUB_SPECTRAL])
 
-    # HACK: dangerous.
-    #if w3.naxis < 3:
-    #    w3 = wcs.WCS(header)
-
     PC = w3.wcs.get_pc() * w3.wcs.cdelt
     if cdelt is None:
         cdelt = (PC[0,0]**2 + PC[1,1]**2)**0.5
