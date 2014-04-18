@@ -21,12 +21,16 @@ def paths_from_regfile(regfile, wcs=None):
     """
     import pyregion
     regions = pyregion.open(regfile)
-    paths = [paths_from_region(r, wcs=wcs)
+    return paths_from_regions(regions, wcs=wcs)
+
+def paths_from_regions(regions, wcs=None):
+    paths = [path_from_region(r, wcs=wcs)
              for r in regions
              if r.name in valid_regions]
     return paths
 
-def paths_from_region(region, wcs=None):
+
+def path_from_region(region, wcs=None):
     """
     Given a pyregion shape object, extract a pv diagram
     """
