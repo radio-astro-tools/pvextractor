@@ -2,11 +2,97 @@ import numpy as np
 from .geometry import path
 from astropy import coordinates
 from astropy import units as u
+import re
 
 csystems = {'galactic':coordinates.Galactic,
             'fk5':coordinates.FK5,
             'fk4':coordinates.FK4,
             'icrs':coordinates.ICRS}
+cel_systems = ['fk5','fk4','icrs']
+# ecliptic, detector, etc. not supported (because I don't know what they mean)
+# (or with ecliptic, how to deal with them)
+all_systems = cel_systems+['galactic','image','physical']
+
+class SimpleRegion(object):
+    def __init__(self, coord_list, coord_format, name):
+        self.name = name
+        self.coord_format = coord_format
+        self.coord_list = coord_list
+
+    def __repr__(self):
+        return "Region: {0}, {1}, {2}".format(self.name, self.coord_list,
+                                              self.coord_format)
+
+
+valid_regions = ['line', 'segment', 'vector']
+valid_region_re = [re.compile("^"+n) for n in valid_regions]
+
+def simple_region_parser(regionstring, coord_format):
+    rs = regionstring.lstrip("# ")
+
+    rtype = None
+    for rt, rre in zip(valid_regions, valid_region_re):
+        if rre.search(rs):
+            rtype = rt
+            break
+
+    if rtype is None:
+        # not a usable region
+        return
+
+    coordre = re.compile("^[a-z]*\((.*)\)")
+    coord_list = coordre.findall(rs)
+    if len(coord_list) != 1:
+        raise ValueError("Invalid region")
+
+    coords = coord_list[0].split(",")
+
+    outcoords = []
+    for ii,cs in enumerate(coords):
+        if coord_format in csystems:
+            if ":" in cs:
+                # sexagesimal
+                if coord_format in cel_systems and ii % 2 == 0:
+                    # odd, celestial = RA = hours
+                    crd = coordinates.Angle(cs, unit=u.hour)
+                else:
+                    crd = coordinates.Angle(cs, unit=u.deg)
+            else:
+                try:
+                    # if it's a float, it's in degrees
+                    crd = float(cs) * u.deg
+                except ValueError:
+                    crd = coordinates.Angle(cs)
+        else:
+            # assume pixel units
+            crd = float(cs)
+        outcoords.append(crd)
+
+    reg = SimpleRegion(coord_list=outcoords, coord_format=coord_format,
+                       name=rtype)
+
+    return reg
+
+def load_regions_file(rfile):
+    with open(rfile,'r') as fh:
+        lines = fh.readlines()
+    return load_regions_stringlist(lines)
+
+def load_regions_stringlist(lines):
+
+    coord_format = None
+    for line in lines:
+        if line.strip() in all_systems:
+            coord_format = line.strip()
+            break
+    if coord_format is None:
+        raise ValueError("No valid coordinate format found.")
+
+    regions_ = [simple_region_parser(line, coord_format) for line in lines]
+    regions = [r for r in regions_ if r is not None]
+    
+    return regions
+
 
 def line_to_path(region, wcs=None):
     """
@@ -16,23 +102,17 @@ def line_to_path(region, wcs=None):
     l,b = None,None
 
     endpoints = []
-    otherpars = []
 
-    for x in region.params:
-        if 'HMS' in str(type(x)) or 'Number' in str(type(x)) and l is None:
-            if region.coord_format == 'celestial':
-                l = x.degree
-            else:
-                l = x.v
-        elif 'DMS' in str(type(x)) or 'Number' in str(type(x)):
-            b = x.v
+    for x in region.coord_list:
+        if l is None:
+            l = x.to(u.deg).value
+        else:
+            b = x.to(u.deg).value
             if l is not None and b is not None:
                 endpoints.append((l,b))
                 l,b = None,None
             else:
                 raise ValueError("unmatched l,b")
-        else:
-            otherpars.append(x)
 
     lbarr = np.array(endpoints)
     C = csystems[region.coord_format](lbarr[:,0]*u.deg, lbarr[:,1]*u.deg)
@@ -51,10 +131,10 @@ def vector_to_path(vector_region, wcs=None):
     """
 
     x,y = vector_region.coord_list[:2]
-    length = vector_region.coord_list[2] * u.deg
-    angle = vector_region.coord_list[3] * u.deg
+    length = vector_region.coord_list[2]
+    angle = vector_region.coord_list[3]
     
-    C1 = csystems[vector_region.coord_format](x*u.deg, y*u.deg)
+    C1 = csystems[vector_region.coord_format](x, y)
     tan = np.tan(angle)
     dx,dy = length * tan, length / tan
     C2 = csystems[vector_region.coord_format](C1.lonangle + dx, C1.latangle + dy)
@@ -78,8 +158,9 @@ def paths_from_regfile(regfile, wcs=None):
         segment [NOT IMPLEMENTED]
         group of lines [NOT IMPLEMENTED]
     """
-    import pyregion
-    regions = pyregion.open(regfile)
+    #import pyregion
+    #regions = pyregion.open(regfile)
+    regions = load_regions_file(regfile)
     return paths_from_regions(regions, wcs=wcs)
 
 def paths_from_regions(regions, wcs=None):
