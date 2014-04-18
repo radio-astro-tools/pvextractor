@@ -8,31 +8,9 @@ csystems = {'galactic':coordinates.Galactic,
             'fk4':coordinates.FK4,
             'icrs':coordinates.ICRS}
 
-valid_regions = ['line','segment']
-
-def paths_from_regfile(regfile, wcs=None):
+def line_to_path(region, wcs=None):
     """
-    Given a ds9 region file, extract pv diagrams for each:
-        group of points [NOT IMPLEMENTED]
-        panda [NOT IMPLEMENTED]
-        vector [NOT IMPLEMENTED]
-        segment [NOT IMPLEMENTED]
-        group of lines [NOT IMPLEMENTED]
-    """
-    import pyregion
-    regions = pyregion.open(regfile)
-    return paths_from_regions(regions, wcs=wcs)
-
-def paths_from_regions(regions, wcs=None):
-    paths = [path_from_region(r, wcs=wcs)
-             for r in regions
-             if r.name in valid_regions]
-    return paths
-
-
-def path_from_region(region, wcs=None):
-    """
-    Given a pyregion shape object, extract a pv diagram
+    Convert a line or segment to a path
     """
 
     l,b = None,None
@@ -65,13 +43,47 @@ def path_from_region(region, wcs=None):
 
     return p
 
-def vector_to_path(vector_region):
+def vector_to_path(vector_region, wcs=None):
     """
     Convert a vector region to a path
 
     # vector(48.944348,-0.36432694,485.647",124.082) vector=1
     """
 
-    #start = coordinatesvector.coord_list
-    pass
+    x,y = vector_region.coord_list[:2]
+    length = vector_region.coord_list[2] * u.deg
+    angle = vector_region.coord_list[3] * u.deg
+    
+    C1 = csystems[vector_region.coord_format](x*u.deg, y*u.deg)
+    tan = np.tan(angle)
+    dx,dy = length * tan, length / tan
+    C2 = csystems[vector_region.coord_format](C1.lonangle + dx, C1.latangle + dy)
 
+    C = csystems[vector_region.coord_format]([C1.lonangle,C2.lonangle],
+                                             [C1.latangle,C2.latangle])
+
+    p = path.WCSPath(C, wcs=wcs)
+
+    return p
+
+region_converters = {'line':line_to_path, 'segment':line_to_path,
+                     'vector':vector_to_path}
+
+def paths_from_regfile(regfile, wcs=None):
+    """
+    Given a ds9 region file, extract pv diagrams for each:
+        group of points [NOT IMPLEMENTED]
+        panda [NOT IMPLEMENTED]
+        vector [NOT IMPLEMENTED]
+        segment [NOT IMPLEMENTED]
+        group of lines [NOT IMPLEMENTED]
+    """
+    import pyregion
+    regions = pyregion.open(regfile)
+    return paths_from_regions(regions, wcs=wcs)
+
+def paths_from_regions(regions, wcs=None):
+    paths = [region_converters[r.name](r, wcs=wcs)
+             for r in regions
+             if r.name in region_converters]
+    return paths
