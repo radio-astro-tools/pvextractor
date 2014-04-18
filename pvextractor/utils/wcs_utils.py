@@ -40,7 +40,7 @@ def sanitize_wcs(mywcs):
             if 'VELO' in ctype3:
                 mywcs.wcs.ctype[2] = 'VELO'
             elif 'FELO' in ctype3:
-                mywcs.wcs.ctype[2] = 'FELO'
+                mywcs.wcs.ctype[2] = 'VELO-F2V'
             elif 'FREQ' in ctype3:
                 mywcs.wcs.ctype[2] = 'FREQ'
             elif 'WAVE' in ctype3:
