@@ -1,10 +1,9 @@
 import numpy as np
-from astropy.io import fits
 from astropy.utils.console import ProgressBar
 
-def extract_poly_slice(cube, polygons, width=1.0):
+from .polygon import square_polygon_overlap_area
 
-    from shapely.geometry import Polygon
+def extract_poly_slice(cube, polygons, width=1.0):
 
     nx = len(polygons)
     nz = cube.shape[0]
@@ -17,32 +16,22 @@ def extract_poly_slice(cube, polygons, width=1.0):
 
         p.update()
 
-        # Define polygon for curve chunk
-        p_chunk = Polygon(zip(polygon.x, polygon.y))
-
-        # TODO: at the moment polygons may be overlapping
-
-        if not p_chunk.is_valid:
-            p_chunk = p_chunk.convex_hull
-
         # Find bounding box
-        bbxmin, bbymin, bbxmax, bbymax = p_chunk.bounds
-        bbxmin = int(round(bbxmin)-1)
-        bbxmax = int(round(bbxmax)+2)
-        bbymin = int(round(bbymin)-1)
-        bbymax = int(round(bbymax)+2)
+        bbxmin = int(round(np.min(polygon.x))-1)
+        bbxmax = int(round(np.max(polygon.x))+2)
+        bbymin = int(round(np.min(polygon.y))-1)
+        bbymax = int(round(np.max(polygon.y))+2)
 
         # Loop through pixels that might overlap
         for xmin in np.arange(bbxmin, bbxmax):
             for ymin in np.arange(bbymin, bbymax):
 
-                p_pixel = Polygon([(xmin-0.5, ymin-0.5), (xmin+0.5, ymin-0.5),
-                                   (xmin+0.5, ymin+0.5), (xmin-0.5, ymin+0.5)])
+                area = square_polygon_overlap_area(xmin-0.5, xmin+0.5,
+                                                   ymin-0.5, ymin+0.5,
+                                                   polygon.x, polygon.y)
 
-                p_int = p_chunk.intersection(p_pixel)
-
-                if p_int.area > 0:
-                    slice[:, i] += cube[:, ymin, xmin] * p_int.area
+                if area > 0:
+                    slice[:, i] += cube[:, ymin, xmin] * area
 
     print ""
 
