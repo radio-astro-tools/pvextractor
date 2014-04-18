@@ -1,11 +1,11 @@
-import numpy as np
-from scipy.ndimage import map_coordinates
 from astropy.wcs import WCS
 from astropy import units as u
 from .utils.wcs_utils import assert_independent_3rd_axis, wcs_spacing
 from .geometry import extract_slice
+from .pvwcs import pvwcs_from_header
+from astropy.io import fits
 
-def extract_pv_slice_hdu(hdu, path, **kwargs):
+def extract_pv_slice_hdu(hdu, path, spacing, **kwargs):
     """
     Create a PV diagram starting from a set of WCS coordinates
 
@@ -23,15 +23,13 @@ def extract_pv_slice_hdu(hdu, path, **kwargs):
 
     wcs = WCS(hdu.header)
     assert_independent_3rd_axis(wcs)
+    pspacing = wcs_spacing(wcs, spacing)
 
-    # convert the endpoints from WCS to pixels by assuming that the 3rd axis is
-    # independent
-    px,py = wcs.wcs_world2pix([[a,b,wcs.wcs.crval[2]]
-                               for a,b in zip(x,y)], 0)[:,:2]
+    pvwcs = pvwcs_from_header(hdu.header, cdelt=spacing.to(u.deg).value)
 
-    return pvdiagram(hdu.data, px, py,
-                     spacing=wcs_spacing(wcs, spacing)
-                     **kwargs)
+    pvslice = extract_pv_slice(hdu.data, path, spacing=pspacing, **kwargs)
+
+    return fits.PrimaryHDU(data=pvslice, header=pvwcs.to_header())
 
 def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None):
     """
