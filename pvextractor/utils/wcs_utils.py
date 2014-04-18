@@ -4,6 +4,7 @@ from astropy import wcs
 
 def get_pixel_scales(mywcs, assert_square=True):
     # borrowed from aplpy
+    mywcs = mywcs.sub([wcs.WCSSUB_CELESTIAL])
     cdelt = np.matrix(mywcs.wcs.get_cdelt())
     pc = np.matrix(mywcs.wcs.get_pc())
     scale = np.array(cdelt * pc)
