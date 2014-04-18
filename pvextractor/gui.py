@@ -4,6 +4,11 @@ import warnings
 import numpy as np
 
 from matplotlib.collections import LineCollection
+from matplotlib.transforms import Bbox
+from matplotlib.patches import Polygon
+
+from .geometry.path import Path, get_endpoints
+from . import extract_pv_slice
 
 
 def distance(x1, y1, x2, y2, x3, y3):
@@ -39,11 +44,29 @@ class MovableSliceBox(object):
         self.point_counter = 0
         self.callback = callback
         self.mode = 0
+        self.show_poly = False
+        self.cidpress = self.box.figure.canvas.mpl_connect('draw_event', self.draw_slicer)
+
 
     def connect(self):
         self.cidpress = self.box.figure.canvas.mpl_connect('key_press_event', self.key_press)
         self.cidpress = self.box.figure.canvas.mpl_connect('button_press_event', self.on_press)
         self.cidmotion = self.box.figure.canvas.mpl_connect('motion_notify_event', self.on_motion)
+
+    def draw_slicer(self, event):
+
+        self.box.axes.draw_artist(self.box)
+
+        if self.show_poly:
+
+            path = Path(zip(self.box.x, self.box.y))
+            path.width = self.box.width
+
+            for poly in path.sample_polygons(1):
+                self.box.axes.draw_artist(Polygon(zip(poly.x, poly.y),
+                                          ec='green', fc='none',
+                                          transform=self.box.axes.transData,
+                                          clip_on=True, clip_box=self.box.axes.bbox))
 
     def on_press(self, event):
 
@@ -106,6 +129,10 @@ class MovableSliceBox(object):
             self.mode += 1
             self.box.x = self.box.x[:-1]
             self.box.y = self.box.y[:-1]
+
+        if event.key == 'y' and self.mode == 2:
+            self.show_poly = not self.show_poly
+            self.box.figure.canvas.draw()
 
     def on_motion(self, event):
 
@@ -201,7 +228,6 @@ class SliceCurve(LineCollection):
         if not self.x:
             return
 
-        from .geometry.path import get_endpoints
         x1, y1, x2, y2 = get_endpoints(self.x, self.y, self.width)
 
         # Find central line
@@ -214,6 +240,8 @@ class SliceCurve(LineCollection):
         self.set_segments((line, rect))
         self.set_linestyles(('solid', 'dashed'))
         self.set_linewidths((2, 1))
+
+
 
 
 class PVSlicer(object):
@@ -319,17 +347,15 @@ class PVSlicer(object):
 
     def update_pv_slice(self, box):
 
-        from .geometry.path import Path
-        from . import extract_pv_slice
-
         path = Path(zip(box.x, box.y))
         path.width = box.width
+
         self.pv_slice = extract_pv_slice(self.array, path)
 
+        self.ax2.cla()
         self.ax2.imshow(self.pv_slice, origin='lower', aspect='auto', interpolation='nearest')
 
         self.fig.canvas.draw()
-        self.ax1.draw_artist(self.box)
 
     def show(self):
         import matplotlib.pyplot as plt
