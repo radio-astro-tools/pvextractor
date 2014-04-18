@@ -13,6 +13,8 @@ def test_wcspath():
     w = wcs.WCS(fits.Header.fromtextfile(data_path('w51.hdr')))
     p1.set_wcs(w)
 
-    shouldbe = (61.593585,75.950471,88.911616,72.820463,96.025686,88.470505,113.95314,95.868707,186.80123,76.235017,226.35546,100.99054)
+    shouldbe = (61.593585, 75.950471, 88.911616, 72.820463, 96.025686,
+                88.470505, 113.95314, 95.868707, 186.80123, 76.235017,
+                226.35546, 100.99054)
     xy = (np.array(zip(shouldbe[::2],shouldbe[1::2])) - 1)
     np.testing.assert_allclose(np.array((p1.xy)), xy, rtol=1e-5)

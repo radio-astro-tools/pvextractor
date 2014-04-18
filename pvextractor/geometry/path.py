@@ -76,8 +76,8 @@ class Path(object):
         yp = np.pad(y, 1, mode='edge')
 
         # Find slope connecting alternating points
-        m = -(xp[2:] - xp[:-2]) / (yp[2:] - yp[:-2])
-        b = y - m * x
+        # not used m = -(xp[2:] - xp[:-2]) / (yp[2:] - yp[:-2])
+        # not used b = y - m * x
 
         # Find angle of the intersecting lines
         alpha = np.arctan2(xp[2:] - xp[:-2], yp[:-2] - yp[2:])
