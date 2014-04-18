@@ -28,10 +28,7 @@ if len(regions) == 0:
 
 paths = pvextractor.paths_from_regions(regions, wcs=mywcs)
 
-slc = pvextractor.extract_pv_slice(pf[0].data, paths[regionid], order=0)
-slc_wcs = pvextractor.pvwcs.pvwcs_from_header(pf[0].header)
-
-hdu = fits.PrimaryHDU(data=slc, header=slc_wcs.to_header())
+hdu = pvextractor.extract_pv_slice_hdu(pf[0], paths[regionid], order=0)
 
 with tempfile.NamedTemporaryFile(suffix='fits', delete=False) as tf:
     hdu.writeto(tf)

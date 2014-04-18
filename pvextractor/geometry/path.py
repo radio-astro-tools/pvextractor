@@ -1,5 +1,6 @@
 import numpy as np
 from astropy import wcs as astropywcs
+from ..utils.wcs_utils import get_wcs_system_name
 
 
 class Polygon(object):
@@ -171,16 +172,6 @@ class Path(object):
             polygons.append(p)
 
         return polygons
-
-def get_wcs_system_name(wcs):
-    """TODO: move to astropy.wcs.utils"""
-    ct = wcs.sub([astropywcs.WCSSUB_CELESTIAL]).wcs.ctype
-    if 'GLON' in ct[0]:
-        return 'galactic'
-    elif 'RA' in ct[0]:
-        return 'icrs'
-    else:
-        raise ValueError("Unrecognized coordinate system")
 
 class WCSPath(Path):
 
