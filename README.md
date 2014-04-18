@@ -22,6 +22,19 @@ pip install https://github.com/radio-tools/spectral-cube/archive/master.zip
 pip install https://github.com/radio-tools/pvextractor/archive/master.zip
 ```
 
+The pvextractor GUI
+-------------------
+
+Run it like this:
+```
+from pvextractor.gui import PVSlicer
+pv = PVSlicer('L1448_13CO.fits')
+pv.show()
+```
+Click to select "control points" along the path, then press "enter" to expand
+the width of the slice, then click.  Optionally, "y" will show the exact
+regions extracted.
+
 Using pvextractor in ds9
 ------------------------
 
