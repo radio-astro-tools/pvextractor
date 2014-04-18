@@ -13,10 +13,13 @@ For an example use case, see `this notebook
 <http://nbviewer.ipython.org/urls/raw.github.com/keflavich/pvextractor/master/examples/IRAS05358Slicing.ipynb>`_
 (for a permanent, compiled version, look `here <examples/IRAS05358Slicing.html>`_)
 
+Build and coverage status
+=========================
 
+[![Build Status](https://travis-ci.org/radio-tools/pvextractor.png?branch=master)](https://travis-ci.org/radio-tools/pvextractor)
 
+[![Coverage Status](https://coveralls.io/repos/radio-tools/pvextractor/badge.png?branch=master)](https://coveralls.io/r/radio-tools/pvextractor?branch=master)
 
 .. image:: https://d2weczhvl823v0.cloudfront.net/keflavich/pvextractor/trend.png
    :alt: Bitdeli badge
    :target: https://bitdeli.com/free
-
