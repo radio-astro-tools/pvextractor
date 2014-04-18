@@ -1,6 +1,6 @@
 import numpy as np
 from astropy.io import fits
-
+from astropy.utils.console import ProgressBar
 
 def extract_poly_slice(cube, polygons, width=1.0):
 
@@ -11,10 +11,19 @@ def extract_poly_slice(cube, polygons, width=1.0):
 
     slice = np.zeros((nz, nx))
 
+    p = ProgressBar(len(polygons))
+
     for i, polygon in enumerate(polygons):
+
+        p.update()
 
         # Define polygon for curve chunk
         p_chunk = Polygon(zip(polygon.x, polygon.y))
+
+        # TODO: at the moment polygons may be overlapping
+
+        if not p_chunk.is_valid:
+            p_chunk = p_chunk.convex_hull
 
         # Find bounding box
         bbxmin, bbymin, bbxmax, bbymax = p_chunk.bounds
@@ -34,5 +43,7 @@ def extract_poly_slice(cube, polygons, width=1.0):
 
                 if p_int.area > 0:
                     slice[:, i] += cube[:, ymin, xmin] * p_int.area
+
+    print ""
 
     return slice
