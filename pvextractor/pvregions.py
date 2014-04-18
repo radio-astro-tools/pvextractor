@@ -64,3 +64,14 @@ def path_from_region(region, wcs=None):
     p = path.WCSPath(C, wcs=wcs)
 
     return p
+
+def vector_to_path(vector_region):
+    """
+    Convert a vector region to a path
+
+    # vector(48.944348,-0.36432694,485.647",124.082) vector=1
+    """
+
+    #start = coordinatesvector.coord_list
+    pass
+
