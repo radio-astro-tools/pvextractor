@@ -135,9 +135,9 @@ def vector_to_path(vector_region, wcs=None):
     angle = vector_region.coord_list[3]
     
     C1 = csystems[vector_region.coord_format](x, y)
-    tan = np.tan(angle)
-    dx,dy = length * tan, length / tan
-    C2 = csystems[vector_region.coord_format](C1.lonangle + dx, C1.latangle + dy)
+    dx,dy = length * np.cos(angle), length * np.sin(angle)
+    # -dx because we're in the flippy coordsys
+    C2 = csystems[vector_region.coord_format](C1.lonangle - dx, C1.latangle + dy)
 
     C = csystems[vector_region.coord_format]([C1.lonangle,C2.lonangle],
                                              [C1.latangle,C2.latangle])

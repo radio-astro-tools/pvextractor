@@ -7,7 +7,7 @@ import ds9
 #import pyregion
 from astropy import wcs
 import pvextractor
-from pvextractor.pvregions import load_region_stringlist, paths_from_regions
+from pvextractor.pvregions import load_regions_stringlist, paths_from_regions
 from astropy.io import fits
 import tempfile
 
@@ -23,7 +23,8 @@ else:
 mywcs = wcs.WCS(pf[0].header)
 #rp = pyregion.RegionParser()
 
-regions = load_region_stringlist(dd.get('regions -system wcs'))
+rstringlist = dd.get('regions -system wcs').split("\n")
+regions = load_regions_stringlist(rstringlist)
 if len(regions) == 0:
     sys.exit("No regions found")
 
