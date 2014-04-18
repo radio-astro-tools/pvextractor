@@ -5,25 +5,7 @@ from astropy import units as u
 from .utils.wcs_utils import assert_independent_3rd_axis, wcs_spacing
 from .geometry import extract_slice
 
-def vector_pvdiagram(hdu, startx, starty, posang, distance=None, **kwargs):
-    """
-    Create a pv diagram of some finite distance starting at a world coordinate
-    position at some position angle
-    """
-
-    wcs = WCS(hdu.header)
-    assert_independent_3rd_axis(wcs)
-
-    if distance is None:
-        raise NotImplementedError("Just use a large number okay?")
-
-    dx,dy = (np.cos((90-posang)/180*np.pi)*distance,
-             np.sin((90-posang)/180*np.pi)*distance,)
-
-    return wcs_pvdiagram(hdu.data, [startx,startx+dx], [starty,starty+dy],
-                         **kwargs)
-
-def wcs_pvdiagram(hdu, x, y, spacing=None, **kwargs):
+def extract_pv_slice_hdu(hdu, path, **kwargs):
     """
     Create a PV diagram starting from a set of WCS coordinates
 
