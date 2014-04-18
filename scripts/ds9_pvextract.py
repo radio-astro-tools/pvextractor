@@ -4,9 +4,10 @@ PV extract a ds9 image with regions on it
 """
 import sys
 import ds9
-import pyregion
+#import pyregion
 from astropy import wcs
 import pvextractor
+from pvextractor.pvregions import load_regions_stringlist, paths_from_regions
 from astropy.io import fits
 import tempfile
 
@@ -20,18 +21,16 @@ else:
     regionid = 0
 
 mywcs = wcs.WCS(pf[0].header)
-rp = pyregion.RegionParser()
+#rp = pyregion.RegionParser()
 
-regions = pyregion.parse(dd.get('regions -system wcs'))
+rstringlist = dd.get('regions -system wcs').split("\n")
+regions = load_regions_stringlist(rstringlist)
 if len(regions) == 0:
     sys.exit("No regions found")
 
-paths = pvextractor.paths_from_regions(regions, wcs=mywcs)
+paths = paths_from_regions(regions, wcs=mywcs)
 
-slc = pvextractor.extract_pv_slice(pf[0].data, paths[regionid], order=0)
-slc_wcs = pvextractor.pvwcs.pvwcs_from_header(pf[0].header)
-
-hdu = fits.PrimaryHDU(data=slc, header=slc_wcs.to_header())
+hdu = pvextractor.extract_pv_slice_hdu(pf[0], paths[regionid], order=0)
 
 with tempfile.NamedTemporaryFile(suffix='fits', delete=False) as tf:
     hdu.writeto(tf)

@@ -1,11 +1,13 @@
-from astropy.wcs import WCS
+from astropy import wcs
 from astropy import units as u
-from .utils.wcs_utils import assert_independent_3rd_axis, wcs_spacing
+from .utils.wcs_utils import (sanitize_wcs, wcs_spacing,
+                              get_wcs_system_name, pixel_to_wcs_spacing)
 from .geometry import extract_slice
 from .pvwcs import pvwcs_from_header
 from astropy.io import fits
+import spectral_cube.io.fits
 
-def extract_pv_slice_hdu(hdu, path, spacing, **kwargs):
+def extract_pv_slice_hdu(hdu, path, spacing=None, **kwargs):
     """
     Create a PV diagram starting from a set of WCS coordinates
 
@@ -21,15 +23,25 @@ def extract_pv_slice_hdu(hdu, path, spacing, **kwargs):
         pixels unless valid units are given
     """
 
-    wcs = WCS(hdu.header)
-    assert_independent_3rd_axis(wcs)
-    pspacing = wcs_spacing(wcs, spacing)
+    sc = spectral_cube.io.fits.load_fits_hdu(hdu)
+    mywcs = sanitize_wcs(sc._wcs)
+    header = mywcs.to_header()
 
-    pvwcs = pvwcs_from_header(hdu.header, cdelt=spacing.to(u.deg).value)
+    pspacing = wcs_spacing(mywcs, spacing)
+    wspacing = pixel_to_wcs_spacing(mywcs, pspacing)
+
+    pvwcs = pvwcs_from_header(header, cdelt=wspacing.to(u.deg).value)
+    header = pvwcs.to_header()
+
+    celwcs = mywcs.sub([wcs.WCSSUB_CELESTIAL])
+    starting_point = celwcs.wcs_pix2world(path.xy[0][0], path.xy[0][1], 0)
+    header['STARTLON'] = float(starting_point[0])
+    header['STARTLAT'] = float(starting_point[1])
+    header['CSYSOFFS'] = get_wcs_system_name(mywcs)
 
     pvslice = extract_pv_slice(hdu.data, path, spacing=pspacing, **kwargs)
 
-    return fits.PrimaryHDU(data=pvslice, header=pvwcs.to_header())
+    return fits.PrimaryHDU(data=pvslice, header=header)
 
 def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None):
     """
