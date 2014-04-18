@@ -222,3 +222,6 @@ class WCSPath(Path):
             return zip(*self._coords_to_wcs(self.coords))
         else:
             raise ValueError("Must set a WCS to get xy coordinates")
+
+    def to_bintable(self):
+        raise NotImplementedError("TODO")
