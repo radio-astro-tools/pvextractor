@@ -9,11 +9,13 @@ def get_pixel_scales(mywcs, assert_square=True):
     pc = np.matrix(mywcs.wcs.get_pc())
     scale = np.array(cdelt * pc)
     
-    if (assert_square and
-        (abs(cdelt[0,0]) != abs(cdelt[0,1]) or
-         abs(pc[0,0]) != abs(pc[1,1]) or
-         abs(scale[0,0]) != abs(scale[0,1]))):
-        raise ValueError("Non-square pixels.  Please resample data.")
+    if assert_square:
+        try:
+            np.testing.assert_almost_equal(abs(cdelt[0,0]), abs(cdelt[0,1]))
+            np.testing.assert_almost_equal(abs(pc[0,0]), abs(pc[1,1]))
+            np.testing.assert_almost_equal(abs(scale[0,0]), abs(scale[0,1]))
+        except AssertionError:
+            raise ValueError("Non-square pixels.  Please resample data.")
 
     return abs(scale[0,0])
 
