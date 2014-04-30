@@ -3,20 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to PV Slice Extractor's documentation!
-==============================================
+Position-Velocity Slice Extractor
+=================================
 
-Contents:
+The ``pvextractor`` package provides a number of ways of extracting PV slices
+from spectral cubes. The documentation is currently being written.
+
+Using ``pvextractor``
+---------------------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   api.rst
