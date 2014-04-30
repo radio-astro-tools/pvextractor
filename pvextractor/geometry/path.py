@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import numpy as np
 from astropy import wcs as astropywcs
 from ..utils.wcs_utils import get_wcs_system_name

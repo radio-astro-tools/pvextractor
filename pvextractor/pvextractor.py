@@ -1,11 +1,16 @@
+from __future__ import print_function
+
 from astropy import wcs
 from astropy import units as u
+from astropy.io import fits
+
 from .utils.wcs_utils import (sanitize_wcs, wcs_spacing,
                               get_wcs_system_name, pixel_to_wcs_spacing)
 from .geometry import extract_slice
 from .pvwcs import pvwcs_from_header
-from astropy.io import fits
-import spectral_cube.io.fits
+
+from spectral_cube import StokesSpectralCube, SpectralCube
+from spectral_cube.io.fits import load_fits_hdu
 
 def extract_pv_slice_hdu(hdu, path, spacing=None, **kwargs):
     """
@@ -23,7 +28,7 @@ def extract_pv_slice_hdu(hdu, path, spacing=None, **kwargs):
         pixels unless valid units are given
     """
 
-    sc = spectral_cube.io.fits.load_fits_hdu(hdu)
+    sc = load_fits_hdu(hdu)
     mywcs = sanitize_wcs(sc._wcs)
     header = mywcs.to_header()
 
@@ -39,7 +44,7 @@ def extract_pv_slice_hdu(hdu, path, spacing=None, **kwargs):
     header['STARTLAT'] = float(starting_point[1])
     header['CSYSOFFS'] = get_wcs_system_name(mywcs)
 
-    pvslice = extract_pv_slice(hdu.data, path, spacing=pspacing, **kwargs)
+    pvslice = extract_pv_slice(sc.filled_data[:,:,:], path, spacing=pspacing, **kwargs)
 
     return fits.PrimaryHDU(data=pvslice, header=header)
 
