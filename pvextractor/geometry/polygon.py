@@ -11,7 +11,7 @@ from matplotlib.transforms import Bbox
 
 
 def square_polygon_intersection(xmin, xmax, ymin, ymax, x, y):
-    poly = Path(zip(x, y))
+    poly = Path(list(zip(x, y)))
     box = Bbox([[xmin, ymin], [xmax, ymax]])
     try:
         clipped_poly = poly.clip_to_bbox(box)

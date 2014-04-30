@@ -18,8 +18,8 @@ Minimal Install Instructions
 
 ```
 pip install http://ds9.si.edu/download/pyds9/pyds9-1.7.tar.gz
-pip install https://github.com/radio-tools/spectral-cube/archive/master.zip
-pip install https://github.com/radio-tools/pvextractor/archive/master.zip
+pip install https://github.com/radio-astro-tools/spectral-cube/archive/master.zip
+pip install https://github.com/radio-astro-tools/pvextractor/archive/master.zip
 ```
 
 The pvextractor GUI
@@ -56,8 +56,8 @@ in the menu.
 Build and coverage status
 =========================
 
-[![Build Status](https://travis-ci.org/radio-tools/pvextractor.png?branch=master)](https://travis-ci.org/radio-tools/pvextractor)
+[![Build Status](https://travis-ci.org/radio-astro-tools/pvextractor.png?branch=master)](https://travis-ci.org/radio-astro-tools/pvextractor)
 
-[![Coverage Status](https://coveralls.io/repos/radio-tools/pvextractor/badge.png?branch=master)](https://coveralls.io/r/radio-tools/pvextractor?branch=master)
+[![Coverage Status](https://coveralls.io/repos/radio-astro-tools/pvextractor/badge.png?branch=master)](https://coveralls.io/r/radio-astro-tools/pvextractor?branch=master)
 
 [![Bitdeli badge](https://d2weczhvl823v0.cloudfront.net/keflavich/pvextractor/trend.png)](https://bitdeli.com/free)
