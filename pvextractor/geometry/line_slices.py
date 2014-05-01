@@ -33,14 +33,14 @@ def extract_line_slice(cube, x, y, order=3, respect_nan=True):
 
     if order == 0:
 
-        slice = np.zeros([cube.shape[0], len(x)]) + np.nan
+        total_slice = np.zeros([cube.shape[0], len(x)]) + np.nan
 
         x = np.round(x)
         y = np.round(y)
 
         ok = (x >= 0) & (y >= 0) & (x < cube.shape[2]) & (y < cube.shape[1])
 
-        slice[:,ok] = cube[:, y[ok].astype(int), x[ok].astype(int)]
+        total_slice[:,ok] = cube[:, y[ok].astype(int), x[ok].astype(int)]
 
     elif order > 0 and order == int(order):
 
@@ -51,15 +51,24 @@ def extract_line_slice(cube, x, y, order=3, respect_nan=True):
         xi = np.outer(np.ones(nz), x)
         yi = np.outer(np.ones(nz), y)
 
-        slice = map_coordinates(np.nan_to_num(cube), [zi,yi,xi], order=order, cval=np.nan)
+        if np.any(np.isnan(cube)):
 
-        if respect_nan:
+            # map_coordinates does not deal well with NaN values so we have
+            # to remove the NaN values then re-mask the final slice.
+
+            total_slice = map_coordinates(np.nan_to_num(cube), [zi,yi,xi], order=order, cval=np.nan)
+
             slice_bad = map_coordinates(np.nan_to_num(np.isnan(cube).astype(int)),
                                         [zi,yi,xi], order=order)
-            slice[np.nonzero(slice_bad)] = np.nan
+
+            total_slice[np.nonzero(slice_bad)] = np.nan
+
+        else:
+
+            total_slice = map_coordinates(cube, [zi,yi,xi], order=order, cval=np.nan)
 
     else:
 
         raise TypeError("order should be a positive integer")
 
-    return slice
+    return total_slice
