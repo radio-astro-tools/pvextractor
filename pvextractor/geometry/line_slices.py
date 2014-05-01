@@ -38,7 +38,7 @@ def extract_line_slice(cube, x, y, order=3, respect_nan=True):
         x = np.round(x)
         y = np.round(y)
 
-        ok = (x > 0) & (y > 0) & (x < cube.shape[2]) & (y < cube.shape[1])
+        ok = (x >= 0) & (y >= 0) & (x < cube.shape[2]) & (y < cube.shape[1])
 
         slice[:,ok] = cube[:, y[ok].astype(int), x[ok].astype(int)]
 

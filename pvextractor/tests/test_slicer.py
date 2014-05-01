@@ -1,4 +1,5 @@
 import numpy as np
+from numpy.testing import assert_allclose
 
 from astropy.io import fits
 
@@ -56,24 +57,28 @@ def make_test_hdu():
     header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
     hdu = fits.PrimaryHDU(header=header)
     import numpy as np
-    np.random.seed(12345)
-    hdu.data = np.random.random(60).reshape(1,5,4,3)
+    hdu.data = np.zeros((1, 5, 4, 3))
+    hdu.data[:, :, 0, :] = 1.
+    hdu.data[:, :, 2, :] = 2.
     return hdu
 
 
 def test_pv_slice_hdu_line_path_order_0():
     hdu = make_test_hdu()
-    path = Path([(0., 0.), (3., 3.), (6., 4.)])
-    slice_hdu = extract_pv_slice_hdu(hdu, path, spacing=1., order=0)
+    path = Path([(1., -0.5), (1., 3.5)])
+    slice_hdu = extract_pv_slice_hdu(hdu, path, spacing=0.4, order=0)
+    assert_allclose(slice_hdu.data[0], np.array([1., 1., 0., 0., 0., 2., 2., 2., 0., 0.]))
 
 
 def test_pv_slice_hdu_line_path_order_3():
     hdu = make_test_hdu()
-    path = Path([(0., 0.), (3., 3.), (6., 4.)])
-    slice_hdu = extract_pv_slice_hdu(hdu, path, spacing=1., order=3)
+    path = Path([(1., -0.5), (1., 3.5)])
+    slice_hdu = extract_pv_slice_hdu(hdu, path, spacing=0.4, order=3)
+    assert_allclose(slice_hdu.data[0], np.array([np.nan, 0.9648, 0.4, -0.0368, 0.5622, 1.6478, 1.9278, 0.975, 0.0542, np.nan]))
 
 
 def test_pv_slice_hdu_poly_path():
     hdu = make_test_hdu()
-    path = Path([(0., 0.), (3., 3.), (6., 4.)], width=0.001)
-    slice_hdu = extract_pv_slice_hdu(hdu, path, spacing=1.)
+    path = Path([(1., -0.5), (1., 3.5)], width=0.001)
+    slice_hdu = extract_pv_slice_hdu(hdu, path, spacing=0.4)
+    assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., 0., 0.]))

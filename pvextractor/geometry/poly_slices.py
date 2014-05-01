@@ -28,9 +28,9 @@ def extract_poly_slice(cube, polygons, width=1.0):
 
         # Clip to cube box
         bbxmin = max(bbxmin, 0)
-        bbxmax = min(bbxmax, cube.shape[2] - 1)
+        bbxmax = min(bbxmax, cube.shape[2])
         bbymin = max(bbymin, 0)
-        bbymax = min(bbymax, cube.shape[1] - 1)
+        bbymax = min(bbymax, cube.shape[1])
 
         # Loop through pixels that might overlap
         for xmin in np.arange(bbxmin, bbxmax):
