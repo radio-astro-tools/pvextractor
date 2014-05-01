@@ -1,3 +1,5 @@
+import numpy as np
+
 from .line_slices import extract_line_slice
 from .poly_slices import extract_poly_slice
 
@@ -30,6 +32,9 @@ def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None
     slice : `numpy.ndarray`
         The slice
     """
+
+    if not respect_nan:
+        cube = np.nan_to_num(cube)
 
     if path.width is None:
         x, y = path.sample_points(spacing=spacing)

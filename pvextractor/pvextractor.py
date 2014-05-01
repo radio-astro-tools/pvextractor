@@ -79,6 +79,6 @@ def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=N
         The position-velocity slice
     """
 
-    pv_slice = extract_slice(cube, path, order=order, respect_nan=respect_nan)
+    pv_slice = extract_slice(cube, path, spacing=spacing, order=order, respect_nan=respect_nan)
 
     return pv_slice
