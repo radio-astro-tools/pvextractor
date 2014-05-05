@@ -39,7 +39,8 @@ def extract_pv_slice_hdu(hdu, path, spacing=None, **kwargs):
     header = pvwcs.to_header()
 
     celwcs = mywcs.sub([wcs.WCSSUB_CELESTIAL])
-    starting_point = celwcs.wcs_pix2world(path.xy[0][0], path.xy[0][1], 0)
+    xy = path.get_xy(wcs=mywcs)
+    starting_point = celwcs.wcs_pix2world(xy[0][0], xy[0][1], 0)
     header['STARTLON'] = float(starting_point[0])
     header['STARTLAT'] = float(starting_point[1])
     header['CSYSOFFS'] = get_wcs_system_name(mywcs)

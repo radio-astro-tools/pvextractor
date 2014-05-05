@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
-from astropy import wcs as astropywcs
+from astropy.wcs import WCSSUB_CELESTIAL
 from ..utils.wcs_utils import get_wcs_system_name
 
 
@@ -68,31 +68,94 @@ class Path(object):
 
     Parameters
     ----------
-    xy : `numpy.ndarray`
-        The points defining the path, as a list of (x, y) tuples.
-    width : None or float
-        The width of the path.
+    coords : list or array coordinate object
+        The points defining the path. This can be passed as a list of (x, y)
+        tuples, which is interpreted as being pixel positions, or it can be
+        an Astropy coordinate object containing an array of 2 or more
+        coordinates.
+    width : None or float or :class:`~astropy.units.Quantity`
+        The width of the path. If ``coords`` is passed as a list of pixel
+        positions, the width should be given (if passed) as a floating-point
+        value in pixels. If ``coords`` is a coordinate object, the width
+        should be passed as a :class:`~astropy.units.Quantity` instance with
+        units of angle.
     """
 
-    def __init__(self, xy=None, width=None):
-
-        self.xy = [] if xy is None else xy
+    def __init__(self, coords=None, width=None):
+        self.coords = coords
         self.width = width
 
-    def add_point(self, xy):
+    @property
+    def path_type(self):
+        if isinstance(self.coords, list):
+            return 'pixel'
+        else:
+            return 'world'
+
+    def add_point(self, coord):
         """
         Add a point to the path
 
         Parameters
         ----------
-        xy : tuple
-            A tuple (x, y) containing the coordinates of the point to add
+        xy : tuple or Astropy coordinate
+            A tuple (x, y) containing the coordinates of the point to add (if
+            the path is defined in pixel space), or an Astropy coordinate
+            object (if it is defined in world coordinates).
         """
-        self.xy.append(xy)
+        if self.path_type == 'pixel':
+            if isinstance(coord, tuple):
+                self.coords.append(coord)
+            else:
+                raise TypeError("Path is defined as a list of pixel "
+                                "coordinates, so ``coord`` should be "
+                                "a tuple of ``(x,y)`` pixel coordinates.")
+        else:
+            if isinstance(coord, BaseCoordinateFrame):
+                raise NotImplementedError("Cannot yet append world coordinates to path")
+            else:
+                raise TypeError("Path is defined in world coordinates, "
+                                "so ``coord`` should be an Astropy "
+                                "coordinate object.")
+
+    def get_xy(self, wcs=None):
+        """
+        Return the pixel coordinates of the path.
+
+        If the path is defined in world coordinates, the appropriate WCS
+        transformation should be passed.
+
+        Parameters
+        ----------
+        wcs : :class:`~astropy.wcs.WCS`
+            The WCS transformation to assume in order to transform the path
+            to pixel coordinates.
+        """
+        if self.path_type == 'pixel':
+            return self.coords
+        else:
+            if wcs is None:
+                raise ValueError("``wcs`` is needed in order to compute "
+                                 "the pixel coordinates")
+            else:
+
+                # Extract the celestial component of the WCS
+                wcs_sky = wcs.sub([WCSSUB_CELESTIAL])
+
+                # Find the astropy name for the coordinates
+                # TODO: return a frame class with Astropy 0.4, since that can
+                # also contain equinox/epoch info.
+                celestial_system = get_wcs_system_name(wcs_sky)
+
+                world_coords = getattr(self.coords, celestial_system)
+
+                xw, yw = world_coords.lonangle.degree, world_coords.latangle.degree
+
+                return zip(*wcs_sky.wcs_world2pix(xw, yw, 0))
 
     def sample_points_edges(self, spacing):
 
-        x, y = zip(*self.xy)
+        x, y = zip(*self.get_xy())
 
         # Find the distance interval between all pairs of points
         dx = np.diff(x)
@@ -127,7 +190,7 @@ class Path(object):
 
     def sample_polygons(self, spacing):
 
-        x, y = zip(*self.xy)
+        x, y = zip(*self.get_xy())
 
         d_sampled, x_sampled, y_sampled = self.sample_points_edges(spacing)
 
@@ -174,56 +237,3 @@ class Path(object):
             polygons.append(p)
 
         return polygons
-
-class WCSPath(Path):
-
-    def __init__(self, coords=None, width=None, wcs=None):
-        """
-        Takes an astropy Coordinates array
-        """
-
-        self.set_wcs(wcs)
-        self.coords = coords
-        self.width = width
-
-    def _coords_to_wcs(self, coords):
-
-        if self.wcs is None:
-            raise ValueError("Must set a WCS first")
-
-        xynative = getattr(coords,self.celsys)
-        
-        x,y = xynative.lonangle.degree, xynative.latangle.degree
-
-        xy = self.wcs.wcs_world2pix(x,y, 0)
-        return xy
-
-    def set_wcs(self, wcs):
-        if wcs is not None:
-            self.wcs = wcs.sub([astropywcs.WCSSUB_CELESTIAL])
-            self.celsys = get_wcs_system_name(self.wcs)
-        else:
-            self.wcs = None
-
-    def add_point(self, coord):
-        """
-        Add a point to the path
-
-        Parameters
-        ----------
-        xy : tuple
-            A tuple (x, y) containing the coordinates of the point to add
-        """
-        if hasattr(coord,'fk5'): # it is a coordinate
-            self.xy += self._coords_to_wcs(coord).tolist()
-
-
-    @property
-    def xy(self):
-        if self.wcs is not None:
-            return zip(*self._coords_to_wcs(self.coords))
-        else:
-            raise ValueError("Must set a WCS to get xy coordinates")
-
-    def to_bintable(self):
-        raise NotImplementedError("TODO")
