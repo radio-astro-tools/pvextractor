@@ -63,9 +63,6 @@ addition, the width (if passed) should an Astropy
     >>> g = Galactic([3.4, 3.6] * u.deg, [0.5, 0.56] * u.deg)
     >>> path4 = WCSPath(g, width=1 * u.arcsec)
 
-.. TODO: wcs should not be a property of a path - a path should be defined in
-.. absolute world coordinates irrespective of projection.
-
 Extracting a slice
 ^^^^^^^^^^^^^^^^^^
 
@@ -77,8 +74,6 @@ data to slice can be passed to this function as:
 * A :class:`~spectral_cube.SpectralCube` instance
 * An HDU object containing a spectral cube
 * The name of a FITS file containing a spectral cube
-
-.. TODO: provide a single function as a point of entry?
 
 For example::
 
@@ -97,14 +92,18 @@ For example::
 Advanced paths
 ^^^^^^^^^^^^^^
 
-This section will describe how to easily set up common paths, e.g. starting
-from a point and with a given position angle.
+.. This section will describe how to easily set up common paths, e.g. starting
+.. from a point and with a given position angle.
 
 Using the graphical user interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+.. TODO
+
 Extracting slices from Ds9
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. TODO
 
 .. toctree::
    :maxdepth: 1
