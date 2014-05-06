@@ -2,7 +2,7 @@ import numpy as np
 
 from astropy import units as u
 from astropy.wcs import WCS, WCSSUB_SPECTRAL
-from .utils.wcs_utils import get_spectral_scale
+from .wcs_utils import get_spectral_scale
 
 
 def slice_wcs(wcs, spatial_scale):

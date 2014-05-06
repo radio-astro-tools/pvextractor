@@ -8,7 +8,7 @@ from astropy.io.fits import PrimaryHDU, ImageHDU, Header
 
 from .utils.wcs_utils import get_spatial_scale, sanitize_wcs
 from .geometry import extract_slice
-from .pvwcs import slice_wcs
+from .utils.wcs_slicing import slice_wcs
 
 from spectral_cube import SpectralCube
 
