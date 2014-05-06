@@ -2,7 +2,12 @@ from __future__ import print_function
 
 import numpy as np
 from astropy.wcs import WCSSUB_CELESTIAL
-from astropy.coordinates import BaseCoordinateFrame
+
+try:
+    from astropy.coordinates import BaseCoordinateFrame
+except ImportError:  # astropy <= 0.3
+    from astropy.coordinates import SphericalCoordinatesBase as BaseCoordinateFrame
+
 from ..utils.wcs_utils import get_wcs_system_frame
 
 class Polygon(object):
@@ -147,7 +152,10 @@ class Path(object):
 
                 world_coords = self._coords.transform_to(celestial_system)
 
-                xw, yw = world_coords.spherical.lon.degree, world_coords.spherical.lat.degree
+                try:
+                    xw, yw = world_coords.spherical.lon.degree, world_coords.spherical.lat.degree
+                except AttributeError:  # astropy <= 0.3
+                    xw, yw = world_coords.lonangle.degree, world_coords.latangle.degree
 
                 return zip(*wcs_sky.wcs_world2pix(xw, yw, 0))
 
