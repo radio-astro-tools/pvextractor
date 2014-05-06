@@ -2,6 +2,7 @@ import numpy as np
 from astropy import units as u
 from astropy.wcs import WCSSUB_CELESTIAL, WCSSUB_SPECTRAL
 
+
 def get_spatial_scale(wcs, assert_square=True):
 
     # Code adapted from APLpy
@@ -68,47 +69,6 @@ def sanitize_wcs(mywcs):
         else:
             raise ValueError("Cube axes not in expected orientation: PPV")
     return mywcs
-
-
-def wcs_spacing(mywcs, spacing):
-    """
-    Return spacing in pixels
-
-    Parameters
-    ----------
-    wcs : `~astropy.wcs.WCS`
-    spacing : `~astropy.units.Quantity` or float
-    """
-
-    if spacing is not None:
-        if hasattr(spacing,'unit'):
-            if not spacing.unit.is_equivalent(u.arcsec):
-                raise TypeError("Spacing is not in angular units.")
-            else:
-                platescale = get_spatial_scale(mywcs)
-                newspacing = spacing.to(u.deg).value / platescale
-        else:
-            # if no units, assume pixels already
-            newspacing = spacing
-    else:
-        # if no spacing, return pixscale
-        newspacing = 1
-
-    return newspacing
-
-
-def pixel_to_wcs_spacing(mywcs, pspacing):
-    """
-    Return spacing in degrees
-
-    Parameters
-    ----------
-    wcs : `~astropy.wcs.WCS`
-    spacing : float
-    """
-    platescale = get_spatial_scale(mywcs)
-    wspacing = platescale * pspacing * u.deg
-    return wspacing
 
 
 def get_wcs_system_frame(wcs):
