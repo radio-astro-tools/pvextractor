@@ -20,8 +20,8 @@ in sky coordinates, and a spectral cube, extract a slice of the cube along
 that path, and along the spectral axis, producing a position-velocity or
 position-frequency slice. The path can be defined programmatically in pixel
 or world coordinates, but it can also be drawn interactively using a simple
-GUI. We also provide a Ds9 analysis plug-in that allows the path to be drawn
-in ds9, and the resulting slice shown in a new frame in Ds9.
+GUI. We also provide a DS9 analysis plug-in that allows the path to be drawn
+in DS9, and the resulting slice shown in a new frame in DS9.
 
 Defining a path programmatically
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -100,7 +100,7 @@ Using the graphical user interface
 
 .. TODO
 
-Extracting slices from Ds9
+Extracting slices from DS9
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. TODO
