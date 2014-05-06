@@ -111,9 +111,9 @@ def pixel_to_wcs_spacing(mywcs, pspacing):
     return wspacing
 
 
-def get_wcs_system_frame(mywcs):
+def get_wcs_system_frame(wcs):
     """TODO: move to astropy.wcs.utils"""
-    ct = mywcs.sub([wcs.WCSSUB_CELESTIAL]).wcs.ctype
+    ct = wcs.sub([WCSSUB_CELESTIAL]).wcs.ctype
     if 'GLON' in ct[0]:
         from astropy.coordinates import Galactic
         return Galactic
