@@ -10,7 +10,7 @@ from .utils.wcs_utils import get_spatial_scale, sanitize_wcs
 from .geometry import extract_slice
 from .pvwcs import slice_wcs
 
-from spectral_cube import SpectralCube, read as spectral_cube_read
+from spectral_cube import SpectralCube
 
 
 def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
@@ -58,7 +58,7 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
     """
 
     if isinstance(cube, (six.string_types, ImageHDU, PrimaryHDU)):
-        cube = spectral_cube_read(cube)
+        cube = SpectralCube.read(cube)
 
     if isinstance(cube, SpectralCube):
         wcs = cube.wcs

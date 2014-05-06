@@ -256,8 +256,8 @@ class PVSlicer(object):
         self.filename = filename
 
         try:
-            from spectral_cube import read
-            cube = read(filename, format='fits')
+            from spectral_cube import SpectralCube
+            cube = SpectralCube.read(filename, format='fits')
             self.array = cube._data
         except:
             warnings.warn("spectral_cube package is not available - using astropy.io.fits directly")
