@@ -90,6 +90,9 @@ class Path(object):
         if isinstance(xy_or_coords, list):
             self._xy = xy_or_coords
             self._coords = None
+        elif isinstance(xy_or_coords, zip):
+            self._xy = list(xy_or_coords)
+            self._coords = None
         else:
             self._xy = None
             self._coords = xy_or_coords
@@ -157,7 +160,7 @@ class Path(object):
                 except AttributeError:  # astropy <= 0.3
                     xw, yw = world_coords.lonangle.degree, world_coords.latangle.degree
 
-                return zip(*wcs_sky.wcs_world2pix(xw, yw, 0))
+                return list(zip(*wcs_sky.wcs_world2pix(xw, yw, 0)))
 
     def sample_points_edges(self, spacing, wcs=None):
 
