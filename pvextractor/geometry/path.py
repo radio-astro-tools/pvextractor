@@ -1,5 +1,7 @@
 from __future__ import print_function
 
+import sys
+
 import numpy as np
 from astropy.wcs import WCSSUB_CELESTIAL
 
@@ -90,7 +92,7 @@ class Path(object):
         if isinstance(xy_or_coords, list):
             self._xy = xy_or_coords
             self._coords = None
-        elif isinstance(xy_or_coords, zip):
+        elif sys.version_info[0] > 2 and isinstance(xy_or_coords, zip):
             self._xy = list(xy_or_coords)
             self._coords = None
         else:
