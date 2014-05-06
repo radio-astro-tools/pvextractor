@@ -4,7 +4,7 @@ from .line_slices import extract_line_slice
 from .poly_slices import extract_poly_slice
 
 
-def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None):
+def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None, wcs=None):
     """
     Given an array with shape (z, y, x), extract a (z, n) slice from a path
     with ``n`` segments.
@@ -37,10 +37,10 @@ def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None
         cube = np.nan_to_num(cube)
 
     if path.width is None:
-        x, y = path.sample_points(spacing=spacing)
+        x, y = path.sample_points(spacing=spacing, wcs=wcs)
         slice = extract_line_slice(cube, x, y, order=order)
     else:
-        polygons = path.sample_polygons(spacing=spacing)
+        polygons = path.sample_polygons(spacing=spacing, wcs=wcs)
         slice = extract_poly_slice(cube, polygons)
 
     return slice

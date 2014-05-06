@@ -2,8 +2,8 @@ from __future__ import print_function
 
 import numpy as np
 from astropy.wcs import WCSSUB_CELESTIAL
-from ..utils.wcs_utils import get_wcs_system_name
-
+from astropy.coordinates import BaseCoordinateFrame
+from ..utils.wcs_utils import get_wcs_system_frame
 
 class Polygon(object):
     def __init__(self, x, y):
@@ -68,7 +68,7 @@ class Path(object):
 
     Parameters
     ----------
-    coords : list or array coordinate object
+    xy_or_coords : list or Astropy coordinates
         The points defining the path. This can be passed as a list of (x, y)
         tuples, which is interpreted as being pixel positions, or it can be
         an Astropy coordinate object containing an array of 2 or more
@@ -81,41 +81,39 @@ class Path(object):
         units of angle.
     """
 
-    def __init__(self, coords=None, width=None):
-        self.coords = coords
+    def __init__(self, xy_or_coords, width=None):
+        if isinstance(xy_or_coords, list):
+            self._xy = xy_or_coords
+            self._coords = None
+        else:
+            self._xy = None
+            self._coords = xy_or_coords
         self.width = width
 
-    @property
-    def path_type(self):
-        if isinstance(self.coords, list):
-            return 'pixel'
-        else:
-            return 'world'
-
-    def add_point(self, coord):
+    def add_point(self, xy_or_coord):
         """
         Add a point to the path
 
         Parameters
         ----------
-        xy : tuple or Astropy coordinate
+        xy_or_coord : tuple or Astropy coordinate
             A tuple (x, y) containing the coordinates of the point to add (if
             the path is defined in pixel space), or an Astropy coordinate
             object (if it is defined in world coordinates).
         """
-        if self.path_type == 'pixel':
-            if isinstance(coord, tuple):
-                self.coords.append(coord)
+        if self._xy is not None:
+            if isinstance(xy_or_coord, tuple):
+                self._xy.append(xy_or_coord)
             else:
                 raise TypeError("Path is defined as a list of pixel "
-                                "coordinates, so ``coord`` should be "
-                                "a tuple of ``(x,y)`` pixel coordinates.")
+                                "coordinates, so `xy_or_coord` should be "
+                                "a tuple of `(x,y)` pixel coordinates.")
         else:
-            if isinstance(coord, BaseCoordinateFrame):
+            if isinstance(xy_or_coord, BaseCoordinateFrame):
                 raise NotImplementedError("Cannot yet append world coordinates to path")
             else:
                 raise TypeError("Path is defined in world coordinates, "
-                                "so ``coord`` should be an Astropy "
+                                "so `xy_or_coord` should be an Astropy "
                                 "coordinate object.")
 
     def get_xy(self, wcs=None):
@@ -131,11 +129,11 @@ class Path(object):
             The WCS transformation to assume in order to transform the path
             to pixel coordinates.
         """
-        if self.path_type == 'pixel':
-            return self.coords
+        if self._xy is not None:
+            return self._xy
         else:
             if wcs is None:
-                raise ValueError("``wcs`` is needed in order to compute "
+                raise ValueError("`wcs` is needed in order to compute "
                                  "the pixel coordinates")
             else:
 
@@ -145,17 +143,17 @@ class Path(object):
                 # Find the astropy name for the coordinates
                 # TODO: return a frame class with Astropy 0.4, since that can
                 # also contain equinox/epoch info.
-                celestial_system = get_wcs_system_name(wcs_sky)
+                celestial_system = get_wcs_system_frame(wcs_sky)
 
-                world_coords = getattr(self.coords, celestial_system)
+                world_coords = self._coords.transform_to(celestial_system)
 
-                xw, yw = world_coords.lonangle.degree, world_coords.latangle.degree
+                xw, yw = world_coords.spherical.lon.degree, world_coords.spherical.lat.degree
 
                 return zip(*wcs_sky.wcs_world2pix(xw, yw, 0))
 
-    def sample_points_edges(self, spacing):
+    def sample_points_edges(self, spacing, wcs=None):
 
-        x, y = zip(*self.get_xy())
+        x, y = zip(*self.get_xy(wcs=wcs))
 
         # Find the distance interval between all pairs of points
         dx = np.diff(x)
@@ -179,20 +177,20 @@ class Path(object):
 
         return d_sampled, x_sampled, y_sampled
 
-    def sample_points(self, spacing):
+    def sample_points(self, spacing, wcs=None):
 
-        d_sampled, x_sampled, y_sampled = self.sample_points_edges(spacing)
+        d_sampled, x_sampled, y_sampled = self.sample_points_edges(spacing, wcs=wcs)
 
         x_sampled = 0.5 * (x_sampled[:-1] + x_sampled[1:])
         y_sampled = 0.5 * (y_sampled[:-1] + y_sampled[1:])
 
         return x_sampled, y_sampled
 
-    def sample_polygons(self, spacing):
+    def sample_polygons(self, spacing, wcs=None):
 
-        x, y = zip(*self.get_xy())
+        x, y = zip(*self.get_xy(wcs=wcs))
 
-        d_sampled, x_sampled, y_sampled = self.sample_points_edges(spacing)
+        d_sampled, x_sampled, y_sampled = self.sample_points_edges(spacing, wcs=wcs)
 
         # Find the distance interval between all pairs of points
         dx = np.diff(x)
