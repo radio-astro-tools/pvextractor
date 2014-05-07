@@ -6,7 +6,7 @@ from astropy.utils.console import ProgressBar
 from .polygon import square_polygon_overlap_area
 
 
-def extract_poly_slice(cube, polygons, width=1.0):
+def extract_poly_slice(cube, polygons):
 
     nx = len(polygons)
     nz = cube.shape[0]

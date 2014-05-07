@@ -48,7 +48,7 @@ def extract_pv_slice_hdu(hdu, path, spacing=None, **kwargs):
 
     return fits.PrimaryHDU(data=pvslice, header=header)
 
-def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None):
+def extract_pv_slice(cube, path, spacing=1.0, order=3, respect_nan=True):
     """
     Given a position-position-velocity cube with dimensions (nv, ny, nx), and
     a path, extract a position-velocity slice.
