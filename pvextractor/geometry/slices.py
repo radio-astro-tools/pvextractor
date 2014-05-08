@@ -41,6 +41,6 @@ def extract_slice(cube, path, spacing=1.0, order=3, respect_nan=True, width=None
         slice = extract_line_slice(cube, x, y, order=order)
     else:
         polygons = path.sample_polygons(spacing=spacing)
-        slice = extract_poly_slice(cube, polygons, width=width)
+        slice = extract_poly_slice(cube, polygons)
 
     return slice
