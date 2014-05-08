@@ -1,2 +1,2 @@
 from .slices import extract_slice
-from .path import Path, WCSPath
+from .path import Path

@@ -1,14 +1,17 @@
 import numpy as np
 from astropy import units as u
-from astropy import wcs
+from astropy.wcs import WCSSUB_CELESTIAL, WCSSUB_SPECTRAL
 
-def get_pixel_scales(mywcs, assert_square=True):
-    # borrowed from aplpy
-    mywcs = mywcs.sub([wcs.WCSSUB_CELESTIAL])
-    cdelt = np.matrix(mywcs.wcs.get_cdelt())
-    pc = np.matrix(mywcs.wcs.get_pc())
+
+def get_spatial_scale(wcs, assert_square=True):
+
+    # Code adapted from APLpy
+
+    wcs = wcs.sub([WCSSUB_CELESTIAL])
+    cdelt = np.matrix(wcs.wcs.get_cdelt())
+    pc = np.matrix(wcs.wcs.get_pc())
     scale = np.array(cdelt * pc)
-    
+
     if assert_square:
         try:
             np.testing.assert_almost_equal(abs(cdelt[0,0]), abs(cdelt[0,1]))
@@ -17,7 +20,20 @@ def get_pixel_scales(mywcs, assert_square=True):
         except AssertionError:
             raise ValueError("Non-square pixels.  Please resample data.")
 
-    return abs(scale[0,0])
+    return abs(scale[0,0]) * u.Unit(wcs.wcs.cunit[0])
+
+
+def get_spectral_scale(wcs):
+
+    # Code adapted from APLpy
+
+    wcs = wcs.sub([WCSSUB_SPECTRAL])
+    cdelt = np.matrix(wcs.wcs.get_cdelt())
+    pc = np.matrix(wcs.wcs.get_pc())
+    scale = np.array(cdelt * pc)
+
+    return abs(scale[0,0]) * u.Unit(wcs.wcs.cunit[0])
+
 
 def sanitize_wcs(mywcs):
     pc = np.matrix(mywcs.wcs.get_pc())
@@ -54,51 +70,15 @@ def sanitize_wcs(mywcs):
             raise ValueError("Cube axes not in expected orientation: PPV")
     return mywcs
 
-def wcs_spacing(mywcs, spacing):
-    """
-    Return spacing in pixels
 
-    Parameters
-    ----------
-    wcs : `~astropy.wcs.WCS`
-    spacing : `~astropy.units.Quantity` or float
-    """
-
-    if spacing is not None:
-        if hasattr(spacing,'unit'):
-            if not spacing.unit.is_equivalent(u.arcsec):
-                raise TypeError("Spacing is not in angular units.")
-            else:
-                platescale = get_pixel_scales(mywcs)
-                newspacing = spacing.to(u.deg).value / platescale
-        else:
-            # if no units, assume pixels already
-            newspacing = spacing
-    else:
-        # if no spacing, return pixscale
-        newspacing = 1
-
-    return newspacing
-
-def pixel_to_wcs_spacing(mywcs, pspacing):
-    """
-    Return spacing in degrees
-
-    Parameters
-    ----------
-    wcs : `~astropy.wcs.WCS`
-    spacing : float
-    """
-    platescale = get_pixel_scales(mywcs)
-    wspacing = platescale * pspacing * u.deg
-    return wspacing
-
-def get_wcs_system_name(mywcs):
+def get_wcs_system_frame(wcs):
     """TODO: move to astropy.wcs.utils"""
-    ct = mywcs.sub([wcs.WCSSUB_CELESTIAL]).wcs.ctype
+    ct = wcs.sub([WCSSUB_CELESTIAL]).wcs.ctype
     if 'GLON' in ct[0]:
-        return 'galactic'
+        from astropy.coordinates import Galactic
+        return Galactic
     elif 'RA' in ct[0]:
-        return 'icrs'
+        from astropy.coordinates import ICRS
+        return ICRS
     else:
         raise ValueError("Unrecognized coordinate system")
