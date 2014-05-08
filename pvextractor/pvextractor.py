@@ -53,8 +53,8 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
 
     Returns
     -------
-    slice : `numpy.ndarray`
-        The position-velocity slice
+    slice : `PrimaryHDU`
+        The position-velocity slice, as a FITS HDU object
     """
 
     if isinstance(cube, (six.string_types, ImageHDU, PrimaryHDU)):
