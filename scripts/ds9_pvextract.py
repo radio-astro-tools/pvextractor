@@ -41,9 +41,9 @@ regions = load_regions_stringlist(rstringlist)
 if len(regions) == 0:
     sys.exit("No regions found")
 
-paths = paths_from_regions(regions, wcs=mywcs)
+paths = paths_from_regions(regions)
 
-hdu = pvextractor.extract_pv_slice_hdu(pf[0], paths[regionid], order=0)
+hdu = pvextractor.extract_pv_slice(pf[0], paths[regionid], order=0)
 
 with tempfile.NamedTemporaryFile(suffix='fits', delete=False) as tf:
     hdu.writeto(tf)
