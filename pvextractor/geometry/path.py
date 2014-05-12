@@ -10,7 +10,7 @@ try:
 except ImportError:  # astropy <= 0.3
     from astropy.coordinates import SphericalCoordinatesBase as BaseCoordinateFrame
 
-from ..utils.wcs_utils import get_wcs_system_frame
+from ..utils.wcs_utils import get_wcs_system_frame, get_spatial_scale
 
 class Polygon(object):
     def __init__(self, x, y):
@@ -231,17 +231,24 @@ class Path(object):
         y_beg = y_sampled - dy * spacing * 0.5
         y_end = y_sampled + dy * spacing * 0.5
 
-        x1 = x_beg - dy * self.width * 0.5
-        y1 = y_beg + dx * self.width * 0.5
+        if hasattr(self.width, 'unit'):
+            scale = get_spatial_scale(wcs)
+            width = (self.width / scale).decompose()
+        else:
+            width = self.width
 
-        x2 = x_end - dy * self.width * 0.5
-        y2 = y_end + dx * self.width * 0.5
 
-        x3 = x_end + dy * self.width * 0.5
-        y3 = y_end - dx * self.width * 0.5
+        x1 = x_beg - dy * width * 0.5
+        y1 = y_beg + dx * width * 0.5
 
-        x4 = x_beg + dy * self.width * 0.5
-        y4 = y_beg - dx * self.width * 0.5
+        x2 = x_end - dy * width * 0.5
+        y2 = y_end + dx * width * 0.5
+
+        x3 = x_end + dy * width * 0.5
+        y3 = y_end - dx * width * 0.5
+
+        x4 = x_beg + dy * width * 0.5
+        y4 = y_beg - dx * width * 0.5
 
         for i in range(len(x_sampled) - 1):
             p = Polygon([x1[i], x2[i], x3[i], x4[i]], [y1[i], y2[i], y3[i], y4[i]])
