@@ -8,11 +8,12 @@ from astropy.io.fits import PrimaryHDU, ImageHDU, Header
 
 from .utils.wcs_utils import get_spatial_scale, sanitize_wcs
 from .geometry import extract_slice
+from .geometry import path as paths
 from .utils.wcs_slicing import slice_wcs
 
 
 def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
-                     respect_nan=True):
+                     width=None, respect_nan=True):
     """
     Given a position-position-velocity cube with dimensions (nv, ny, nx), and
     a path, extract a position-velocity slice.
@@ -29,9 +30,12 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
         :class:`~numpy.ndarray` instance, the WCS information can optionally
         be specified with the ``wcs`` parameter. If a string, it should be
         the name of a file containing a spectral cube.
-    path : `Path`
+    path : `Path` or list of 2-tuples
         The path along which to define the position-velocity slice. The path
         can contain coordinates defined in pixel or world coordinates.
+    width : float
+        If the path is specified as a list of tuples, it will be converted to a
+        path with width specified by this keyword
     wcs : :class:`~astropy.wcs.WCS`, optional
         The WCS information to use for the cube. This should only be
         specified if the ``cube`` parameter is a plain
@@ -88,7 +92,12 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
             pixel_spacing = spacing
             world_spacing = None
 
-    pv_slice = extract_slice(cube, path, wcs=wcs, spacing=pixel_spacing, order=order, respect_nan=respect_nan)
+    # Allow path to be passed in as list of 2-tuples + a width
+    if not isinstance(path, paths.Path):
+        path = paths.Path(path, width=width)
+
+    pv_slice = extract_slice(cube, path, wcs=wcs, spacing=pixel_spacing,
+                             order=order, respect_nan=respect_nan)
 
     # Generate output header
     if wcs is None:
