@@ -35,7 +35,9 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
         can contain coordinates defined in pixel or world coordinates.
     width : float
         If the path is specified as a list of tuples, it will be converted to a
-        path with width specified by this keyword
+        path with width specified by this keyword.  The width can be an
+        angular-distance-equivalent astropy unit or a float specifying number
+        of pixels
     wcs : :class:`~astropy.wcs.WCS`, optional
         The WCS information to use for the cube. This should only be
         specified if the ``cube`` parameter is a plain
