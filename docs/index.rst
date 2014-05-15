@@ -48,20 +48,14 @@ strictly along the line). To give a path a non-zero width, simply use the
 
     >>> path3 = Path([(0., 0.), (10., 10.)], width=0.5)
 
-To define a path in world coordinates, you should make use of the
-:class:`~pvextractor.WCSPath` class::
-
-    >>> from pvextractor import WCSPath
-
-This class works similarly to :class:`~pvextractor.Path`, but takes a
-coordinate object with an array of values instead of a list of tuples. In
-addition, the width (if passed) should an Astropy
+To define a path in world coordinates, pass a coordinate array to the ``Path``
+object.   In addition, the width (if passed) should an Astropy
 :class:`~astropy.units.Quantity` object::
 
     >>> from astropy import units as u
     >>> from astropy.coordinates import Galactic
     >>> g = Galactic([3.4, 3.6] * u.deg, [0.5, 0.56] * u.deg)
-    >>> path4 = WCSPath(g, width=1 * u.arcsec)
+    >>> path4 = Path(g, width=1 * u.arcsec)
 
 Extracting a slice
 ^^^^^^^^^^^^^^^^^^
@@ -98,14 +92,51 @@ Advanced paths
 Using the graphical user interface
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. TODO
+The extractor GUI provdes the most direct interface available to the
+pixel-matched version of the position-velocity extractor.  It is simple to
+initialize:
+
+.. code-block:: python
+    from pvextractor.gui import PVSlicer
+    pv = PVSlicer('cube.fits')
+
+Click to select "control points" along the path, then press "enter" to expand
+the width of the slice, then click.  Optionally, "y" will show the exact
+regions extracted.
 
 Extracting slices from DS9
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. TODO
+There is a python command-line script that will be installed into your path
+along with ``pvextractor``.  You can invoke it from the command line, but the
+preferred approach is to load the
+tool into ds9.  First, determine the path to ``ds9_pvextract.ans``;
+it is in the ``scripts`` subdirectory of the source code.  Then start
+up ds9 with the analysis tool loaded
+
+.. code-block:: bash
+    ds9 -analysis load /path/to/pvextractor/scripts/ds9_pvextract.ans  &
+
+Then load any cube in ds9.  You can draw a line, a vector, or a "segment"; only
+the first one drawn will have any effect.  To extract the PV diagram, press the
+'x' key or click "PV Extractor" in the analysis menu.  Be patient - especially
+for big cubes, it may take a little while, and there is no progress bar.
+
+
+Position-Velocity slicing in Glue
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Glue_ has a position-velocity diagram extraction tool that allows arbitrary
+paths to be specified.  A beautiful `demo
+<https://www.dropbox.com/s/2jyu5l4zmbvut4u/PV%20Slice.mov>`_ shows this in
+action.
+
+
+
 
 .. toctree::
    :maxdepth: 1
 
    api.rst
+
+.. _Glue: http://www.glueviz.org/en/latest/
