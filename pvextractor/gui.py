@@ -372,7 +372,7 @@ class PVSlicer(object):
         self.pv_slice = extract_pv_slice(self.array, path)
 
         self.ax2.cla()
-        self.ax2.imshow(self.pv_slice, origin='lower', aspect='auto', interpolation='nearest')
+        self.ax2.imshow(self.pv_slice.data, origin='lower', aspect='auto', interpolation='nearest')
 
         self.fig.canvas.draw()
 
