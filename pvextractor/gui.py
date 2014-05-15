@@ -279,9 +279,10 @@ class PVSlicer(object):
         if clim is None:
             warnings.warn("clim not defined and will be determined from the data")
             # To work with large arrays, sub-sample the data
-            n1 = self.array.shape[0] / 10
-            n2 = self.array.shape[1] / 10
-            n3 = self.array.shape[2] / 10
+            # (but don't do it for small arrays)
+            n1 = max(self.array.shape[0] / 10, 1)
+            n2 = max(self.array.shape[1] / 10, 1)
+            n3 = max(self.array.shape[2] / 10, 1)
             sub_array = self.array[::n1,::n2,::n3]
             cmin = np.min(sub_array[~np.isnan(sub_array) & ~np.isinf(sub_array)])
             cmax = np.max(sub_array[~np.isnan(sub_array) & ~np.isinf(sub_array)])
