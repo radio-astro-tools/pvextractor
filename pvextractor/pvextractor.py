@@ -13,7 +13,7 @@ from .utils.wcs_slicing import slice_wcs
 
 
 def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
-                     width=None, respect_nan=True):
+                     respect_nan=True):
     """
     Given a position-position-velocity cube with dimensions (nv, ny, nx), and
     a path, extract a position-velocity slice.
@@ -33,11 +33,6 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
     path : `Path` or list of 2-tuples
         The path along which to define the position-velocity slice. The path
         can contain coordinates defined in pixel or world coordinates.
-    width : float
-        If the path is specified as a list of tuples, it will be converted to a
-        path with width specified by this keyword.  The width can be an
-        angular-distance-equivalent astropy unit or a float specifying number
-        of pixels
     wcs : :class:`~astropy.wcs.WCS`, optional
         The WCS information to use for the cube. This should only be
         specified if the ``cube`` parameter is a plain
@@ -94,9 +89,9 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
             pixel_spacing = spacing
             world_spacing = None
 
-    # Allow path to be passed in as list of 2-tuples + a width
+    # Allow path to be passed in as list of 2-tuples
     if not isinstance(path, paths.Path):
-        path = paths.Path(path, width=width)
+        path = paths.Path(path)
 
     pv_slice = extract_slice(cube, path, wcs=wcs, spacing=pixel_spacing,
                              order=order, respect_nan=respect_nan)
