@@ -68,11 +68,12 @@ class MovableSliceBox(object):
             path = Path(zip(self.box.x, self.box.y))
             path.width = self.box.width
 
-            for poly in path.sample_polygons(1):
-                self.box.axes.draw_artist(Polygon(zip(poly.x, poly.y),
-                                          ec='green', fc='none',
+            patches = path.to_patches(1, ec='green', fc='none',
                                           transform=self.box.axes.transData,
-                                          clip_on=True, clip_box=self.box.axes.bbox))
+                                          clip_on=True, clip_box=self.box.axes.bbox)
+
+            for patch in patches:
+                self.box.axes.draw_artist(patch)
 
     def on_press(self, event):
 

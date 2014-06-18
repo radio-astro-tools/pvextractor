@@ -237,7 +237,6 @@ class Path(object):
         else:
             width = self.width
 
-
         x1 = x_beg - dy * width * 0.5
         y1 = y_beg + dx * width * 0.5
 
@@ -255,3 +254,10 @@ class Path(object):
             polygons.append(p)
 
         return polygons
+
+    def to_patches(self, spacing, **kwargs):
+        from matplotlib.patches import Polygon as MPLPolygon
+        patches = []
+        for poly in self.sample_polygons(spacing):
+            patches.append(MPLPolygon(zip(poly.x, poly.y), **kwargs))
+        return patches
