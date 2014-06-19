@@ -43,8 +43,12 @@ def get_endpoints(x, y, width):
 
     # Pad with same values at ends, to find slope of perpendicular end
     # lines.
-    xp = np.pad(x, 1, mode='edge')
-    yp = np.pad(y, 1, mode='edge')
+    try:
+        xp = np.pad(x, 1, mode='edge')
+        yp = np.pad(y, 1, mode='edge')
+    except AttributeError:  # Numpy < 1.7
+        xp = np.hstack([x[0], x, x[-1]])
+        yp = np.hstack([y[0], y, y[-1]])
 
     dx = np.diff(xp)
     dy = np.diff(yp)
