@@ -58,8 +58,8 @@ For example::
 
     >>> slice3 = extract_pv_slice('my_cube.fits', path3)
 
-.. note:: If a pass is passed in in world coordinates, and the data passed is
-          a plain Numpy array, the WCS information should be passed as a
+.. note:: If a path is passed in in world coordinates, and the data are passed
+          as a plain Numpy array, the WCS information should be passed as a
           :class:`~astropy.wcs.WCS` object to the ``wcs=`` argument.
 
 .. Advanced paths
