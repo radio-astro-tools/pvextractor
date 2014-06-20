@@ -1,6 +1,9 @@
 Slicing in DS9
 ==============
 
+.. note:: This feature is experimental and does not work with all versions of
+          DS9 at this point.
+
 There is a python command-line script that will be installed into your path
 along with ``pvextractor``.  You can invoke it from the command line, but the
 preferred approach is to load the
