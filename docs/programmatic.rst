@@ -1,8 +1,8 @@
 Extracting slices programmatically
 ==================================
 
-Defining a path programmatically
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Defining a path
+^^^^^^^^^^^^^^^
 
 To define a path in pixel coordinates, import the :class:`~pvextractor.Path`
 class::

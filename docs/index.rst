@@ -17,7 +17,7 @@ analysis plug-in that allows the path to be drawn in DS9, and the resulting
 slice shown in a new frame in DS9. Finally, the slicing capability is available in Glue_.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
    programmatic.rst
    gui.rst
