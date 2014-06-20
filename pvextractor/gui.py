@@ -68,11 +68,12 @@ class MovableSliceBox(object):
             path = Path(zip(self.box.x, self.box.y))
             path.width = self.box.width
 
-            for poly in path.sample_polygons(1):
-                self.box.axes.draw_artist(Polygon(zip(poly.x, poly.y),
-                                          ec='green', fc='none',
+            patches = path.to_patches(1, ec='green', fc='none',
                                           transform=self.box.axes.transData,
-                                          clip_on=True, clip_box=self.box.axes.bbox))
+                                          clip_on=True, clip_box=self.box.axes.bbox)
+
+            for patch in patches:
+                self.box.axes.draw_artist(patch)
 
     def on_press(self, event):
 
@@ -177,45 +178,6 @@ class MovableSliceBox(object):
         self.box.figure.canvas.mpl_disconnect(self.cidmotion)
 
 
-class SliceBox(LineCollection):
-
-    def __init__(self, x0=None, y0=None, x1=None, y1=None, width=None, **kwargs):
-
-        super(SliceBox, self).__init__([], **kwargs)
-
-        self.x0 = x0
-        self.y0 = y0
-        self.x1 = x1
-        self.y1 = y1
-        self.width = width
-
-        self._update_segments()
-
-    def _update_segments(self):
-
-        if self.x0 is None:
-            return
-
-        # Find angle of normal to line
-        theta = np.arctan2(self.y1 - self.y0, self.x1 - self.x0) + np.pi / 2.
-
-        # Find displacement vectors
-        dx = np.cos(theta) * self.width / 2.
-        dy = np.sin(theta) * self.width / 2.
-
-        # Find central line
-        line = [(self.x0, self.y0), (self.x1, self.y1)]
-
-        # Find bounding rectangle
-        rect = [(self.x0 + dx, self.y0 + dy), (self.x0 - dx, self.y0 - dy),
-                (self.x1 - dx, self.y1 - dy), (self.x1 + dx, self.y1 + dy),
-                (self.x0 + dx, self.y0 + dy)]
-
-        self.set_segments((line, rect))
-        self.set_linestyles(('solid', 'dashed'))
-        self.set_linewidths((2, 1))
-
-
 class SliceCurve(LineCollection):
 
     def __init__(self, x=[], y=[], width=None, **kwargs):
@@ -242,11 +204,9 @@ class SliceCurve(LineCollection):
         rect = zip(np.hstack([x1,x2[::-1], x1[0]]),
                    np.hstack([y1,y2[::-1], y1[0]]))
 
-        self.set_segments((line, rect))
+        self.set_segments((list(line), list(rect)))
         self.set_linestyles(('solid', 'dashed'))
         self.set_linewidths((2, 1))
-
-
 
 
 class PVSlicer(object):
@@ -377,9 +337,9 @@ class PVSlicer(object):
 
         self.fig.canvas.draw()
 
-    def show(self):
+    def show(self, block=True):
         import matplotlib.pyplot as plt
-        plt.show()
+        plt.show(block=block)
 
     def update_slice(self, pos=None):
 

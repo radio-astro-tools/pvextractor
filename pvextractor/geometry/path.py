@@ -43,8 +43,12 @@ def get_endpoints(x, y, width):
 
     # Pad with same values at ends, to find slope of perpendicular end
     # lines.
-    xp = np.pad(x, 1, mode='edge')
-    yp = np.pad(y, 1, mode='edge')
+    try:
+        xp = np.pad(x, 1, mode='edge')
+        yp = np.pad(y, 1, mode='edge')
+    except AttributeError:  # Numpy < 1.7
+        xp = np.hstack([x[0], x, x[-1]])
+        yp = np.hstack([y[0], y, y[-1]])
 
     dx = np.diff(xp)
     dy = np.diff(yp)
@@ -237,7 +241,6 @@ class Path(object):
         else:
             width = self.width
 
-
         x1 = x_beg - dy * width * 0.5
         y1 = y_beg + dx * width * 0.5
 
@@ -255,3 +258,10 @@ class Path(object):
             polygons.append(p)
 
         return polygons
+
+    def to_patches(self, spacing, **kwargs):
+        from matplotlib.patches import Polygon as MPLPolygon
+        patches = []
+        for poly in self.sample_polygons(spacing):
+            patches.append(MPLPolygon(zip(poly.x, poly.y), **kwargs))
+        return patches
