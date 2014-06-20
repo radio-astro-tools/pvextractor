@@ -128,8 +128,8 @@ Position-Velocity slicing in Glue
 
 Glue_ has a position-velocity diagram extraction tool that allows arbitrary
 paths to be specified.  A beautiful `demo
-<https://www.dropbox.com/s/2jyu5l4zmbvut4u/PV%20Slice.mov>`_ shows this in
-action.
+<http://www.glueviz.org/en/latest/slice.html>`_ shows this in
+action (`movie <https://vimeo.com/96815794>`_).
 
 
 
