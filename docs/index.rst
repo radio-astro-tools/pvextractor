@@ -97,6 +97,7 @@ pixel-matched version of the position-velocity extractor.  It is simple to
 initialize:
 
 .. code-block:: python
+
     from pvextractor.gui import PVSlicer
     pv = PVSlicer('cube.fits')
 
@@ -115,6 +116,7 @@ it is in the ``scripts`` subdirectory of the source code.  Then start
 up ds9 with the analysis tool loaded
 
 .. code-block:: bash
+
     ds9 -analysis load /path/to/pvextractor/scripts/ds9_pvextract.ans  &
 
 Then load any cube in ds9.  You can draw a line, a vector, or a "segment"; only
