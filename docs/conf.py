@@ -152,4 +152,4 @@ if eval(setup_cfg.get('edit_on_github')):
     edit_on_github_doc_root = "docs"
 
 # Add SpectralCube intersphinx
-intersphinx_mapping['spectral_cube'] = ('http://spectral-cube.readthedocs.org/en/latest/', None)
+intersphinx_mapping['spectralcube'] = ('http://spectral-cube.readthedocs.org/en/latest/', None)
