@@ -69,7 +69,7 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
         wcs = cube.wcs
         # The fits HEADER will preserve the UNIT, but pvextractor does not care
         # what the flux units are
-        cube_ = cube.filled_data[...].value
+        cube = cube.filled_data[...].value
     else:
         wcs = None
 
