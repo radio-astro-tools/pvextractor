@@ -2,6 +2,7 @@ import numpy as np
 from numpy.testing import assert_allclose
 
 from astropy.io import fits
+from astropy.tests.helper import pytest
 
 from ..pvextractor import extract_pv_slice
 from ..geometry.path import Path
@@ -39,7 +40,7 @@ CTYPE4  = 'STOKES  '  /
 DATE-OBS= '1998-06-18T16:30:25.4'  /
 RESTFREQ=    1.42040571841E+09  /
 CELLSCAL= 'CONSTANT'  /
-BUNIT   = 'JY/BEAM '  /
+BUNIT   = 'K'  /
 EPOCH   =    2.00000000000E+03  /
 OBJECT  = 'M33     '           /
 OBSERVER= 'AT206   '  /
@@ -63,46 +64,49 @@ def make_test_hdu():
     hdu.data[:, :, 3, :] = np.nan
     return hdu
 
-
-def test_pv_slice_hdu_line_path_order_0():
+def make_test_spectralcube():
+    header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
     hdu = make_test_hdu()
-    path = Path([(1., -0.5), (1., 3.5)])
-    slice_hdu = extract_pv_slice(hdu, path, spacing=0.4, order=0)
-    assert_allclose(slice_hdu.data[0], np.array([1., 1., 0., 0., 0., 2., 2., 2., np.nan, np.nan]))
+    import spectral_cube.io.fits
+    cube = spectral_cube.io.fits.load_fits_cube(hdu)
+    assert cube.unit == 'K'
+    return cube
+
+@pytest.mark.parametrize('data', (make_test_hdu(), make_test_spectralcube()))
+class TestExtraction:
+    def test_pv_slice_hdu_line_path_order_0(self, data):
+        path = Path([(1., -0.5), (1., 3.5)])
+        slice_hdu = extract_pv_slice(data, path, spacing=0.4, order=0)
+        assert_allclose(slice_hdu.data[0], np.array([1., 1., 0., 0., 0., 2., 2., 2., np.nan, np.nan]))
 
 
-def test_pv_slice_hdu_line_path_order_3():
-    hdu = make_test_hdu()
-    path = Path([(1., -0.5), (1., 3.5)])
-    slice_hdu = extract_pv_slice(hdu, path, spacing=0.4, order=3)
-    assert_allclose(slice_hdu.data[0], np.array([np.nan, 0.9648, 0.4, -0.0368, 0.5622,
-                                                 1.6478, 1.9278, np.nan, np.nan, np.nan]))
+    def test_pv_slice_hdu_line_path_order_3(self, data):
+        path = Path([(1., -0.5), (1., 3.5)])
+        slice_hdu = extract_pv_slice(data, path, spacing=0.4, order=3)
+        assert_allclose(slice_hdu.data[0], np.array([np.nan, 0.9648, 0.4, -0.0368, 0.5622,
+                                                     1.6478, 1.9278, np.nan, np.nan, np.nan]))
 
 
-def test_pv_slice_hdu_poly_path():
-    hdu = make_test_hdu()
-    path = Path([(1., -0.5), (1., 3.5)], width=0.001)
-    slice_hdu = extract_pv_slice(hdu, path, spacing=0.4)
-    assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., np.nan, np.nan]))
+    def test_pv_slice_hdu_poly_path(self, data):
+        path = Path([(1., -0.5), (1., 3.5)], width=0.001)
+        slice_hdu = extract_pv_slice(data, path, spacing=0.4)
+        assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., np.nan, np.nan]))
 
 
-def test_pv_slice_hdu_line_path_order_0_no_nan():
-    hdu = make_test_hdu()
-    path = Path([(1., -0.5), (1., 3.5)])
-    slice_hdu = extract_pv_slice(hdu, path, spacing=0.4, order=0, respect_nan=False)
-    assert_allclose(slice_hdu.data[0], np.array([1., 1., 0., 0., 0., 2., 2., 2., 0., 0.]))
+    def test_pv_slice_hdu_line_path_order_0_no_nan(self, data):
+        path = Path([(1., -0.5), (1., 3.5)])
+        slice_hdu = extract_pv_slice(data, path, spacing=0.4, order=0, respect_nan=False)
+        assert_allclose(slice_hdu.data[0], np.array([1., 1., 0., 0., 0., 2., 2., 2., 0., 0.]))
 
 
-def test_pv_slice_hdu_line_path_order_3_no_nan():
-    hdu = make_test_hdu()
-    path = Path([(1., -0.5), (1., 3.5)])
-    slice_hdu = extract_pv_slice(hdu, path, spacing=0.4, order=3, respect_nan=False)
-    assert_allclose(slice_hdu.data[0], np.array([np.nan, 0.9648, 0.4, -0.0368, 0.5622,
-                                                 1.6478, 1.9278, 0.975, 0.0542, np.nan]))
+    def test_pv_slice_hdu_line_path_order_3_no_nan(self, data):
+        path = Path([(1., -0.5), (1., 3.5)])
+        slice_hdu = extract_pv_slice(data, path, spacing=0.4, order=3, respect_nan=False)
+        assert_allclose(slice_hdu.data[0], np.array([np.nan, 0.9648, 0.4, -0.0368, 0.5622,
+                                                     1.6478, 1.9278, 0.975, 0.0542, np.nan]))
 
 
-def test_pv_slice_hdu_poly_path_no_nan():
-    hdu = make_test_hdu()
-    path = Path([(1., -0.5), (1., 3.5)], width=0.001)
-    slice_hdu = extract_pv_slice(hdu, path, spacing=0.4, respect_nan=False)
-    assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., 0., 0.]))
+    def test_pv_slice_hdu_poly_path_no_nan(self, data):
+        path = Path([(1., -0.5), (1., 3.5)], width=0.001)
+        slice_hdu = extract_pv_slice(data, path, spacing=0.4, respect_nan=False)
+        assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., 0., 0.]))
