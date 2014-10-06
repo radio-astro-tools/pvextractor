@@ -147,8 +147,10 @@ class TestExtraction:
         assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., 0., 0.]))
 
 
-@pytest.mark.parametrize('data', (make_test_hdu(), make_test_spectralcube(), make_test_data_wcs()))
-def test_output_wcs(data):
+@pytest.mark.parametrize('make_data', (make_test_hdu, make_test_spectralcube, make_test_data_wcs))
+def test_output_wcs(make_data):
+
+    data = make_data()
 
     if isinstance(data, tuple):
         data, wcs = data
