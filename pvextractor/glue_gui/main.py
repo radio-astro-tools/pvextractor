@@ -88,10 +88,11 @@ class PVSlicer(Application, QMainWindow):
         if not fname:
             return
 
-        # TODO: need glue to save WCS
         pv_slice = self.slice._im_array
+        wcs = self.slice._wcs
+        header = wcs.to_header()
 
-        fits.writeto(fname, pv_slice, clobber=True)
+        fits.writeto(fname, pv_slice, header, clobber=True)
 
 
     def _load_data(self):
