@@ -41,8 +41,11 @@ def extract_poly_slice(cube, polygons):
                                                    polygon.x, polygon.y)
 
                 if area > 0:
-                    total_slice[:, i] += cube[:, ymin, xmin] * area
-                    total_area[:, i] += area
+                    dataslice = cube[:, ymin, xmin]
+                    good_values = np.isfinite(dataslice)
+                    dataslice[~good_values] = 0
+                    total_slice[:, i] += dataslice * area
+                    total_area[:, i] += area * good_values
 
     total_slice[total_area == 0.] = np.nan
     total_slice[total_area > 0.] /= total_area[total_area > 0.]
