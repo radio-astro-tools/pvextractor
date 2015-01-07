@@ -74,7 +74,6 @@ CRVAL2  =       -321214.698632 / [m s-1] Coordinate value at reference point
 LONPOLE =                180.0 / [deg] Native longitude of celestial pole
 LATPOLE =        30.5765277962 / [deg] Native latitude of celestial pole
 RESTFRQ =        1420405718.41 / [Hz] Line rest frequency
-EQUINOX =               2000.0 / [yr] Equinox of equatorial coordinates
 SPECSYS = 'BARYCENT'           / Reference frame of spectral coordinates
 MJD-OBS =         50982.687794 / [d] MJD of observation matching DATE-OBS
 DATE-OBS= '1998-06-18T16:30:25.4' / ISO-8601 observation date matching MJD-OBS
