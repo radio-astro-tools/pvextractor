@@ -6,7 +6,18 @@ from astropy.utils.console import ProgressBar
 from .polygon import square_polygon_overlap_area
 
 
-def extract_poly_slice(cube, polygons):
+def extract_poly_slice(cube, polygons, return_area=False):
+    """
+    Extract the values of polygonal chunks from a data cube
+
+    Parameters
+    ----------
+    cube : np.ndarray
+    polygons : 
+    return_area : bool
+        If set, return the area of each polygon and the sum over that area.
+        Otherwise, return the mean.
+    """
 
     nx = len(polygons)
     nz = cube.shape[0]
@@ -48,6 +59,8 @@ def extract_poly_slice(cube, polygons):
                         total_area[good_values, i] += area
 
     total_slice[total_area == 0.] = np.nan
+    if return_area:
+        return total_slice, total_area
     total_slice[total_area > 0.] /= total_area[total_area > 0.]
 
     print("")
