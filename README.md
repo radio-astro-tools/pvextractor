@@ -1,5 +1,6 @@
 Position-Velocity Diagram Extractor
 ===================================
+Full docs are available [here](http://pvextractor.readthedocs.org/en/latest/)
 
 Tool to slice through data cubes and extract position-velocity (or other)
 slices.
@@ -7,7 +8,8 @@ slices.
 There are a few [utilities](pvextractor/utils) related to header trimming &
 parsing.  Otherwise, there's one main function,
 [pvextractor](pvextractor/pvextractor.py), that takes a data cube and a series of
-points and returns a PV array.  It is based on scipy's map_coordinates.
+points and returns a PV array.  It is based on scipy's `map_coordinates` but also
+has .
 
 For an example use case, see [this notebook]
 (http://nbviewer.ipython.org/urls/raw.github.com/keflavich/pvextractor/master/examples/IRAS05358Slicing.ipynb)
