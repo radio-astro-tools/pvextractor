@@ -50,13 +50,13 @@ data to slice can be passed to this function as:
 For example::
 
     >>> from pvextractor import extract_pv_slice
-    >>> slice1 = extract_pv_slice(array, path1)
+    >>> slice1 = extract_pv_slice(array, path1)  # doctest: +SKIP
 
-    >>> from spectral_cube import read
-    >>> cube = read('my_cube.fits')
-    >>> slice2 = extract_pv_slice(cube, path3)
+    >>> from spectral_cube import SpectralCube
+    >>> cube = SpectralCube.read('my_cube.fits')  # doctest: +SKIP
+    >>> slice2 = extract_pv_slice(cube, path3)  # doctest: +SKIP
 
-    >>> slice3 = extract_pv_slice('my_cube.fits', path3)
+    >>> slice3 = extract_pv_slice('my_cube.fits', path3)  # doctest: +SKIP
 
 .. note:: If a path is passed in in world coordinates, and the data are passed
           as a plain Numpy array, the WCS information should be passed as a
