@@ -164,4 +164,9 @@ def test_output_wcs(make_data):
 
     reference = fits.header.Header.fromstring(SLICE_HEADER.strip(), sep='\n')
     for key in reference:
-        assert slice_hdu.header[key] == reference[key]
+        try:
+            # for floats, test that they're close because wcsutils is not always
+            # consistent between versions
+            np.testing.assert_almost_equal(slice_hdu.header[key], reference[key])
+        except TypeError:
+            assert slice_hdu.header[key] == reference[key]
