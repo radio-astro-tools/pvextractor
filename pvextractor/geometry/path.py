@@ -88,7 +88,8 @@ class Path(object):
         positions, the width should be given (if passed) as a floating-point
         value in pixels. If ``coords`` is a coordinate object, the width
         should be passed as a :class:`~astropy.units.Quantity` instance with
-        units of angle.
+        units of angle. If None, interpolation is used at the position of the
+        path.
     """
 
     def __init__(self, xy_or_coords, width=None):

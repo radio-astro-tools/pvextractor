@@ -29,13 +29,14 @@ class PathFromCenter(Path):
         positions, the width should be given (if passed) as a floating-point
         value in pixels. If ``coords`` is a coordinate object, the width
         should be passed as a :class:`~astropy.units.Quantity` instance with
-        units of angle.
+        units of angle. If None, interpolation is used at the position of the
+        path.
 
     Notes
     -----
     The orientation of the final path will be such that for a position angle of
-    zero, the path goes from North to South. For a position angle of 90
-    degrees, the path will go from East to West.
+    zero, the path goes from South to North. For a position angle of 90
+    degrees, the path will go from West to East.
     """
 
     def __init__(self, center, length, angle, sample=2, width=None):
@@ -60,7 +61,7 @@ class PathFromCenter(Path):
 
         # Find the end points of the path
         clon, clat = center.spherical.lon, center.spherical.lat
-        plat = clat + np.linspace(length * 0.5, -length * 0.5, sample)
+        plat = clat + np.linspace(-length * 0.5, length * 0.5, sample)
         x, y, z = UnitSphericalRepresentation(clon, plat).to_cartesian().xyz.value
 
         # Rotate around central point
