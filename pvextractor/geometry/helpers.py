@@ -66,6 +66,9 @@ class PathFromCenter(Path):
 
         # Rotate around central point
 
+        # Because longitude increases to the left, we have to take -angle
+        angle = -angle
+
         # We rotate (x,y,z) around (c1,c2,c3) by making use of the following
         # equations:
         #
