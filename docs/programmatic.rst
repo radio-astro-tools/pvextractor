@@ -93,9 +93,3 @@ The returned slice is an Astropy :class:`~astropy.io.fits.PrimaryHDU` instance,
 which you can write to disk using::
 
     >>> slice1.writeto('my_slice.fits')
-
-.. Advanced paths
-.. ^^^^^^^^^^^^^^
-
-.. This section will describe how to easily set up common paths, e.g. starting
-.. from a point and with a given position angle.
