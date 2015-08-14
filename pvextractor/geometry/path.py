@@ -232,7 +232,7 @@ class Path(object):
 
         if hasattr(self.width, 'unit'):
             scale = get_spatial_scale(wcs)
-            width = (self.width / scale).decompose()
+            width = (self.width / scale).decompose().value
         else:
             width = self.width
 
@@ -258,5 +258,5 @@ class Path(object):
         from matplotlib.patches import Polygon as MPLPolygon
         patches = []
         for poly in self.sample_polygons(spacing, wcs=wcs):
-            patches.append(MPLPolygon(zip(poly.x, poly.y), **kwargs))
+            patches.append(MPLPolygon(list(zip(poly.x, poly.y)), **kwargs))
         return patches
