@@ -4,6 +4,9 @@ Extracting slices programmatically
 Defining a path
 ^^^^^^^^^^^^^^^
 
+Pixel coordinates
+~~~~~~~~~~~~~~~~~
+
 To define a path in pixel coordinates, import the :class:`~pvextractor.Path`
 class::
 
@@ -26,6 +29,9 @@ strictly along the line). To give a path a non-zero width, simply use the
 
     >>> path3 = Path([(0., 0.), (10., 10.)], width=0.5)
 
+World coordinates
+~~~~~~~~~~~~~~~~~
+
 To define a path in world coordinates, pass a coordinate array to the ``Path``
 object.   In addition, the width (if passed) should an Astropy
 :class:`~astropy.units.Quantity` object::
@@ -34,6 +40,24 @@ object.   In addition, the width (if passed) should an Astropy
     >>> from astropy.coordinates import Galactic
     >>> g = Galactic([3.4, 3.6] * u.deg, [0.5, 0.56] * u.deg)
     >>> path4 = Path(g, width=1 * u.arcsec)
+
+In additon to the :class:`~pvextractor.Path` class, we provide a convenience
+:class:`~pvextractor.PathFromCenter` class that can be used for cases where the
+center and position angle of the path are known (rather than the end points of
+the path). This class is used as follows:
+
+    >>> from pvextractor import PathFromCenter
+    >>> from astropy import units as u
+    >>> from astropy.coordinates import Galactic
+    >>> g = Galactic(3 * u.deg, 5 * u.deg)
+    >>> path5 = PathFromCenter(center=g,
+    ...                        length=1 * u.arcmin,
+    ...                        angle=30 * u.deg,
+    ...                        width=1 * u.arcsec)
+
+The position angle is defined counter-clockwise from North, and the direction
+of the path is such that for a position angle of zero, the path is defined from
+South to North.
 
 Extracting a slice
 ^^^^^^^^^^^^^^^^^^
@@ -61,6 +85,13 @@ For example::
 .. note:: If a path is passed in in world coordinates, and the data are passed
           as a plain Numpy array, the WCS information should be passed as a
           :class:`~astropy.wcs.WCS` object to the ``wcs=`` argument.
+
+Saving the slice
+^^^^^^^^^^^^^^^^
+
+The returned slice is an Astropy :class:`~astropy.io.fits.PrimaryHDU` instance, which you can write to disk using::
+
+    >>> slice1.writeto('my_slice.fits')
 
 .. Advanced paths
 .. ^^^^^^^^^^^^^^

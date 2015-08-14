@@ -39,7 +39,7 @@ class PathFromCenter(Path):
     degrees, the path will go from West to East.
     """
 
-    def __init__(self, center, length, angle, sample=2, width=None):
+    def __init__(self, center, length=None, angle=None, sample=2, width=None):
 
         # Check input types
 
