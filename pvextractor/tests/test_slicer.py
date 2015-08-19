@@ -113,25 +113,21 @@ class TestExtraction:
         slice_hdu = extract_pv_slice(data, path, spacing=0.4, order=0)
         assert_allclose(slice_hdu.data[0], np.array([1., 1., 0., 0., 0., 2., 2., 2., np.nan, np.nan]))
 
-
     def test_pv_slice_hdu_line_path_order_3(self, data):
         path = Path([(1., -0.5), (1., 3.5)])
         slice_hdu = extract_pv_slice(data, path, spacing=0.4, order=3)
         assert_allclose(slice_hdu.data[0], np.array([np.nan, 0.9648, 0.4, -0.0368, 0.5622,
                                                      1.6478, 1.9278, np.nan, np.nan, np.nan]))
 
-
     def test_pv_slice_hdu_poly_path(self, data):
         path = Path([(1., -0.5), (1., 3.5)], width=0.001)
         slice_hdu = extract_pv_slice(data, path, spacing=0.4)
-        assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., np.nan, np.nan]))
-
+        assert_allclose(slice_hdu.data[0], np.array([1., 1., 0.5, 0., 0., 2., 2., 2., np.nan, np.nan]))
 
     def test_pv_slice_hdu_line_path_order_0_no_nan(self, data):
         path = Path([(1., -0.5), (1., 3.5)])
         slice_hdu = extract_pv_slice(data, path, spacing=0.4, order=0, respect_nan=False)
         assert_allclose(slice_hdu.data[0], np.array([1., 1., 0., 0., 0., 2., 2., 2., 0., 0.]))
-
 
     def test_pv_slice_hdu_line_path_order_3_no_nan(self, data):
         path = Path([(1., -0.5), (1., 3.5)])
@@ -139,11 +135,10 @@ class TestExtraction:
         assert_allclose(slice_hdu.data[0], np.array([np.nan, 0.9648, 0.4, -0.0368, 0.5622,
                                                      1.6478, 1.9278, 0.975, 0.0542, np.nan]))
 
-
     def test_pv_slice_hdu_poly_path_no_nan(self, data):
         path = Path([(1., -0.5), (1., 3.5)], width=0.001)
         slice_hdu = extract_pv_slice(data, path, spacing=0.4, respect_nan=False)
-        assert_allclose(slice_hdu.data[0], np.array([1., 1., 1., 0., 0., 1., 2., 2., 0., 0.]))
+        assert_allclose(slice_hdu.data[0], np.array([1., 1., 0.5, 0., 0., 2., 2., 1., 0., 0.]))
 
 
 @pytest.mark.parametrize('make_data', (make_test_hdu, make_test_spectralcube, make_test_data_wcs))

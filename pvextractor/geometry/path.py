@@ -229,11 +229,11 @@ class Path(object):
 
         polygons = []
 
-        x_beg = x_sampled - dx * spacing * 0.5
-        x_end = x_sampled + dx * spacing * 0.5
+        x_beg = x_sampled
+        x_end = x_sampled + dx * spacing
 
-        y_beg = y_sampled - dy * spacing * 0.5
-        y_end = y_sampled + dy * spacing * 0.5
+        y_beg = y_sampled
+        y_end = y_sampled + dy * spacing
 
         if hasattr(self.width, 'unit'):
             scale = get_spatial_scale(wcs)
