@@ -1,7 +1,9 @@
 import numpy as np
 
 from astropy import units as u
-from astropy.coordinates import SkyCoord, UnitSphericalRepresentation, CartesianRepresentation
+from astropy.coordinates import (SkyCoord, BaseCoordinateFrame,
+                                 UnitSphericalRepresentation,
+                                 CartesianRepresentation)
 
 from .path import Path
 
@@ -43,7 +45,7 @@ class PathFromCenter(Path):
 
         # Check input types
 
-        if not isinstance(center, SkyCoord):
+        if not isinstance(center, (SkyCoord, BaseCoordinateFrame)):
             raise TypeError("The central position should be given as a SkyCoord object")
 
         if not isinstance(length, u.Quantity) or not length.unit.is_equivalent(u.deg):
