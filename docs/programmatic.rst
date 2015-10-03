@@ -92,4 +92,4 @@ Saving the slice
 The returned slice is an Astropy :class:`~astropy.io.fits.PrimaryHDU` instance,
 which you can write to disk using::
 
-    >>> slice1.writeto('my_slice.fits')
+    >>> slice1.writeto('my_slice.fits')  # doctest: +SKIP
