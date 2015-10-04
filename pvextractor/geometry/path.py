@@ -88,7 +88,8 @@ class Path(object):
         positions, the width should be given (if passed) as a floating-point
         value in pixels. If ``coords`` is a coordinate object, the width
         should be passed as a :class:`~astropy.units.Quantity` instance with
-        units of angle.
+        units of angle. If None, interpolation is used at the position of the
+        path.
     """
 
     def __init__(self, xy_or_coords, width=None):
@@ -231,7 +232,7 @@ class Path(object):
 
         if hasattr(self.width, 'unit'):
             scale = get_spatial_scale(wcs)
-            width = (self.width / scale).decompose()
+            width = (self.width / scale).decompose().value
         else:
             width = self.width
 
@@ -257,5 +258,5 @@ class Path(object):
         from matplotlib.patches import Polygon as MPLPolygon
         patches = []
         for poly in self.sample_polygons(spacing, wcs=wcs):
-            patches.append(MPLPolygon(zip(poly.x, poly.y), **kwargs))
+            patches.append(MPLPolygon(list(zip(poly.x, poly.y)), **kwargs))
         return patches
