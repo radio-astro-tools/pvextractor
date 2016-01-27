@@ -20,7 +20,7 @@ For an example use case, see [this notebook]
 Minimal Install Instructions
 ----------------------------
 
-    pip install http://ds9.si.edu/download/pyds9/pyds9-1.7.tar.gz
+    pip install https://github.com/ericmandel/pyds9/archive/master.zip
     pip install https://github.com/radio-astro-tools/spectral-cube/archive/master.zip
     pip install https://github.com/radio-astro-tools/pvextractor/archive/master.zip
 
