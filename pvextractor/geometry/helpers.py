@@ -63,7 +63,11 @@ class PathFromCenter(Path):
 
         # Find the end points of the path
         clon, clat = center.spherical.lon, center.spherical.lat
-        plat = clat + np.linspace(-length * 0.5, length * 0.5, sample)
+        try:
+            plat = clat + np.linspace(-length * 0.5, length * 0.5, sample)
+        except ValueError:  # Numpy 1.10+
+            plat = clat + np.linspace(-length.value * 0.5, length.value * 0.5, sample) * length.unit
+
         x, y, z = UnitSphericalRepresentation(clon, plat).to_cartesian().xyz.value
 
         # Rotate around central point
