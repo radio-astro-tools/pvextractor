@@ -10,13 +10,12 @@ from ..geometry.path import Path
 
 # Use a similar header as in the spectral_cube package
 HEADER_STR = """
-SIMPLE  =                    T / Written by IDL:  Fri Feb 20 13:46:36 2009
+SIMPLE  =                    T  /
 BITPIX  =                  -32  /
-NAXIS   =                    4  /
+NAXIS   =                    3  /
 NAXIS1  =                    3  /
 NAXIS2  =                    4  /
 NAXIS3  =                    5  /
-NAXIS4  =                    1  /
 EXTEND  =                    T  /
 BSCALE  =    1.00000000000E+00  /
 BZERO   =    0.00000000000E+00  /
@@ -34,10 +33,6 @@ CDELT3  =    1.28821496879E+03  /
 CRPIX3  =    1.00000000000E+00  /
 CRVAL3  =   -3.21214698632E+05  /
 CTYPE3  = 'VELO-HEL'  /
-CDELT4  =    1.00000000000E+00  /
-CRPIX4  =    1.00000000000E+00  /
-CRVAL4  =    1.00000000000E+00  /
-CTYPE4  = 'STOKES  '  /
 DATE-OBS= '1998-06-18T16:30:25.4'  /
 RESTFREQ=    1.42040571841E+09  /
 CELLSCAL= 'CONSTANT'  /
@@ -66,7 +61,7 @@ CRPIX2  =                  1.0 / Pixel coordinate of reference point
 CDELT1  =    0.000222222224507 / [deg] Coordinate increment at reference point
 CDELT2  =        1288.21496879 / [m s-1] Coordinate increment at reference point
 CUNIT1  = 'deg'                / Units of coordinate increment and value
-CUNIT2  = 'm s-1'              / Units of coordinate increment and value
+CUNIT2  = 'm/s'                / Units of coordinate increment and value
 CTYPE1  = 'OFFSET'             / Coordinate type code
 CTYPE2  = 'VOPT'               / Optical velocity (linear)
 CRVAL1  =                  0.0 / [deg] Coordinate value at reference point
@@ -84,16 +79,18 @@ def make_test_hdu():
     header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
     hdu = fits.PrimaryHDU(header=header)
     import numpy as np
-    hdu.data = np.zeros((1, 5, 4, 3))
-    hdu.data[:, :, 0, :] = 1.
-    hdu.data[:, :, 2, :] = 2.
-    hdu.data[:, :, 3, :] = np.nan
+    hdu.data = np.zeros((5, 4, 3))
+    hdu.data[:, 0, :] = 1.
+    hdu.data[:, 2, :] = 2.
+    hdu.data[:, 3, :] = np.nan
     return hdu
 
 
 def make_test_spectralcube():
     header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
+    assert header['NAXIS']==3
     hdu = make_test_hdu()
+    assert hdu.header['NAXIS']==3
     import spectral_cube.io.fits
     cube = spectral_cube.io.fits.load_fits_cube(hdu)
     assert cube.unit == 'K'
