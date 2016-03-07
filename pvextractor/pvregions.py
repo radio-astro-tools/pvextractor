@@ -139,8 +139,8 @@ def vector_to_path(vector_region):
     # -dx because we're in the flippy coordsys
     C2 = csystems[vector_region.coord_format](C1.spherical.lon - dx, C1.spherical.lat + dy)
 
-    C = csystems[vector_region.coord_format]([C1.spherical.lon,C2.spherical.lon],
-                                             [C1.spherical.lat,C2.spherical.lat])
+    C = csystems[vector_region.coord_format]([C1.spherical.lon.deg,C2.spherical.lon.deg]*u.deg,
+                                             [C1.spherical.lat.deg,C2.spherical.lat.deg]*u.deg)
 
     p = path.Path(C)
 
