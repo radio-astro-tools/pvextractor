@@ -61,7 +61,7 @@ CRPIX2  =                  1.0 / Pixel coordinate of reference point
 CDELT1  =    0.000222222224507 / [deg] Coordinate increment at reference point
 CDELT2  =        1288.21496879 / [m s-1] Coordinate increment at reference point
 CUNIT1  = 'deg'                / Units of coordinate increment and value
-CUNIT2  = 'm s-1'              / Units of coordinate increment and value
+CUNIT2  = 'm/s'                / Units of coordinate increment and value
 CTYPE1  = 'OFFSET'             / Coordinate type code
 CTYPE2  = 'VOPT'               / Optical velocity (linear)
 CRVAL1  =                  0.0 / [deg] Coordinate value at reference point
@@ -79,10 +79,10 @@ def make_test_hdu():
     header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
     hdu = fits.PrimaryHDU(header=header)
     import numpy as np
-    hdu.data = np.zeros((1, 5, 4))
-    hdu.data[:, :, 0] = 1.
-    hdu.data[:, :, 2] = 2.
-    hdu.data[:, :, 3] = np.nan
+    hdu.data = np.zeros((5, 4, 3))
+    hdu.data[:, 0, :] = 1.
+    hdu.data[:, 2, :] = 2.
+    hdu.data[:, 3, :] = np.nan
     return hdu
 
 
