@@ -10,13 +10,12 @@ from ..geometry.path import Path
 
 # Use a similar header as in the spectral_cube package
 HEADER_STR = """
-SIMPLE  =                    T / Written by IDL:  Fri Feb 20 13:46:36 2009
+SIMPLE  =                    T  /
 BITPIX  =                  -32  /
-NAXIS   =                    4  /
+NAXIS   =                    3  /
 NAXIS1  =                    3  /
 NAXIS2  =                    4  /
 NAXIS3  =                    5  /
-NAXIS4  =                    1  /
 EXTEND  =                    T  /
 BSCALE  =    1.00000000000E+00  /
 BZERO   =    0.00000000000E+00  /
@@ -34,10 +33,6 @@ CDELT3  =    1.28821496879E+03  /
 CRPIX3  =    1.00000000000E+00  /
 CRVAL3  =   -3.21214698632E+05  /
 CTYPE3  = 'VELO-HEL'  /
-CDELT4  =    1.00000000000E+00  /
-CRPIX4  =    1.00000000000E+00  /
-CRVAL4  =    1.00000000000E+00  /
-CTYPE4  = 'STOKES  '  /
 DATE-OBS= '1998-06-18T16:30:25.4'  /
 RESTFREQ=    1.42040571841E+09  /
 CELLSCAL= 'CONSTANT'  /
