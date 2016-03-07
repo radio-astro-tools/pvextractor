@@ -79,16 +79,18 @@ def make_test_hdu():
     header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
     hdu = fits.PrimaryHDU(header=header)
     import numpy as np
-    hdu.data = np.zeros((1, 5, 4, 3))
-    hdu.data[:, :, 0, :] = 1.
-    hdu.data[:, :, 2, :] = 2.
-    hdu.data[:, :, 3, :] = np.nan
+    hdu.data = np.zeros((1, 5, 4))
+    hdu.data[:, :, 0] = 1.
+    hdu.data[:, :, 2] = 2.
+    hdu.data[:, :, 3] = np.nan
     return hdu
 
 
 def make_test_spectralcube():
     header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
+    assert header['NAXIS']==3
     hdu = make_test_hdu()
+    assert hdu.header['NAXIS']==3
     import spectral_cube.io.fits
     cube = spectral_cube.io.fits.load_fits_cube(hdu)
     assert cube.unit == 'K'
