@@ -3,7 +3,7 @@
 PV extract a ds9 image with regions on it
 """
 import sys
-import ds9
+import pyds9
 #import pyregion
 from astropy import wcs
 import pvextractor
@@ -12,7 +12,7 @@ from astropy.io import fits
 import tempfile
 
 xpa = sys.argv[1]
-dd = ds9.ds9(xpa)
+dd = pyds9.ds9(xpa)
 pf = dd.get_pyfits()
 # Have to get the raw header; ds9 processes it to drop length-1 axes
 header = fits.Header.fromstring(dd.get('fits header'),sep="\n")
