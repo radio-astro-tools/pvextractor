@@ -355,7 +355,6 @@ class PVSlicer(object):
         if self.pv_slice is None:
             return
 
-        from astropy.io import fits
         self.pv_slice.writeto(plot_name, clobber=True)
         print("Saved file to: ", plot_name)
 
@@ -368,8 +367,11 @@ class PVSlicer(object):
 
         self.pv_slice = extract_pv_slice(self.array, path)
 
+        import matplotlib.pyplot as plt
+
         self.ax2.cla()
-        self.ax2.imshow(self.pv_slice.data, origin='lower', aspect='auto', interpolation='nearest')
+        self.ax2.imshow(self.pv_slice.data, origin='lower', aspect='auto',
+                        interpolation='nearest', cmap=plt.cm.gray)
 
         self.fig.canvas.draw()
 
