@@ -109,7 +109,7 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
 
 def _is_spectral_cube(obj):
     try:
-        from spectral_cube import SpectralCube
-        return isinstance(obj, SpectralCube)
+        from spectral_cube import BaseSpectralCube
+        return isinstance(obj, BaseSpectralCube)
     except ImportError:
         return False
