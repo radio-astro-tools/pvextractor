@@ -22,8 +22,11 @@ env:
         # The following versions are the 'default' for tests, unless
         # overidden underneath. They are defined here in order to save having
         # to repeat them for all configurations.
-        - SETUP_CMD='test --coverage'
-        - NUMPY_VERSION=stable
+        # We run the tests in 'boxed' mode, i.e. one subprocess per test,
+        # because there are memory leaks in Astropy that currently cause the
+        # memory to go up to levels that cause the tests to be slow.
+        - SETUP_CMD='test -a "--boxed"'
+        - NUMPY_VERSION=1.10
         - ASTROPY_VERSION=stable
         - CONDA_DEPENDENCIES='matplotlib scipy'
         - PIP_DEPENDENCIES='spectral-cube'
@@ -32,6 +35,7 @@ env:
         - SETUP_CMD='egg_info'
         - # run with default settings
         - ASTROPY_VERSION='development'
+        - CONDA_DEPENDENCIES='' PIP_DEPENDENCIES='pytest-xdist'
 
 matrix:
     include:
