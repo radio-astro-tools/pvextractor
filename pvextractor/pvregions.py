@@ -105,9 +105,9 @@ def line_to_path(region):
 
     for x in region.coord_list:
         if l is None:
-            l = x.to(u.deg).value
+            l = x
         else:
-            b = x.to(u.deg).value
+            b = x
             if l is not None and b is not None:
                 endpoints.append((l,b))
                 l,b = None,None
