@@ -11,12 +11,12 @@ from ..gui import PVSlicer
 from .test_slicer import make_test_hdu
 
 try:
-    import PyQt4
-    PYQT4OK = True
+    import PyQt5
+    PYQT5OK = True
 except ImportError:
-    PYQT4OK = False
+    PYQT5OK = False
 
-@pytest.mark.skipif('not PYQT4OK')
+@pytest.mark.skipif('not PYQT5OK')
 def test_gui():
     hdu = make_test_hdu()
 
