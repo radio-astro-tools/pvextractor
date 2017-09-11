@@ -240,6 +240,10 @@ class PVSlicer(object):
         self.backend = backend
 
         import matplotlib as mpl
+
+        if mpl.__version__[0] == '2':
+            raise ImportError("The pvextractor GUI is not compatible with matplotlib >=2.")
+
         mpl.use(self.backend)
         import matplotlib.pyplot as plt
 
