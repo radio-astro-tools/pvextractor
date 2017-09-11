@@ -216,7 +216,7 @@ def unitless(x):
 
 class PVSlicer(object):
 
-    def __init__(self, filename_or_cube, backend="Qt4Agg", clim=None):
+    def __init__(self, filename_or_cube, backend="Qt5Agg", clim=None):
 
 
         try:
