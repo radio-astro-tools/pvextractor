@@ -232,7 +232,7 @@ class PVSlicer(object):
             warnings.warn("spectral_cube package is not available - using astropy.io.fits directly")
             from astropy.io import fits
             self.array = fits.getdata(filename_or_cube)
-            self.shape =array.shape
+            self.shape = array.shape
             self.ok_mask = np.isfinite(self.array)
             if self.array.ndim != 3:
                 raise ValueError("dataset does not have 3 dimensions (install the spectral_cube package to avoid this error)")
