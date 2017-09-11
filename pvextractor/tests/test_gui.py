@@ -9,7 +9,13 @@ from ..gui import PVSlicer
 
 from .test_slicer import make_test_hdu
 
+try:
+    import PyQt4
+    PYQT4OK = True
+except ImportError:
+    PYQT4OK = False
 
+@pytest.mark.skipif('not PYQT4OK')
 def test_gui():
     hdu = make_test_hdu()
 
