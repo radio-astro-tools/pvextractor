@@ -16,7 +16,13 @@ try:
 except ImportError:
     PYQT5OK = False
 
-@pytest.mark.skipif('not PYQT5OK')
+import matplotlib as mpl
+if mpl.__version__[0] == '2':
+    MPLOK = False
+else:
+    MPLOK = True
+
+@pytest.mark.skipif('not PYQT5OK or not MPLOK')
 def test_gui():
     hdu = make_test_hdu()
 

@@ -105,10 +105,18 @@ def line_to_path(region):
 
     for x in region.coord_list:
         if l is None:
-            l = x.to(u.deg).value
+            if hasattr(x,'unit'):
+                l = x.to(u.deg).value
+            else:
+                l = x
         else:
-            b = x.to(u.deg).value
+            if hasattr(x,'unit'):
+                b = x.to(u.deg).value
+            else:
+                b = x
             if l is not None and b is not None:
+                if hasattr(b,'unit') or hasattr(l,'unit'):
+                    raise TypeError("Can't work with a list of quantities")
                 endpoints.append((l,b))
                 l,b = None,None
             else:
