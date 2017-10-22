@@ -255,9 +255,9 @@ class PVSlicer(object):
             warnings.warn("clim not defined and will be determined from the data")
             # To work with large arrays, sub-sample the data
             # (but don't do it for small arrays)
-            n1 = max(self.shape[0] / 10, 1)
-            n2 = max(self.shape[1] / 10, 1)
-            n3 = max(self.shape[2] / 10, 1)
+            n1 = int(np.round(max(self.shape[0] / 10, 1)))
+            n2 = int(np.round(max(self.shape[1] / 10, 1)))
+            n3 = int(np.round(max(self.shape[2] / 10, 1)))
             if hasattr(self,'cube'):
                 sub_cube = self.cube[::n1,::n2,::n3]
                 cmin = sub_cube.min().value
