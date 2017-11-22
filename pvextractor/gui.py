@@ -192,7 +192,7 @@ class SliceCurve(LineCollection):
 
     def _update_segments(self):
 
-        if not self.x:
+        if not self.x or not self.width:
             return
 
         x1, y1, x2, y2 = get_endpoints(self.x, self.y, self.width)
