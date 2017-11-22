@@ -12,7 +12,7 @@ from astropy.io import fits
 import tempfile
 
 xpa = sys.argv[1]
-dd = pyds9.ds9(xpa)
+dd = pyds9.DS9(xpa)
 pf = dd.get_pyfits()
 # Have to get the raw header; ds9 processes it to drop length-1 axes
 header = fits.Header.fromstring(dd.get('fits header'),sep="\n")
