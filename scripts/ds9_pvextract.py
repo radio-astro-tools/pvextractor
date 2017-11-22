@@ -45,8 +45,8 @@ paths = paths_from_regions(regions)
 
 hdu = pvextractor.extract_pv_slice(pf[0], paths[regionid], order=0)
 
-with tempfile.NamedTemporaryFile(suffix='fits', delete=False) as tf:
-    hdu.writeto(tf)
+tf = tempfile.NamedTemporaryFile(suffix='fits', delete=False)
+hdu.writeto(tf)
 
 # it may be possible to do this by
 # ds9_pvextract.py $xpa_method | $image
