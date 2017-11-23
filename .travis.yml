@@ -32,6 +32,7 @@ env:
         - SETUP_CMD='egg_info'
         - # run with default settings
         - ASTROPY_VERSION='development'
+        - PYTHON_VERSION=2.7 ASTROPY_VERSION='stable'
 
 matrix:
     include:
@@ -41,8 +42,6 @@ matrix:
         - python: 3.6
           env: SETUP_CMD='build_sphinx -w'
 
-        - python: 2.7
-          env: ASTROPY_VERSION=stable
 
 
 before_install:
