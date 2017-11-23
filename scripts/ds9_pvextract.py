@@ -12,7 +12,7 @@ from astropy.io import fits
 import tempfile
 
 xpa = sys.argv[1]
-dd = pyds9.ds9(xpa)
+dd = pyds9.DS9(xpa)
 pf = dd.get_pyfits()
 # Have to get the raw header; ds9 processes it to drop length-1 axes
 header = fits.Header.fromstring(dd.get('fits header'),sep="\n")
@@ -46,7 +46,7 @@ paths = paths_from_regions(regions)
 hdu = pvextractor.extract_pv_slice(pf[0], paths[regionid], order=0)
 
 with tempfile.NamedTemporaryFile(suffix='fits', delete=False) as tf:
-    hdu.writeto(tf)
+    hdu.writeto(tf.name)
 
 # it may be possible to do this by
 # ds9_pvextract.py $xpa_method | $image

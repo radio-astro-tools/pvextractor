@@ -1,8 +1,6 @@
 language: python
 
 python:
-    - 2.7
-    - 3.4
     - 3.5
     - 3.6
 
@@ -33,14 +31,16 @@ env:
         - SETUP_CMD='egg_info'
         - # run with default settings
         - ASTROPY_VERSION='development'
+        - PYTHON_VERSION=2.7 ASTROPY_VERSION='stable'
 
 matrix:
     include:
 
         # Check for sphinx doc build warnings - we do this first because it
         # may run for a long time
-        - python: 2.7
+        - python: 3.6
           env: SETUP_CMD='build_sphinx -w'
+
 
 
 before_install:
