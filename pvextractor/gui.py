@@ -43,7 +43,7 @@ class MovableSliceBox(object):
     def __init__(self, box, callback):
         self.box = box
         self.press = None
-        # self.background = None
+        self.background = None
         self.point_counter = 0
         self.callback = callback
         self.mode = 0
