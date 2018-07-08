@@ -50,7 +50,6 @@ class MovableSliceBox(object):
         self.show_poly = False
         self.cidpress = self.box.figure.canvas.mpl_connect('draw_event', self.draw_slicer)
 
-
     def connect(self):
         self.cidpress = self.box.figure.canvas.mpl_connect('key_press_event', self.key_press)
         self.cidpress = self.box.figure.canvas.mpl_connect('button_press_event', self.on_press)
@@ -124,8 +123,6 @@ class MovableSliceBox(object):
         # now redraw just the lineangle
         axes.draw_artist(self.box)
 
-        canvas.blit(axes.bbox)
-
     def key_press(self, event):
 
         if self.box.figure.canvas.toolbar.mode != '':
@@ -192,21 +189,30 @@ class SliceCurve(LineCollection):
 
     def _update_segments(self):
 
-        if not self.x or not self.width:
+        if not self.x or self.width is None or len(self.x) < 2:
             return
-
-        x1, y1, x2, y2 = get_endpoints(self.x, self.y, self.width)
 
         # Find central line
         line = zip(self.x, self.y)
 
-        # Find bounding rectangle
-        rect = zip(np.hstack([x1,x2[::-1], x1[0]]),
-                   np.hstack([y1,y2[::-1], y1[0]]))
+        if self.width:
 
-        self.set_segments((list(line), list(rect)))
-        self.set_linestyles(('solid', 'dashed'))
-        self.set_linewidths((2, 1))
+            x1, y1, x2, y2 = get_endpoints(self.x, self.y, self.width)
+
+            # Find bounding rectangle
+            rect = zip(np.hstack([x1,x2[::-1], x1[0]]),
+                       np.hstack([y1,y2[::-1], y1[0]]))
+
+            self.set_segments([list(line), list(rect)])
+            self.set_linestyles(['solid', 'dashed'])
+            self.set_linewidths([2, 1])
+
+        else:
+
+            self.set_segments([list(line)])
+            self.set_linestyles(['solid'])
+            self.set_linewidths([2,])
+
 
 def unitless(x):
     if hasattr(x, 'unit'):
@@ -240,9 +246,6 @@ class PVSlicer(object):
         self.backend = backend
 
         import matplotlib as mpl
-
-        if mpl.__version__[0] == '2':
-            raise ImportError("The pvextractor GUI is not compatible with matplotlib >=2.")
 
         mpl.use(self.backend)
         import matplotlib.pyplot as plt
