@@ -1,11 +1,4 @@
-language: python
-
-python:
-    - 3.5
-    - 3.6
-
-# Setting sudo to false opts in to Travis-CI container-based builds.
-sudo: false
+language: c
 
 # The apt packages below are needed for sphinx builds, which can no longer
 # be installed with sudo apt-get.
@@ -24,24 +17,24 @@ env:
         - SETUP_CMD='test --coverage'
         - NUMPY_VERSION=stable
         - ASTROPY_VERSION=stable
-        - CONDA_DEPENDENCIES='matplotlib scipy pyqt=5 astropy-helpers'
+        - CONDA_DEPENDENCIES='matplotlib scipy pyqt=5'
         - PIP_DEPENDENCIES='https://github.com/radio-astro-tools/spectral-cube/archive/master.zip'
         - SETUP_XVFB=True
-    matrix:
-        - SETUP_CMD='egg_info'
-        - # run with default settings
-        - ASTROPY_VERSION='development'
+        - PYTHON_VERSION=3.6
 
 matrix:
     include:
+        - env: SETUP_CMD='egg_info'
+
+        - env: PYTHON_VERSION=3.5 NUMPY_VERSION=1.15
+
+        - env: ASTROPY_VERSION=development
 
         # Check for sphinx doc build warnings - we do this first because it
         # may run for a long time
-        - python: 3.6
-          env: SETUP_CMD='build_sphinx -w'
+        - env: SETUP_CMD='build_sphinx -w'
 
-        - python: 2.7
-          env: PYTHON_VERSION=2.7 ASTROPY_VERSION='2.0.3' NUMPY_VERSION='1.12'
+        - env: PYTHON_VERSION=2.7 ASTROPY_VERSION=LTS NUMPY_VERSION='1.12' PYTEST_VERSION='<3.7'
 
 
 before_install:
