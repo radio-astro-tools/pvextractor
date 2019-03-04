@@ -2,7 +2,7 @@ import numpy as np
 from numpy.testing import assert_allclose
 
 from astropy.io import fits
-from astropy.tests.helper import pytest
+import pytest
 from astropy.wcs import WCS
 
 from ..pvextractor import extract_pv_slice
