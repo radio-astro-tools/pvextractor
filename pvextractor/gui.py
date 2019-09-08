@@ -220,10 +220,10 @@ def unitless(x):
     else:
         return x
 
+
 class PVSlicer(object):
 
-    def __init__(self, filename_or_cube, backend="Qt5Agg", clim=None):
-
+    def __init__(self, filename_or_cube, backend=None, clim=None):
 
         try:
             from spectral_cube import SpectralCube
@@ -247,7 +247,9 @@ class PVSlicer(object):
 
         import matplotlib as mpl
 
-        mpl.use(self.backend)
+        if self.backend is not None:
+            mpl.use(self.backend)
+
         import matplotlib.pyplot as plt
 
         self.fig = plt.figure(figsize=(14, 8))
