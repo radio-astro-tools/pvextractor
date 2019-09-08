@@ -21,6 +21,7 @@ env:
         - PIP_DEPENDENCIES='https://github.com/radio-astro-tools/spectral-cube/archive/master.zip qtpy six'
         - SETUP_XVFB=True
         - PYTHON_VERSION=3.6
+        - PYTEST_VERSION='<5'
 
 matrix:
     include:
