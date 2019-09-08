@@ -18,7 +18,7 @@ env:
         - NUMPY_VERSION=stable
         - ASTROPY_VERSION=stable
         - CONDA_DEPENDENCIES='matplotlib scipy pyqt=5'
-        - PIP_DEPENDENCIES='https://github.com/radio-astro-tools/spectral-cube/archive/master.zip'
+        - PIP_DEPENDENCIES='https://github.com/radio-astro-tools/spectral-cube/archive/master.zip qtpy'
         - SETUP_XVFB=True
         - PYTHON_VERSION=3.6
 
