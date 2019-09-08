@@ -153,7 +153,7 @@ class MovableSliceBox(object):
         axes = self.box.axes
         canvas.restore_region(self.background)
 
-        if event.inaxes != self.box.axes:
+        if event.inaxes != axes:
             return
 
         if self.mode == 0:
@@ -167,8 +167,7 @@ class MovableSliceBox(object):
         # redraw just the current lineangle
         axes.draw_artist(self.box)
 
-        # blit just the redrawn area
-        canvas.blit(axes.bbox)
+        canvas.blit()
 
     def disconnect(self):
         self.box.figure.canvas.mpl_disconnect(self.cidpress)
