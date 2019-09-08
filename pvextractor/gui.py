@@ -249,13 +249,15 @@ class PVSlicer(object):
         # consistent.
         mpl.rcdefaults()
 
-        self.backend = backend
-        if self.backend is not None:
-            mpl.use(self.backend)
+        if backend is not None:
+            mpl.use(backend)
 
         import matplotlib.pyplot as plt
 
         self.fig = plt.figure(figsize=(14, 8))
+
+        self.backend = mpl.get_backend()
+        print("Using Matplotlib backend: {0}".format(self.backend))
 
         self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7])
 
@@ -356,13 +358,19 @@ class PVSlicer(object):
 
     def save_fits(self, *args, **kwargs):
 
-        self.set_file_status('instructions')
-
-        print("Enter filename: ", end='')
-        plot_name = str(input())
-
         if self.pv_slice is None:
             return
+
+        # When using Qt, we need to use a proper Qt save dialog since input()
+        # does not play nicely with the Qt event loop.
+        if self.backend.lower().startswith('qt'):
+            from qtpy.compat import getsavefilename
+            plot_name, _ = getsavefilename()
+        else:
+            self.set_file_status('instructions')
+
+            print("Enter filename: ", end='')
+            plot_name = str(input())
 
         from astropy.io import fits
         self.pv_slice.writeto(plot_name, overwrite=True)
