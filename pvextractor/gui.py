@@ -222,7 +222,7 @@ def unitless(x):
 
 class PVSlicer(object):
 
-    def __init__(self, filename_or_cube, backend=None, clim=None):
+    def __init__(self, filename_or_cube, backend=None, clim=None, cmap=None):
 
         try:
             from spectral_cube import SpectralCube
@@ -254,12 +254,14 @@ class PVSlicer(object):
 
         import matplotlib.pyplot as plt
 
-        self.fig = plt.figure(figsize=(14, 8))
+        self.fig = plt.figure(figsize=(8, 5))
 
         self.backend = mpl.get_backend()
         print("Using Matplotlib backend: {0}".format(self.backend))
 
-        self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7])
+        self.cmap = cmap
+
+        self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7], aspect='equal', adjustable='datalim')
 
         if clim is None:
             warnings.warn("clim not defined and will be determined from the data")
@@ -296,7 +298,7 @@ class PVSlicer(object):
         self.image = self.ax1.imshow(unitless(self.array[self.slice, :,:]),
                                      origin='lower', interpolation='nearest',
                                      vmin=self._clim[0], vmax=self._clim[1],
-                                     cmap=plt.cm.gray)
+                                     cmap=self.cmap)
 
         self.vmin_slider_ax = self.fig.add_axes([0.1, 0.90, 0.4, 0.03])
         self.vmin_slider_ax.set_xticklabels("")
@@ -366,6 +368,8 @@ class PVSlicer(object):
         if self.backend.lower().startswith('qt'):
             from qtpy.compat import getsavefilename
             plot_name, _ = getsavefilename()
+            if not plot_name:
+                return
         else:
             self.set_file_status('instructions')
 
@@ -386,7 +390,8 @@ class PVSlicer(object):
         self.pv_slice = extract_pv_slice(self.array, path)
 
         self.ax2.cla()
-        self.ax2.imshow(self.pv_slice.data, origin='lower', aspect='auto', interpolation='nearest')
+        self.ax2.imshow(self.pv_slice.data, origin='lower', aspect='auto',
+                        interpolation='nearest', cmap=self.cmap)
 
         self.fig.canvas.draw()
 
