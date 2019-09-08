@@ -354,10 +354,7 @@ class PVSlicer(object):
         self.set_file_status('instructions')
 
         print("Enter filename: ", end='')
-        try:
-            plot_name = raw_input()
-        except NameError:
-            plot_name = input()
+        plot_name = str(input())
 
         if self.pv_slice is None:
             return
