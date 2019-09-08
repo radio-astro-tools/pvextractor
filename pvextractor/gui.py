@@ -243,10 +243,14 @@ class PVSlicer(object):
             if self.array.ndim != 3:
                 raise ValueError("dataset does not have 3 dimensions (install the spectral_cube package to avoid this error)")
 
-        self.backend = backend
-
         import matplotlib as mpl
 
+        # We reset the rc parameters to the default values to make sure we use
+        # the default interactive backend and to make sure that the UI is
+        # consistent.
+        mpl.rcdefaults()
+
+        self.backend = backend
         if self.backend is not None:
             mpl.use(self.backend)
 
