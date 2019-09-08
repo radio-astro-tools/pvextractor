@@ -360,7 +360,7 @@ class PVSlicer(object):
             return
 
         from astropy.io import fits
-        self.pv_slice.writeto(plot_name, clobber=True)
+        self.pv_slice.writeto(plot_name, overwrite=True)
         print("Saved file to: ", plot_name)
 
         self.set_file_status('saved', filename=plot_name)
