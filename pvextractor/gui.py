@@ -424,3 +424,7 @@ class PVSlicer(object):
             self._clim = (self._clim[0], vmax)
         self.image.set_clim(*self._clim)
         self.fig.canvas.draw()
+
+    def close(self):
+        import matplotlib.pyplot as plt
+        plt.close(self.fig)

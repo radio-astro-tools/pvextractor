@@ -42,3 +42,18 @@ from .version import version, astropy_helpers_version
 packagename = os.path.basename(os.path.dirname(__file__))
 TESTED_VERSIONS[packagename] = version
 TESTED_VERSIONS['astropy_helpers'] = astropy_helpers_version
+
+
+app = None
+
+
+def pytest_configure(config):
+    global app
+    from qtpy.QtWidgets import QApplication
+    app = QApplication([''])
+
+
+def pytest_unconfigure(config):
+    global app
+    app.quit()
+    app = None

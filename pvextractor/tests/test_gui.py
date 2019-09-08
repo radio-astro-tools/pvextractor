@@ -8,7 +8,7 @@ def test_gui():
 
     hdu = make_test_hdu()
 
-    pv = PVSlicer(hdu, clim=(-0.02, 2))
+    pv = PVSlicer(hdu, clim=(-0.02, 2), backend='Qt5Agg')
     pv.show(block=False)
 
     xy_data = np.array([[0.0, 0.1, 0.5, 1.0, 0.5],
@@ -27,3 +27,5 @@ def test_gui():
     pv.fig.canvas.draw()
 
     assert pv.pv_slice.data.shape == (5, 2)
+
+    pv.close()
