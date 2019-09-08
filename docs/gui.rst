@@ -18,6 +18,5 @@ Once a path has been defined, you can optionally press "y" to see the polygons a
 
 The following shows an example of a slice derived from a 13CO cube of L1448:
 
-.. image:: gui.jpg
+.. image:: gui.png
    :align: center
-   :height: 631px
