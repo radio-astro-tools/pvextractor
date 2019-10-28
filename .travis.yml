@@ -38,7 +38,7 @@ matrix:
         # may run for a long time
         - env: SETUP_CMD='build_sphinx -w'
 
-        - env: PYTHON_VERSION=2.7 NUMPY_VERSION='' ASTROPY_VERSION='' CONDA_DEPENDENCIES='' PIP_DEPENDENCIES='astropy==2.0.16 scipy matplotlib https://github.com/radio-astro-tools/spectral-cube/archive/master.zip six'
+        - env: PYTHON_VERSION=2.7 NUMPY_VERSION='' ASTROPY_VERSION='' CONDA_DEPENDENCIES='pyqt' PIP_DEPENDENCIES='astropy==2.0.16 scipy matplotlib https://github.com/radio-astro-tools/spectral-cube/archive/master.zip six'
 
 before_install:
     - git clone git://github.com/astropy/ci-helpers.git
