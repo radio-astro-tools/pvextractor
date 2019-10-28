@@ -38,7 +38,7 @@ matrix:
         # may run for a long time
         - env: SETUP_CMD='build_sphinx -w'
 
-        - env: PYTHON_VERSION=2.7 ASTROPY_VERSION=LTS NUMPY_VERSION='1.12' PYTEST_VERSION='<3.7' MKL=''
+        - env: PYTHON_VERSION=2.7 ASTROPY_VERSION=LTS PYTEST_VERSION='<3.7'
 
 
 before_install:
