@@ -17,7 +17,7 @@ env:
         - SETUP_CMD='test --coverage'
         - NUMPY_VERSION=stable
         - ASTROPY_VERSION=stable
-        - CONDA_DEPENDENCIES='matplotlib scipy pyqt=5'
+        - CONDA_DEPENDENCIES='matplotlib scipy pyqt=5 Cython'
         - PIP_DEPENDENCIES='https://github.com/radio-astro-tools/spectral-cube/archive/master.zip qtpy six pytest-faulthandler pytest-qt'
         - CONDA_CHANNELS=astropy
         - SETUP_XVFB=True
@@ -38,13 +38,14 @@ matrix:
         # may run for a long time
         - env: SETUP_CMD='build_sphinx -w'
 
-        - env: PYTHON_VERSION=2.7 ASTROPY_VERSION=LTS NUMPY_VERSION='1.12' PYTEST_VERSION='<3.7'
+        - env: PYTHON_VERSION=2.7 ASTROPY_VERSION=LTS NUMPY_VERSION='1.12' PYTEST_VERSION='<3.7' MKL=''
 
 
 before_install:
     - git clone git://github.com/astropy/ci-helpers.git
-    - source ci-helpers/travis/setup_conda_$TRAVIS_OS_NAME.sh
+    - source ci-helpers/travis/setup_conda.sh
     - conda remove -y psutil --force || true
+    - pip uninstall -y psutil || true
 
 script:
     - python setup.py $SETUP_CMD
