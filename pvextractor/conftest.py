@@ -49,11 +49,15 @@ app = None
 
 def pytest_configure(config):
     global app
-    from qtpy.QtWidgets import QApplication
-    app = QApplication([''])
+    try:
+        from qtpy.QtWidgets import QApplication
+        app = QApplication([''])
+    except ImportError:
+        pass
 
 
 def pytest_unconfigure(config):
     global app
-    app.quit()
-    app = None
+    if app is not None:
+        app.quit()
+        app = None
