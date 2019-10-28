@@ -113,7 +113,7 @@ def _is_spectral_cube(obj):
         from spectral_cube.spectral_cube import BaseSpectralCube
         return isinstance(obj, BaseSpectralCube)
     except ImportError:
-        if 'SpectralCube' in (obj.__class__):
+        if 'SpectralCube' in str(obj.__class__):
             warnings.warn("Object appears to be a SpectralCube, but"
                           " the spectral_cube module could not be loaded")
         return False
