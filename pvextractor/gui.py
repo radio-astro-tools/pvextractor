@@ -220,8 +220,17 @@ def unitless(x):
         return x
 
 
+def with_rc_defaults(func):
+    import matplotlib.pyplot as plt
+    def wrapper(self, *args, **kwargs):
+        with plt.style.context({}, after_reset=True):
+            return func(self, *args, **kwargs)
+    return wrapper
+
+
 class PVSlicer(object):
 
+    @with_rc_defaults
     def __init__(self, filename_or_cube, backend=None, clim=None, cmap=None):
 
         try:
@@ -243,11 +252,6 @@ class PVSlicer(object):
                 raise ValueError("dataset does not have 3 dimensions (install the spectral_cube package to avoid this error)")
 
         import matplotlib as mpl
-
-        # We reset the rc parameters to the default values to make sure we use
-        # the default interactive backend and to make sure that the UI is
-        # consistent.
-        mpl.rcdefaults()
 
         if backend is not None:
             mpl.use(backend)
@@ -339,6 +343,7 @@ class PVSlicer(object):
 
         self.cidpress = self.fig.canvas.mpl_connect('button_press_event', self.click)
 
+    @with_rc_defaults
     def set_file_status(self, status, filename=None):
         if status == 'instructions':
             self.file_status_text.set_text('Please enter filename in terminal')
@@ -351,6 +356,7 @@ class PVSlicer(object):
             self.file_status_text.set_color('black')
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def click(self, event):
 
         if event.inaxes != self.ax2:
@@ -358,6 +364,7 @@ class PVSlicer(object):
 
         self.slice_slider.set_val(event.ydata)
 
+    @with_rc_defaults
     def save_fits(self, *args, **kwargs):
 
         if self.pv_slice is None:
@@ -382,6 +389,7 @@ class PVSlicer(object):
 
         self.set_file_status('saved', filename=plot_name)
 
+    @with_rc_defaults
     def update_pv_slice(self, box):
 
         path = Path(zip(box.x, box.y))
@@ -395,10 +403,12 @@ class PVSlicer(object):
 
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def show(self, block=True):
         import matplotlib.pyplot as plt
         plt.show(block=block)
 
+    @with_rc_defaults
     def update_slice(self, pos=None):
 
         if self.array.ndim == 2:
@@ -409,6 +419,7 @@ class PVSlicer(object):
 
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def update_vmin(self, vmin):
         if vmin > self._clim[1]:
             self._clim = (self._clim[1], self._clim[1])
@@ -417,6 +428,7 @@ class PVSlicer(object):
         self.image.set_clim(*self._clim)
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def update_vmax(self, vmax):
         if vmax < self._clim[0]:
             self._clim = (self._clim[0], self._clim[0])
@@ -425,6 +437,7 @@ class PVSlicer(object):
         self.image.set_clim(*self._clim)
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def close(self):
         import matplotlib.pyplot as plt
         plt.close(self.fig)
