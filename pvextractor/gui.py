@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import os
 import math
+import logging
 import warnings
 
 import numpy as np
@@ -261,7 +262,9 @@ class PVSlicer(object):
         self.fig = plt.figure(figsize=(8, 5))
 
         self.backend = mpl.get_backend()
-        print("Using Matplotlib backend: {0}".format(self.backend))
+
+        logger = logging.getLogger(__name__)
+        logger.info("Using Matplotlib backend: {0}".format(self.backend))
 
         self.cmap = cmap
 
