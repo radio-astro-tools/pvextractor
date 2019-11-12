@@ -220,10 +220,24 @@ def unitless(x):
     else:
         return x
 
+def set_mpl_backend(func):
+    # Note that we need to do this as a decorator because it needs to be done
+    # before the @with_rc_defaults decorator triggers an import of
+    # matplotlib.pyplot
+    def wrapper(self, *args, **kwargs):
+        if 'backend' in kwargs:
+            import matplotlib as mpl
+            try:
+                mpl.switch_backend(kwargs['backend'])
+            except AttributeError:
+                mpl.use(kwargs['backend'])
+        return func(self, *args, **kwargs)
+    return wrapper
+
 
 def with_rc_defaults(func):
-    import matplotlib.pyplot as plt
     def wrapper(self, *args, **kwargs):
+        import matplotlib.pyplot as plt
         with plt.style.context({}, after_reset=True):
             return func(self, *args, **kwargs)
     return wrapper
@@ -231,6 +245,7 @@ def with_rc_defaults(func):
 
 class PVSlicer(object):
 
+    @set_mpl_backend
     @with_rc_defaults
     def __init__(self, filename_or_cube, backend=None, clim=None, cmap=None):
 
@@ -252,16 +267,11 @@ class PVSlicer(object):
             if self.array.ndim != 3:
                 raise ValueError("dataset does not have 3 dimensions (install the spectral_cube package to avoid this error)")
 
-        import matplotlib as mpl
-
-        if backend is not None:
-            mpl.use(backend)
-
         import matplotlib.pyplot as plt
 
         self.fig = plt.figure(figsize=(8, 5))
 
-        self.backend = mpl.get_backend()
+        self.backend = plt.get_backend()
 
         logger = logging.getLogger(__name__)
         logger.info("Using Matplotlib backend: {0}".format(self.backend))
