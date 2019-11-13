@@ -2,6 +2,7 @@ from __future__ import print_function
 
 import os
 import math
+import logging
 import warnings
 
 import numpy as np
@@ -153,7 +154,7 @@ class MovableSliceBox(object):
         axes = self.box.axes
         canvas.restore_region(self.background)
 
-        if event.inaxes != self.box.axes:
+        if event.inaxes != axes:
             return
 
         if self.mode == 0:
@@ -167,8 +168,7 @@ class MovableSliceBox(object):
         # redraw just the current lineangle
         axes.draw_artist(self.box)
 
-        # blit just the redrawn area
-        canvas.blit(axes.bbox)
+        canvas.blit()
 
     def disconnect(self):
         self.box.figure.canvas.mpl_disconnect(self.cidpress)
@@ -220,10 +220,34 @@ def unitless(x):
     else:
         return x
 
+def set_mpl_backend(func):
+    # Note that we need to do this as a decorator because it needs to be done
+    # before the @with_rc_defaults decorator triggers an import of
+    # matplotlib.pyplot
+    def wrapper(self, *args, **kwargs):
+        if 'backend' in kwargs:
+            import matplotlib as mpl
+            try:
+                mpl.switch_backend(kwargs['backend'])
+            except AttributeError:
+                mpl.use(kwargs['backend'])
+        return func(self, *args, **kwargs)
+    return wrapper
+
+
+def with_rc_defaults(func):
+    def wrapper(self, *args, **kwargs):
+        import matplotlib.pyplot as plt
+        with plt.style.context({}, after_reset=True):
+            return func(self, *args, **kwargs)
+    return wrapper
+
+
 class PVSlicer(object):
 
-    def __init__(self, filename_or_cube, backend="Qt5Agg", clim=None):
-
+    @set_mpl_backend
+    @with_rc_defaults
+    def __init__(self, filename_or_cube, backend=None, clim=None, cmap=None):
 
         try:
             from spectral_cube import SpectralCube
@@ -243,16 +267,18 @@ class PVSlicer(object):
             if self.array.ndim != 3:
                 raise ValueError("dataset does not have 3 dimensions (install the spectral_cube package to avoid this error)")
 
-        self.backend = backend
-
-        import matplotlib as mpl
-
-        mpl.use(self.backend)
         import matplotlib.pyplot as plt
 
-        self.fig = plt.figure(figsize=(14, 8))
+        self.fig = plt.figure(figsize=(8, 5))
 
-        self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7])
+        self.backend = plt.get_backend()
+
+        logger = logging.getLogger(__name__)
+        logger.info("Using Matplotlib backend: {0}".format(self.backend))
+
+        self.cmap = cmap
+
+        self.ax1 = self.fig.add_axes([0.1, 0.1, 0.4, 0.7], aspect='equal', adjustable='datalim')
 
         if clim is None:
             warnings.warn("clim not defined and will be determined from the data")
@@ -289,7 +315,7 @@ class PVSlicer(object):
         self.image = self.ax1.imshow(unitless(self.array[self.slice, :,:]),
                                      origin='lower', interpolation='nearest',
                                      vmin=self._clim[0], vmax=self._clim[1],
-                                     cmap=plt.cm.gray)
+                                     cmap=self.cmap)
 
         self.vmin_slider_ax = self.fig.add_axes([0.1, 0.90, 0.4, 0.03])
         self.vmin_slider_ax.set_xticklabels("")
@@ -330,6 +356,7 @@ class PVSlicer(object):
 
         self.cidpress = self.fig.canvas.mpl_connect('button_press_event', self.click)
 
+    @with_rc_defaults
     def set_file_status(self, status, filename=None):
         if status == 'instructions':
             self.file_status_text.set_text('Please enter filename in terminal')
@@ -342,6 +369,7 @@ class PVSlicer(object):
             self.file_status_text.set_color('black')
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def click(self, event):
 
         if event.inaxes != self.ax2:
@@ -349,25 +377,32 @@ class PVSlicer(object):
 
         self.slice_slider.set_val(event.ydata)
 
+    @with_rc_defaults
     def save_fits(self, *args, **kwargs):
-
-        self.set_file_status('instructions')
-
-        print("Enter filename: ", end='')
-        try:
-            plot_name = raw_input()
-        except NameError:
-            plot_name = input()
 
         if self.pv_slice is None:
             return
 
+        # When using Qt, we need to use a proper Qt save dialog since input()
+        # does not play nicely with the Qt event loop.
+        if self.backend.lower().startswith('qt'):
+            from qtpy.compat import getsavefilename
+            plot_name, _ = getsavefilename()
+            if not plot_name:
+                return
+        else:
+            self.set_file_status('instructions')
+
+            print("Enter filename: ", end='')
+            plot_name = str(input())
+
         from astropy.io import fits
-        self.pv_slice.writeto(plot_name, clobber=True)
+        self.pv_slice.writeto(plot_name, overwrite=True)
         print("Saved file to: ", plot_name)
 
         self.set_file_status('saved', filename=plot_name)
 
+    @with_rc_defaults
     def update_pv_slice(self, box):
 
         path = Path(zip(box.x, box.y))
@@ -376,14 +411,17 @@ class PVSlicer(object):
         self.pv_slice = extract_pv_slice(self.array, path)
 
         self.ax2.cla()
-        self.ax2.imshow(self.pv_slice.data, origin='lower', aspect='auto', interpolation='nearest')
+        self.ax2.imshow(self.pv_slice.data, origin='lower', aspect='auto',
+                        interpolation='nearest', cmap=self.cmap)
 
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def show(self, block=True):
         import matplotlib.pyplot as plt
         plt.show(block=block)
 
+    @with_rc_defaults
     def update_slice(self, pos=None):
 
         if self.array.ndim == 2:
@@ -394,6 +432,7 @@ class PVSlicer(object):
 
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def update_vmin(self, vmin):
         if vmin > self._clim[1]:
             self._clim = (self._clim[1], self._clim[1])
@@ -402,6 +441,7 @@ class PVSlicer(object):
         self.image.set_clim(*self._clim)
         self.fig.canvas.draw()
 
+    @with_rc_defaults
     def update_vmax(self, vmax):
         if vmax < self._clim[0]:
             self._clim = (self._clim[0], self._clim[0])
@@ -409,3 +449,8 @@ class PVSlicer(object):
             self._clim = (self._clim[0], vmax)
         self.image.set_clim(*self._clim)
         self.fig.canvas.draw()
+
+    @with_rc_defaults
+    def close(self):
+        import matplotlib.pyplot as plt
+        plt.close(self.fig)
