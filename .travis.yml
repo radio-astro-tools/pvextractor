@@ -9,6 +9,7 @@ addons:
     apt:
         packages:
             - graphviz
+            - libxkbcommon-x11-0  # for Qt
 
 env:
     global:
