@@ -11,7 +11,6 @@ from .test_slicer import make_test_hdu
 MPL_LT_31 = LooseVersion(matplotlib.__version__) < LooseVersion('3.1')
 
 
-@pytest.mark.skipif('not MPL_LT_31')
 def test_gui():
 
     # This tests currently segfaults with Matplotlib 3.1 and later
