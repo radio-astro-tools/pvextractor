@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 import numpy as np
-import six
 import warnings
 
 from astropy import units as u
@@ -57,7 +56,7 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
         The position-velocity slice, as a FITS HDU object
     """
 
-    if isinstance(cube, (six.string_types, ImageHDU, PrimaryHDU)):
+    if isinstance(cube, (str, ImageHDU, PrimaryHDU)):
         try:
             from spectral_cube import SpectralCube
             cube = SpectralCube.read(cube)
