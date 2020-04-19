@@ -4,6 +4,7 @@ include CHANGES
 include pyproject.toml
 
 include setup.cfg
+include setup.py
 
 recursive-include *.pyx *.c *.pxd
 recursive-include docs *
