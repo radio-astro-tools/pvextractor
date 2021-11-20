@@ -275,7 +275,7 @@ class Path(object):
         else:
             from matplotlib.collections import PatchCollection
             patches = self.to_patches(spacing, wcs=wcs, **kwargs)
-            artist = PatchCollection(patches, match_original=True)
+            artist = PatchCollection(patches, match_original=True, **kwargs)
         return artist
 
     def show_on_axis(self, ax, spacing, **kwargs):
