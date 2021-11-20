@@ -264,9 +264,20 @@ class Path(object):
         else:
             raise ValueError("Use as_artist instead")
 
-    def as_artist(self, spacing, wcs=None, **kwargs):
+    def as_artist(self, spacing, wcs=None, facecolor='none', **kwargs):
         """
         Display the path on the image
+
+        Parameters
+        ----------
+        spacing : float
+            The spacing between sample points to plot, in pixels
+        wcs : astropy.wcs.WCS
+            A WCS instance to convert from celestial to pixel coordinates, or
+            None if pixel coordinates are to be used.
+        facecolor : string
+            The facecolor of the patches.  This will be ignored if lines are
+            plotted and defaults to none (transparent) for patches.
         """
         if self.width is None:
             from matplotlib.lines import Line2D
@@ -274,8 +285,10 @@ class Path(object):
             artist = Line2D(*points, **kwargs)
         else:
             from matplotlib.collections import PatchCollection
-            patches = self.to_patches(spacing, wcs=wcs, **kwargs)
-            artist = PatchCollection(patches, match_original=True, **kwargs)
+            patches = self.to_patches(spacing, wcs=wcs, facecolor=facecolor,
+                                      **kwargs)
+            artist = PatchCollection(patches, match_original=True
+                                     facecolor=facecolor,, **kwargs)
         return artist
 
     def show_on_axis(self, ax, spacing, **kwargs):
