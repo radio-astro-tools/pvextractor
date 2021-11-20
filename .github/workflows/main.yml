@@ -28,24 +28,8 @@ jobs:
             toxenv: py37-test
           - os: ubuntu-latest
             python-version: 3.9
-            name: Python 3.9 with all non-visualization dependencies (except CASA)
-            toxenv: py39-test-novis
-          - os: ubuntu-18.04
-            python-version: 3.6
-            name: Python 3.6 with minimal dependencies and CASA
-            toxenv: py36-test-casa
-          - os: ubuntu-latest
-            python-version: 3.9
             name: Python 3.9, all non-visualization dependencies, and dev versions of key dependencies
             toxenv: py39-test-novis-dev
-          - os: ubuntu-latest
-            python-version: 3.8
-            name: Python 3.8 with all non-visualization dependencies (except CASA)
-            toxenv: py38-test-novis
-          - os: macos-latest
-            python-version: 3.9
-            name: Python 3.9 with all non-visualization dependencies (except CASA) on MacOS X
-            toxenv: py39-test-novis
           - os: windows-latest
             python-version: 3.9
             name: Python 3.9, all dependencies, and dev versions of key dependencies on Windows
