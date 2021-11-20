@@ -32,3 +32,26 @@ https://docs.astropy.org/en/stable/visualization/wcsaxes/controlling_axes.html
    ax.set_xlabel("Offset [arcmin]")
 
 See also the `tutorial <https://github.com/radio-astro-tools/tutorials/blob/6810376c0353f0bdf3be2b9b7231c388e886adba/PVDiagramPlotting.ipynb>`_
+
+
+Showing the extraction path
+---------------------------
+
+
+To show the extraction path, use the `shiw_on_axis` method:
+
+   
+.. code-block:: python
+
+   cube = SpectralCube.read('data.fits')
+   ax = pl.subplot(111, projection=cube.wcs.celestial)
+   ax.imshow(cube.moment0(axis=0).value)
+
+   path.show_on_axis(ax, spacing=1)
+
+
+The `path` will be shown either as a set of lines if the path's width is zero
+or as a set of rectangles if the path has a finite width.
+
+The spacing should probably be set to the same spacing used for the PV
+extraction, but there are cases where coarser or finer display is warranted.
