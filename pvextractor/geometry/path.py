@@ -273,8 +273,9 @@ class Path(object):
             points = self.sample_points(spacing, wcs=wcs)
             artist = Line2D(*points, **kwargs)
         else:
+            from matplotlib.collections import PatchCollection
             patches = self.to_patches(spacing, wcs=wcs, **kwargs)
-            artist = matplotlib.collections.PatchCollection(patches)
+            artist = PatchCollection(patches)
         return artist
 
     def show_on_axis(self, ax, spacing, **kwargs):
