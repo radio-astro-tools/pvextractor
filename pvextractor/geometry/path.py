@@ -287,7 +287,7 @@ class Path(object):
             from matplotlib.collections import PatchCollection
             patches = self.to_patches(spacing, wcs=wcs, facecolor=facecolor,
                                       **kwargs)
-            artist = PatchCollection(patches, match_original=True
+            artist = PatchCollection(patches, match_original=True,
                                      facecolor=facecolor, **kwargs)
         return artist
 
