@@ -93,3 +93,17 @@ The returned slice is an Astropy :class:`~astropy.io.fits.PrimaryHDU` instance,
 which you can write to disk using::
 
     >>> slice1.writeto('my_slice.fits')  # doctest: +SKIP
+
+
+Retrieving the Pixel Coordinates
+--------------------------------
+
+With a path in hand, you can recover the pixel coordinates used in the
+extraction::
+
+    >>> from spectral_cube import SpectralCube
+    >>> cube = SpectralCube.read('my_cube.fits')  # doctest: +SKIP
+    >>> path = Path([(0., 0.), (10., 10.)], width=0.5)  # doctest: +SKIP
+    >>> spacing = 0.5
+    >>> pvdiagram = pvextractor.extract_pv_slice(cube, path, spacing=spacing)  # doctest: +SKIP
+    >>> lon, lat = path.sample_points(spacing, wcs=cube.wcs.celestial)  # doctest: +SKIP

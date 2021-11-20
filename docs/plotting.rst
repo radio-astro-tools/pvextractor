@@ -40,7 +40,7 @@ Showing the extraction path
 
 To show the extraction path, use the `shiw_on_axis` method:
 
-   
+
 .. code-block:: python
 
    cube = SpectralCube.read('data.fits')
