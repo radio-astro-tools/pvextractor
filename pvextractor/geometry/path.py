@@ -255,8 +255,41 @@ class Path(object):
         return polygons
 
     def to_patches(self, spacing, wcs=None, **kwargs):
-        from matplotlib.patches import Polygon as MPLPolygon
-        patches = []
-        for poly in self.sample_polygons(spacing, wcs=wcs):
-            patches.append(MPLPolygon(list(zip(poly.x, poly.y)), **kwargs))
-        return patches
+        if self.width is not None:
+            from matplotlib.patches import Polygon as MPLPolygon
+            patches = []
+            for poly in self.sample_polygons(spacing, wcs=wcs):
+                patches.append(MPLPolygon(list(zip(poly.x, poly.y)), **kwargs))
+            return patches
+        else:
+            raise ValueError("Use as_artist instead")
+
+    def as_artist(self, spacing, wcs=None, **kwargs):
+        """
+        Display the path on the image
+        """
+        if self.width is None:
+            from matplotlib.lines import Line2D
+            points = self.sample_points(spacing, wcs=wcs)
+            artist = Line2D(*points, **kwargs)
+        else:
+            patches = self.to_patches(spacing, wcs=wcs, **kwargs)
+            artist = matplotlib.collections.PatchCollection(patches)
+        return artist
+
+    def show_on_axis(self, ax, spacing, **kwargs):
+        """
+        Add the Path as a set of patches on the specified axis
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.WCSAxesSubplot
+            An astropy WCSAxesSubplot axis to overplot onto
+        spacing : float
+            The spacing between sample points to plot, in pixels
+        """
+        artist = self.as_artist(spacing=spacing,
+                                wcs=ax.wcs,
+                                **kwargs)
+        ax.add_artist(artist)
+        return artist
