@@ -10,10 +10,16 @@ PV data:
 .. code-block:: python
 
    import pylab as pl
-   from astropy.io import fits
-   pvfits = fits.open('extracted_pv.fits')
-   ww = wcs.WCS(pvfits[0].header)
+   from spectral_cube import SpectralCube
+   from pvextractor import extract_pv_slice, Path
+
+   cube = SpectralCube.read('http://www.astropy.org/astropy-data/l1448/l1448_13co.fits')
+   path = Path([(5,5), (10,10)])
+   pv = extract_pv_slice(cube, path)
+
+   ww = wcs.WCS(pv.header)
    ax = pl.subplot(111, projection=ww)
+   ax.imshow(pv.data)
 
 
 If you want to change axis units, you can use `astropy.wcsaxes` tools:
@@ -38,12 +44,11 @@ Showing the extraction path
 ---------------------------
 
 
-To show the extraction path, use the :class:`~pvextractor.Path.show_on_axis` method:
+To show the extraction path, use the :func:`~pvextractor.Path.show_on_axis` method:
 
 
 .. code-block:: python
 
-   cube = SpectralCube.read('data.fits')
    ax = pl.subplot(111, projection=cube.wcs.celestial)
    ax.imshow(cube.moment0(axis=0).value)
 
