@@ -53,5 +53,5 @@ To show the extraction path, use the :class:`~pvextractor.Path.show_on_axis` met
 The `path` will be shown either as a set of lines if the path's width is zero
 or as a set of rectangles if the path has a finite width.
 
-The spacing should probably be set to the same spacing used for the PV
+`spacing` should probably be set to the same spacing used for the PV
 extraction, but there are cases where coarser or finer display is warranted.
