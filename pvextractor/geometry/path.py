@@ -262,7 +262,7 @@ class Path(object):
                 patches.append(MPLPolygon(list(zip(poly.x, poly.y)), **kwargs))
             return patches
         else:
-            raise ValueError("Use as_artist instead")
+            raise ValueError("Use the `as_artist` function instead for paths with no defined width.")
 
     def as_artist(self, spacing, wcs=None, facecolor='none', **kwargs):
         """
