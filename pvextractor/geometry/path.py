@@ -266,7 +266,7 @@ class Path(object):
 
     def as_artist(self, spacing, wcs=None, facecolor='none', **kwargs):
         """
-        Display the path on the image
+        Return the path as a matplotlib artist object that can be displayed on the image.
 
         Parameters
         ----------
