@@ -278,6 +278,9 @@ class Path(object):
         facecolor : string
             The facecolor of the patches.  This will be ignored if lines are
             plotted and defaults to none (transparent) for patches.
+        kwargs : dict
+            passed to :class:`matplotlib.lines.Line2D` or both `to_patches`
+            and :class:`matplotlib.collections.PatchCollection`.
         """
         if self.width is None:
             from matplotlib.lines import Line2D
@@ -300,6 +303,8 @@ class Path(object):
             An astropy WCSAxesSubplot axis to overplot onto
         spacing : float
             The spacing between sample points to plot, in pixels
+        kwargs : dict
+            passed to `as_artist`.
         """
         artist = self.as_artist(spacing=spacing,
                                 wcs=ax.wcs,
