@@ -292,7 +292,7 @@ class Path(object):
 
     def show_on_axis(self, ax, spacing, **kwargs):
         """
-        Add the Path as a set of patches on the specified axis
+        Show the path as a set of patches on the specified matplotlib axis.
 
         Parameters
         ----------
