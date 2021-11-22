@@ -255,8 +255,59 @@ class Path(object):
         return polygons
 
     def to_patches(self, spacing, wcs=None, **kwargs):
-        from matplotlib.patches import Polygon as MPLPolygon
-        patches = []
-        for poly in self.sample_polygons(spacing, wcs=wcs):
-            patches.append(MPLPolygon(list(zip(poly.x, poly.y)), **kwargs))
-        return patches
+        if self.width is not None:
+            from matplotlib.patches import Polygon as MPLPolygon
+            patches = []
+            for poly in self.sample_polygons(spacing, wcs=wcs):
+                patches.append(MPLPolygon(list(zip(poly.x, poly.y)), **kwargs))
+            return patches
+        else:
+            raise ValueError("Use the `as_artist` function instead for paths with no defined width.")
+
+    def as_artist(self, spacing, wcs=None, facecolor='none', **kwargs):
+        """
+        Return the path as a matplotlib artist object that can be displayed on the image.
+
+        Parameters
+        ----------
+        spacing : float
+            The spacing between sample points to plot, in pixels
+        wcs : astropy.wcs.WCS
+            A WCS instance to convert from celestial to pixel coordinates, or
+            None if pixel coordinates are to be used.
+        facecolor : string
+            The facecolor of the patches.  This will be ignored if lines are
+            plotted and defaults to none (transparent) for patches.
+        kwargs : dict
+            passed to :class:`matplotlib.lines.Line2D` or both `to_patches`
+            and :class:`matplotlib.collections.PatchCollection`.
+        """
+        if self.width is None:
+            from matplotlib.lines import Line2D
+            points = self.sample_points(spacing, wcs=wcs)
+            artist = Line2D(*points, **kwargs)
+        else:
+            from matplotlib.collections import PatchCollection
+            patches = self.to_patches(spacing, wcs=wcs, facecolor=facecolor,
+                                      **kwargs)
+            artist = PatchCollection(patches, facecolor=facecolor, **kwargs)
+        return artist
+
+    def show_on_axis(self, ax, spacing, **kwargs):
+        """
+        Show the path as a set of patches on the specified matplotlib axis.
+
+        Parameters
+        ----------
+        ax : matplotlib.axes._subplots.WCSAxesSubplot
+            An astropy WCSAxesSubplot axis to overplot onto
+        spacing : float
+            The spacing between sample points to plot, in pixels
+        kwargs : dict
+            passed to `as_artist`.
+        """
+        artist = self.as_artist(spacing=spacing,
+                                wcs=ax.wcs,
+                                **kwargs)
+        ax.add_artist(artist)
+        return artist
