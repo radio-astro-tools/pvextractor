@@ -250,7 +250,7 @@ class PVSlicer(object):
     def __init__(self, filename_or_cube, backend=None, clim=None, cmap=None):
 
         try:
-            from spectral_cube import SpectralCube, BaseSpectralCube
+            from spectral_cube.spectral_cube import SpectralCube, BaseSpectralCube
             if hasattr(filename_or_cube, 'filled_data') or issubclass(filename_or_cube, BaseSpectralCube):
                 cube = filename_or_cube
             else:
