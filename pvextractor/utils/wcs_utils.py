@@ -1,26 +1,23 @@
 import numpy as np
 from astropy import units as u
 from astropy.wcs import WCSSUB_CELESTIAL, WCSSUB_SPECTRAL
+from astropy.wcs.utils import proj_plane_pixel_scales
 
 
 def get_spatial_scale(wcs, assert_square=True):
 
-    # Code adapted from APLpy
+    # Code initally adapted from APLpy
 
     wcs = wcs.sub([WCSSUB_CELESTIAL])
-    cdelt = np.matrix(wcs.wcs.get_cdelt())
-    pc = np.matrix(wcs.wcs.get_pc())
-    scale = np.array(cdelt * pc)
+    scale = proj_plane_pixel_scales(wcs)
 
     if assert_square:
         try:
-            np.testing.assert_almost_equal(abs(cdelt[0,0]), abs(cdelt[0,1]))
-            np.testing.assert_almost_equal(abs(pc[0,0]), abs(pc[1,1]))
-            np.testing.assert_almost_equal(abs(scale[0,0]), abs(scale[0,1]))
+            np.testing.assert_almost_equal(scale[0], scale[1])
         except AssertionError:
             raise ValueError("Non-square pixels.  Please resample data.")
 
-    return abs(scale[0,0]) * u.Unit(wcs.wcs.cunit[0])
+    return scale[0] * u.Unit(wcs.wcs.cunit[0])
 
 
 def get_spectral_scale(wcs):
