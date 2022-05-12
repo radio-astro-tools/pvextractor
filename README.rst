@@ -14,7 +14,7 @@ a series of points and returns a PV array. It is based on scipy’s
 ``map_coordinates`` but also has .
 
 For an example use case, see [this notebook]
-(http://nbviewer.ipython.org/urls/raw.github.com/keflavich/pvextractor/master/examples/IRAS05358Slicing.ipynb)
+(http://nbviewer.ipython.org/urls/raw.github.com/radio-astro-tools/pvextractor/master/examples/IRAS05358Slicing.ipynb)
 (for a permanent, compiled version, look
 `here <examples/IRAS05358Slicing.html>`__)
 
