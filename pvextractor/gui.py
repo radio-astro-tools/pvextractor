@@ -251,7 +251,7 @@ class PVSlicer(object):
 
         try:
             from spectral_cube.spectral_cube import SpectralCube, BaseSpectralCube
-            if hasattr(filename_or_cube, 'filled_data') or issubclass(filename_or_cube, BaseSpectralCube):
+            if hasattr(filename_or_cube, 'filled_data') or isinstance(filename_or_cube, BaseSpectralCube):
                 cube = filename_or_cube
             else:
                 cube = SpectralCube.read(filename_or_cube, format='fits')
