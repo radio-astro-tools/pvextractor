@@ -6,7 +6,7 @@ from astropy.wcs.utils import proj_plane_pixel_scales
 
 def get_spatial_scale(wcs, assert_square=True):
 
-    # Code initally adapted from APLpy
+    # Code initially adapted from APLpy
 
     wcs = wcs.sub([WCSSUB_CELESTIAL])
     scale = proj_plane_pixel_scales(wcs)
