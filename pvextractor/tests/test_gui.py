@@ -38,3 +38,16 @@ def test_gui():
     assert pv.pv_slice.data.shape == (5, 2)
 
     pv.close()
+
+
+def test_gui_from_fits_filename():
+
+    # This tests currently segfaults with Matplotlib 3.1 and later
+
+    fits_filename = make_test_fits_file()
+
+    pv = PVSlicer(fits_filename, clim=(-0.02, 2), backend='Qt5Agg')
+    pv.show(block=False)
+
+    pv.close()
+

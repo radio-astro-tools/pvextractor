@@ -86,6 +86,13 @@ def make_test_hdu():
     return hdu
 
 
+def make_test_fits_file():
+    hdu = make_test_hdu()
+    filename = 'example.fits'
+    hdu.writeto(filename)
+    return filename
+
+
 def make_test_spectralcube():
     header = fits.header.Header.fromstring(HEADER_STR, sep='\n')
     assert header['NAXIS']==3
