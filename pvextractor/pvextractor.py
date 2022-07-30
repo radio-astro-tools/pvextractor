@@ -13,7 +13,7 @@ from .utils.wcs_slicing import slice_wcs
 
 
 def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
-                     respect_nan=True):
+                     respect_nan=True, assert_square=True):
     """
     Given a position-position-velocity cube with dimensions (nv, ny, nx), and
     a path, extract a position-velocity slice.
@@ -49,6 +49,11 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
         the slices. If set to `True`, in the case of line paths a second
         computation is performed to ignore the NaN value while interpolating,
         and set the output values of NaNs to NaN.
+    assert_square : bool
+        If True, the WCS-loader will check whether the pixels are square.
+        If the pixels are not square, the interpretation of the X-axis in
+        the extracted PV diagram is ambiguous.  In some cases, it may be
+        necessary to disable this check, though.
 
     Returns
     -------
@@ -75,7 +80,12 @@ def extract_pv_slice(cube, path, wcs=None, spacing=1.0, order=3,
         wcs = sanitize_wcs(wcs)
 
     if not isinstance(cube, np.ndarray) or wcs is not None:
-        scale = get_spatial_scale(wcs)
+        try:
+            scale = get_spatial_scale(wcs, assert_square=assert_square)
+        except AssertionError as ex:
+            print("Pixels are non-square.  See error below.  You may "
+                  "disable this check by setting assert_square=False.")
+            raise ex
         if isinstance(spacing, u.Quantity):
             pixel_spacing = (spacing / scale).decompose()
             world_spacing = spacing
