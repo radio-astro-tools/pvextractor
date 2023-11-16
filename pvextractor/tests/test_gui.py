@@ -1,4 +1,4 @@
-from distutils.version import LooseVersion
+from packaging.version import Version
 
 import pytest
 import numpy as np
@@ -9,7 +9,7 @@ from ..gui import PVSlicer
 
 from .test_slicer import make_test_hdu, make_test_fits_file
 
-MATPLOTLIB_GE_36 = LooseVersion(matplotlib.__version__) >= LooseVersion('3.6')
+MATPLOTLIB_GE_36 = Version(matplotlib.__version__) >= Version('3.6')
 
 def key_press_event(canvas, *event):
     if MATPLOTLIB_GE_36:
