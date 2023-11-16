@@ -8,6 +8,12 @@ jobs:
   tests:
     uses: OpenAstronomy/github-actions-workflows/.github/workflows/tox.yml@v1
     with:
+      display: true
+      libraries: |
+        apt:
+          - '^libxcb.*-dev'
+          - libxkbcommon-x11-dev
+          - libegl1-mesa
       envs: |
         - linux: py38-test-oldestdeps
         - linux: py39-test
