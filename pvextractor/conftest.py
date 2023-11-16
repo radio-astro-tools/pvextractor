@@ -20,13 +20,6 @@ def pytest_configure(config):
     PYTEST_HEADER_MODULES['regions'] = 'regions'
     PYTEST_HEADER_MODULES['APLpy'] = 'aplpy'
 
-
-from astropy.tests.helper import enable_deprecations_as_exceptions
-
-## Uncomment the following line to treat all DeprecationWarnings as
-## exceptions
-# enable_deprecations_as_exceptions()
-
 app = None
 
 
