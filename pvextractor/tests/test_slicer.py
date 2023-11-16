@@ -86,9 +86,9 @@ def make_test_hdu():
     return hdu
 
 
-def make_test_fits_file():
+def make_test_fits_file(tmp_path):
     hdu = make_test_hdu()
-    filename = 'example.fits'
+    filename = tmp_path / 'example.fits'
     hdu.writeto(filename)
     return filename
 
