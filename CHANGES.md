@@ -1,5 +1,3 @@
-# v0.3 (2022-03-31)
-
 ## v0.4 - 2023-11-16
 
 <!-- Release notes generated using configuration in .github/release.yml at main -->
@@ -26,7 +24,9 @@
 
 **Full Changelog**: https://github.com/radio-astro-tools/pvextractor/compare/v0.3...v0.4
 
-## What's Changed
+## v0.3 (2022-03-31)
+
+### What's Changed
 
 - Plot docs and convenience tools by @keflavich in https://github.com/radio-astro-tools/pvextractor/pull/102
 - Add gh actions by @keflavich in https://github.com/radio-astro-tools/pvextractor/pull/103
@@ -35,13 +35,13 @@
 
 **Full Changelog**: https://github.com/radio-astro-tools/pvextractor/compare/v0.2...v0.3
 
-# v0.2 (2020-04-19)
+## v0.2 (2020-04-19)
 
 - Update package infrastructure. #93, #96
 - Fix compatibility with the latest versions of Python and Matplotlib. #89, #95
 - Added `return_area` option for `extract_poly_slices`. #59
 - Fix error that occurred when WCS did not have a PC matrix defined. #90
 
-# v0.1 (2018-01-26)
+## v0.1 (2018-01-26)
 
 - First official release.
