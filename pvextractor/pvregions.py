@@ -40,7 +40,7 @@ def simple_region_parser(regionstring, coord_format):
         # not a usable region
         return
 
-    coordre = re.compile("^[a-z]*\((.*)\)")
+    coordre = re.compile("^[a-z]*\\((.*)\\)")
     coord_list = coordre.findall(rs)
     if len(coord_list) != 1:
         raise ValueError("Invalid region")
