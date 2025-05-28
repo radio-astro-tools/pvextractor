@@ -13,7 +13,7 @@ jobs:
         apt:
           - '^libxcb.*-dev'
           - libxkbcommon-x11-dev
-          - libegl1-mesa
+          - libegl1
       envs: |
         - linux: py39-test
         - linux: py310-test-viz
