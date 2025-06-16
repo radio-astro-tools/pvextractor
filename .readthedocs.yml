@@ -1,0 +1,19 @@
+version: 2
+
+build:
+  os: "ubuntu-latest"
+  tools:
+    python: "3.12"
+
+# Install regular dependencies.
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
+
+sphinx:
+  configuration: docs/conf.py
+  builder: html
+  fail_on_warning: true

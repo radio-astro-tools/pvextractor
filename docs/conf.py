@@ -36,10 +36,13 @@ except ImportError:
     print('ERROR: the documentation requires the sphinx-astropy package to be installed')
     sys.exit(1)
 
-package_info = metadata.metadata("spectral-cube")
+package_info = metadata.metadata("pvextractor")
 
 
 # -- General configuration ----------------------------------------------------
+
+# By default, highlight as Python 3.
+highlight_language = 'python3'
 
 # If your documentation needs a minimal Sphinx version, state it here.
 #needs_sphinx = '1.2'
@@ -60,7 +63,7 @@ rst_epilog += """
 # -- Project information ------------------------------------------------------
 
 # This does not *have* to match the package name, but typically does
-project = package_info["Name"]Add commentMore actions
+project = package_info["Name"]
 author = package_info["Author"]
 copyright = "{}, {}".format(datetime.datetime.now().year, package_info["Author"])
 
@@ -92,8 +95,19 @@ release = package_info["Version"]
 # name of a builtin theme or the name of a custom theme in html_theme_path.
 # html_theme = 'default'
 
+html_theme_options = {
+    'logotext1': 'spectral-cube',  # white,  semi-bold
+    'logotext2': '',  # orange, light
+    'logotext3': ':docs'   # white,  light
+    }
+
 # Custom sidebar templates, maps document names to template names.
 # html_sidebars = {}
+
+
+# Static files to copy after template files
+html_static_path = ['_static']
+html_style = 'spectralcube.css'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
