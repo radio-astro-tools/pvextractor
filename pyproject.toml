@@ -36,6 +36,11 @@ docs = [
   "matplotlib",
   "sphinx-astropy",
 ]
+test = [
+  "pytest>=5",
+  "pytest-astropy>=0.10",
+  "pytest-cov>=3",
+  ]
 
 [project.urls]
 homepage = "https://pvextractor.readthedocs.org"
