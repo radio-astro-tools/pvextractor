@@ -15,15 +15,14 @@ jobs:
           - libxkbcommon-x11-dev
           - libegl1
       envs: |
-        - linux: py39-test
         - linux: py310-test-viz
         - linux: py311-test-alldeps
         - linux: py312-test-devdeps
-        - macos: py39-test
+        - linux: py313-test
         - macos: py310-test-viz
         - macos: py311-test-alldeps
         - macos: py312-test-devdeps
-        - windows: py39-test
         - windows: py310-test-viz
         - windows: py311-test-alldeps
         - windows: py312-test-devdeps
+
