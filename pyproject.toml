@@ -41,6 +41,14 @@ test = [
   "pytest-astropy>=0.10",
   "pytest-cov>=3",
   ]
+viz = [
+  'PyQt6',
+  ]
+devdeps = [
+    "numpy>=0.0.dev0",
+    "astropy>=0.0.dev0",
+    "spectral-cube @ git+https://github.com/radio-astro-tools/spectral-cube",
+]
 
 [project.urls]
 homepage = "https://pvextractor.readthedocs.org"
