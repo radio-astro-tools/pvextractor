@@ -20,6 +20,7 @@ slice shown in a new frame in DS9. Finally, the slicing capability is available 
    :maxdepth: 2
 
    programmatic.rst
+   plotting.rst
    gui.rst
    glue.rst
    ds9.rst
