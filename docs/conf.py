@@ -96,7 +96,7 @@ release = package_info["Version"]
 # html_theme = 'default'
 
 html_theme_options = {
-    'logotext1': 'spectral-cube',  # white,  semi-bold
+    'logotext1': 'pvextractor',  # white,  semi-bold
     'logotext2': '',  # orange, light
     'logotext3': ':docs'   # white,  light
     }
@@ -107,7 +107,7 @@ html_theme_options = {
 
 # Static files to copy after template files
 html_static_path = ['_static']
-html_style = 'spectralcube.css'
+html_style = 'radioastrotools.css'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
