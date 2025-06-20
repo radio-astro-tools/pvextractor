@@ -2,10 +2,10 @@ Extracting slices programmatically
 ==================================
 
 Defining a path
-^^^^^^^^^^^^^^^
+----------------
 
 Pixel coordinates
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 
 To define a path in pixel coordinates, import the :class:`~pvextractor.Path`
 class::
@@ -30,7 +30,7 @@ strictly along the line). To give a path a non-zero width, simply use the
     >>> path3 = Path([(0., 0.), (10., 10.)], width=0.5)
 
 World coordinates
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 
 To define a path in world coordinates, pass a coordinate array to the ``Path``
 object.   In addition, the width (if passed) should an Astropy
@@ -60,7 +60,7 @@ of the path is such that for a position angle of zero, the path is defined from
 South to North.
 
 Extracting a slice
-^^^^^^^^^^^^^^^^^^
+------------------
 
 Once the path has been defined, you can make use of the
 :func:`~pvextractor.extract_pv_slice` function to extract the PV slice. The
@@ -87,7 +87,7 @@ For example::
           :class:`~astropy.wcs.WCS` object to the ``wcs=`` argument.
 
 Saving the slice
-^^^^^^^^^^^^^^^^
+----------------
 
 The returned slice is an Astropy :class:`~astropy.io.fits.PrimaryHDU` instance,
 which you can write to disk using::

@@ -2,7 +2,8 @@ Slicing in DS9
 ==============
 
 .. note:: This feature is experimental and does not work with all versions of
-          DS9 at this point.
+          DS9 at this point. DS9 functionality is also not regularly tested.
+          Please report any issues on `github <https://github.com/radio-astro-tools/pvextractor/issues>`_.
 
 .. TODO: be more specific about which DS9 versions are supported
 

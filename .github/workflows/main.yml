@@ -2,7 +2,12 @@ name: Run tests
 
 on:
   push:
+    branches:
+    - main
+    tags:
+    - '*'
   pull_request:
+  workflow_dispatch:
 
 jobs:
   tests:
@@ -13,20 +18,21 @@ jobs:
         apt:
           - '^libxcb.*-dev'
           - libxkbcommon-x11-dev
-          - libegl1-mesa
+          - libegl1
       envs: |
-        - linux: py38-test-oldestdeps
-        - linux: py39-test
+        - linux: build_docs
+        - linux: py310-test
         - linux: py310-test-viz
-        - linux: py311-test-alldeps
+        - linux: py311-test-viz
+        - linux: py312-test-viz
         - linux: py312-test-devdeps
-        - macos: py38-test-oldestdeps
-        - macos: py39-test
+        - linux: py313-test-viz
         - macos: py310-test-viz
-        - macos: py311-test-alldeps
-        - macos: py312-test-devdeps
-        - windows: py38-test-oldestdeps
-        - windows: py39-test
+        - macos: py311-test-viz
+        - macos: py312-test-viz
+        - macos: py313-test-devdeps
         - windows: py310-test-viz
-        - windows: py311-test-alldeps
-        - windows: py312-test-devdeps
+        - windows: py311-test-viz
+        - windows: py312-test-viz
+        - windows: py313-test-devdeps
+
