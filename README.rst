@@ -18,10 +18,6 @@ For an example use case, see [this notebook]
 (for a permanent, compiled version, look
 `here <examples/IRAS05358Slicing.html>`__)
 
-.. figure:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
-   :alt: Powered by Astropy Badge
-
-   Powered by Astropy Badge
 
 Minimal Install Instructions
 ----------------------------
@@ -72,11 +68,14 @@ Extractor” in the menu.
 Build and coverage status
 =========================
 
-|Build Status| |Coverage Status| |Bitdeli badge|
+|Coverage Status| |Build Status| |Powered by Astropy|
 
-.. |Build Status| image:: https://travis-ci.org/radio-astro-tools/pvextractor.png?branch=master
-   :target: https://travis-ci.org/radio-astro-tools/pvextractor
 .. |Coverage Status| image:: https://coveralls.io/repos/radio-astro-tools/pvextractor/badge.svg?branch=master
    :target: https://coveralls.io/r/radio-astro-tools/pvextractor?branch=master
-.. |Bitdeli badge| image:: https://d2weczhvl823v0.cloudfront.net/keflavich/pvextractor/trend.png
-   :target: https://bitdeli.com/free
+
+.. |Build Status| image:: https://github.com/radio-astro-tools/pvextractor/actions/workflows/main.yml/badge.svg
+   :target: https://github.com/radio-astro-tools/pvextractor/actions/workflows/main.yml
+
+.. |Powered by Astropy| image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
+   :alt: Powered by Astropy Badge
+
