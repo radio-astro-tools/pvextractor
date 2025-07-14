@@ -6,7 +6,7 @@ dynamic = [
 description = "Position-velocity diagram extractor."
 readme = "README.rst"
 authors = [
-    { name = "Adam Ginsburg", email = "adam.g.ginsburg@gmail.com" },
+    { name = "Adam Ginsburg" },
     { name = "Tom Robitaille" },
 ]
 license = "BSD-3-Clause"
