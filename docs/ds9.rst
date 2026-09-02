@@ -5,8 +5,6 @@ Slicing in DS9
           DS9 at this point. DS9 functionality is also not regularly tested.
           Please report any issues on `github <https://github.com/radio-astro-tools/pvextractor/issues>`_.
 
-.. TODO: be more specific about which DS9 versions are supported
-
 There is a python command-line script that will be installed into your path
 along with ``pvextractor``.  You can invoke it from the command line, but the
 preferred approach is to load the

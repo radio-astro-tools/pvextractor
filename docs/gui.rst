@@ -1,7 +1,7 @@
 Using the built-in graphical user interface
 ===========================================
 
-The extractor GUI provdes the most direct interface available to the
+The extractor GUI provides the most direct interface available to the
 pixel-matched version of the position-velocity extractor.  It is simple to
 initialize:
 

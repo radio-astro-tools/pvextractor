@@ -10,6 +10,8 @@ PV data:
 .. code-block:: python
 
    import pylab as pl
+   from astropy import wcs
+   from astropy import units as u
    from spectral_cube import SpectralCube
    from pvextractor import extract_pv_slice, Path
 

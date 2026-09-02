@@ -33,7 +33,7 @@ World coordinates
 ^^^^^^^^^^^^^^^^^
 
 To define a path in world coordinates, pass a coordinate array to the ``Path``
-object.   In addition, the width (if passed) should an Astropy
+object.   In addition, the width (if passed) should be an Astropy
 :class:`~astropy.units.Quantity` object::
 
     >>> from astropy import units as u
@@ -41,7 +41,7 @@ object.   In addition, the width (if passed) should an Astropy
     >>> g = Galactic([3.4, 3.6] * u.deg, [0.5, 0.56] * u.deg)
     >>> path4 = Path(g, width=1 * u.arcsec)
 
-In additon to the :class:`~pvextractor.Path` class, we provide a convenience
+In addition to the :class:`~pvextractor.Path` class, we provide a convenience
 :class:`~pvextractor.PathFromCenter` class that can be used for cases where the
 center and position angle of the path are known (rather than the end points of
 the path). This class is used as follows:
