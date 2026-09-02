@@ -1,9 +1,11 @@
 Slicing in DS9
 ==============
 
-.. note:: This feature is experimental and does not work with all versions of
-          DS9 at this point. DS9 functionality is also not regularly tested.
-          Please report any issues on `github <https://github.com/radio-astro-tools/pvextractor/issues>`_.
+.. warning:: DS9 integration is no longer actively supported or regularly
+             tested, and may not work with all versions of DS9. It is
+             maintained on a best-effort basis. Please report any issues on
+             `github <https://github.com/radio-astro-tools/pvextractor/issues>`_,
+             but be aware that fixes may not be prioritized.
 
 There is a python command-line script that will be installed into your path
 along with ``pvextractor``.  You can invoke it from the command line, but the
