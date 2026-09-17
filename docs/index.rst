@@ -19,6 +19,7 @@ slice shown in a new frame in DS9. Finally, the slicing capability is available 
 .. toctree::
    :maxdepth: 2
 
+   install.rst
    programmatic.rst
    plotting.rst
    gui.rst
