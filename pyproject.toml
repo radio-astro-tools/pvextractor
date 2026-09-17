@@ -47,7 +47,6 @@ viz = [
 devdeps = [
     "numpy>=0.0.dev0",
     "astropy>=0.0.dev0",
-    "spectral-cube @ git+https://github.com/radio-astro-tools/spectral-cube",
 ]
 
 [project.urls]
